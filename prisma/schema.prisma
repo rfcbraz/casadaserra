@@ -1,0 +1,87 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  type        String
+  description String
+  pricePerNight Float
+  capacity    Int
+  amenities   String[]
+  images      String[]
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  reservations Reservation[]
+  blockedDates BlockedDate[]
+}
+
+model Guest {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  createdAt DateTime @default(now())
+
+  reservations Reservation[]
+}
+
+model Reservation {
+  id              String            @id @default(uuid())
+  checkIn         DateTime
+  checkOut        DateTime
+  nights          Int
+  guests          Int
+  totalPrice      Float
+  status          ReservationStatus @default(PENDING)
+  breakfast       Boolean           @default(true)
+  specialRequests String?
+  stripePaymentId String?
+  paidAt          DateTime?
+  notes           String?           // notas internas do dono
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  room    Room   @relation(fields: [roomId], references: [id])
+  roomId  String
+
+  guest   Guest  @relation(fields: [guestId], references: [id])
+  guestId String
+}
+
+model BlockedDate {
+  id        String   @id @default(uuid())
+  date      DateTime
+  reason    String?
+  createdAt DateTime @default(now())
+
+  room   Room   @relation(fields: [roomId], references: [id])
+  roomId String
+
+  @@unique([roomId, date])
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  PAID
+}
