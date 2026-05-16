@@ -399,7 +399,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       </div>
       <div class="footer-col"><h4>Alojamento</h4><ul><li><a href="#">Suite Panorâmica</a></li><li><a href="#">Quarto Deluxe</a></li><li><a href="#">Quarto Superior</a></li><li><a href="#">Quarto Twin</a></li><li><a href="#">Suite Familiar</a></li></ul></div>
       <div class="footer-col"><h4>Informações</h4><ul><li><a href="#">Check-in / Check-out</a></li><li><a href="#">Política de reservas</a></li><li><a href="#">FAQ</a></li><li><a href="#">Como chegar</a></li></ul></div>
-      <div class="footer-col"><h4>Contacto</h4><ul><li><a href="#">📞 +351 960 000 000</a></li><li><a href="#">✉ reservas@casadaserra.pt</a></li><li><a href="#">📍 Serra da Estrela, Portugal</a></li></ul></div>
+      <div class="footer-col"><h4>Contacto</h4><ul><li><a href="#">📞 +351 960 000 000</a></li><li><a href="#">✉ reservas@casadaserra.pt</a></li><li><a href="#">📍 Serra da Larouco, Portugal</a></li></ul></div>
     </div>
     <div class="footer-bottom">
       <div class="footer-copy">© 2026 Casa da Serra. Todos os direitos reservados.</div>
@@ -453,16 +453,17 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     <div class="admin-nav">
       <div class="admin-nav-item active" onclick="adminTab('reservations',this)">📋 Reservas</div>
       <div class="admin-nav-item" onclick="adminTab('rooms',this)">🛏 Quartos</div>
+      <div class="admin-nav-item" onclick="adminTab('availability',this)">📅 Disponibilidade</div>
       <div class="admin-nav-item" onclick="adminTab('stats',this)">📊 Estatísticas</div>
     </div>
     <button class="admin-close" onclick="closeAdmin()">← Voltar ao site</button>
   </div>
   <div class="admin-main">
     <div id="admin-tab-reservations">
-      <div class="admin-header"><div class="admin-title">Reservas</div><div class="admin-tabs"><div class="admin-tab active">Todas</div><div class="admin-tab">Confirmadas</div><div class="admin-tab">Pendentes</div></div></div>
+      <div class="admin-header"><div class="admin-title">Reservas</div><div class="admin-tabs"><div class="admin-tab active" onclick="filterReservations(null,this)">Todas</div><div class="admin-tab" onclick="filterReservations('CONFIRMED',this)">Confirmadas</div><div class="admin-tab" onclick="filterReservations('PENDING',this)">Pendentes</div></div></div>
       <div class="admin-cards">
-        <div class="admin-card"><div class="admin-card-label">Total reservas</div><div class="admin-card-num">48</div><div class="admin-card-sub">+12% este mês</div></div>
-        <div class="admin-card"><div class="admin-card-label">Esta semana</div><div class="admin-card-num">7</div><div class="admin-card-sub">3 confirmadas</div></div>
+        <div class="admin-card"><div class="admin-card-label">Total reservas</div><div class="admin-card-num" id="res-card-total">—</div><div class="admin-card-sub" id="res-card-total-sub">A carregar...</div></div>
+        <div class="admin-card"><div class="admin-card-label">Pendentes</div><div class="admin-card-num" id="res-card-pending">—</div><div class="admin-card-sub" id="res-card-pending-sub">A carregar...</div></div>
         <div class="admin-card"><div class="admin-card-label">Taxa ocupação</div><div class="admin-card-num">78%</div><div class="admin-card-sub">Maio 2026</div></div>
         <div class="admin-card"><div class="admin-card-label">Receita mensal</div><div class="admin-card-num">€4.2k</div><div class="admin-card-sub">↑ vs abril</div></div>
       </div>
@@ -472,29 +473,116 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       </div>
     </div>
     <div id="admin-tab-rooms" style="display:none">
-      <div class="admin-header"><div class="admin-title">Quartos</div></div>
-      <div class="admin-cards">
-        <div class="admin-card"><div class="admin-card-label">Total quartos</div><div class="admin-card-num">12</div><div class="admin-card-sub">6 tipos</div></div>
-        <div class="admin-card"><div class="admin-card-label">Ocupados hoje</div><div class="admin-card-num">9</div><div class="admin-card-sub">75% ocupação</div></div>
-        <div class="admin-card"><div class="admin-card-label">Disponíveis</div><div class="admin-card-num">3</div><div class="admin-card-sub">Prontos</div></div>
-        <div class="admin-card"><div class="admin-card-label">Manutenção</div><div class="admin-card-num">0</div><div class="admin-card-sub">Todos OK</div></div>
+      <div class="admin-header">
+        <div class="admin-title">Quartos</div>
       </div>
-      <div class="admin-table">
-        <div class="admin-table-header"><span>Quarto</span><span>Tipo</span><span>Preço/noite</span><span>Capacidade</span><span>Estado</span><span>Ação</span></div>
-        <div class="admin-table-row"><div class="admin-guest-name">Suite Panorâmica</div><div><span class="admin-room-badge">Suite</span></div><div style="font-size:.9rem;font-weight:500">€185</div><div style="font-size:.85rem">2 pessoas</div><div><span class="admin-status confirmed">Disponível</span></div><div><button class="admin-action">Editar</button></div></div>
-        <div class="admin-table-row"><div class="admin-guest-name">Quarto Deluxe</div><div><span class="admin-room-badge">Deluxe</span></div><div style="font-size:.9rem;font-weight:500">€120</div><div style="font-size:.85rem">2 pessoas</div><div><span class="admin-status pending">Ocupado</span></div><div><button class="admin-action">Editar</button></div></div>
-        <div class="admin-table-row"><div class="admin-guest-name">Quarto Superior</div><div><span class="admin-room-badge">Superior</span></div><div style="font-size:.9rem;font-weight:500">€95</div><div style="font-size:.85rem">2 pessoas</div><div><span class="admin-status pending">Ocupado</span></div><div><button class="admin-action">Editar</button></div></div>
-        <div class="admin-table-row"><div class="admin-guest-name">Quarto Twin</div><div><span class="admin-room-badge">Twin</span></div><div style="font-size:.9rem;font-weight:500">€85</div><div style="font-size:.85rem">2 pessoas</div><div><span class="admin-status confirmed">Disponível</span></div><div><button class="admin-action">Editar</button></div></div>
-        <div class="admin-table-row"><div class="admin-guest-name">Suite Familiar</div><div><span class="admin-room-badge">Suite</span></div><div style="font-size:.9rem;font-weight:500">€220</div><div style="font-size:.85rem">4 pessoas</div><div><span class="admin-status pending">Ocupado</span></div><div><button class="admin-action">Editar</button></div></div>
+      <div class="admin-table" id="admin-rooms-table">
+        <div class="admin-table-header" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 2fr">
+          <span>Quarto</span><span>Tipo</span><span>Preço/noite</span><span>Capacidade</span><span>Estado</span><span>Ação</span>
+        </div>
+        <div id="admin-rooms-body"><div style="padding:2rem;color:var(--muted);font-size:.85rem">A carregar quartos...</div></div>
+      </div>
+    </div>
+
+    <!-- MODAL EDITAR QUARTO -->
+    <div id="edit-room-modal" style="display:none;position:fixed;inset:0;z-index:800;align-items:center;justify-content:center;background:rgba(42,33,24,.7);backdrop-filter:blur(4px)">
+      <div style="background:var(--white);border-radius:4px;padding:2.5rem;width:520px;max-width:95%;max-height:90vh;overflow-y:auto;position:relative">
+        <button onclick="closeEditRoom()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted)">×</button>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:1.5rem">Editar Quarto</h3>
+        <input type="hidden" id="edit-room-id">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="form-field" style="grid-column:1/-1"><label>Nome</label><input type="text" id="edit-room-name"></div>
+          <div class="form-field"><label>Tipo</label><input type="text" id="edit-room-type"></div>
+          <div class="form-field"><label>Preço / noite (€)</label><input type="number" id="edit-room-price"></div>
+          <div class="form-field"><label>Capacidade</label><input type="number" id="edit-room-capacity"></div>
+          <div class="form-field"><label>Estado</label>
+            <select id="edit-room-active">
+              <option value="true">Ativo</option>
+              <option value="false">Inativo</option>
+            </select>
+          </div>
+          <div class="form-field" style="grid-column:1/-1"><label>Descrição</label><textarea id="edit-room-desc" style="min-height:80px;background:var(--cream);border:1px solid var(--warm);border-radius:2px;padding:.75rem 1rem;font-family:'Jost',sans-serif;font-size:.9rem;width:100%;outline:none;resize:vertical"></textarea></div>
+          <div class="form-field" style="grid-column:1/-1"><label>Comodidades (separadas por vírgula)</label><input type="text" id="edit-room-amenities"></div>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1.5rem">
+          <button onclick="saveRoom()" style="flex:1;background:var(--accent);color:#fff;border:none;padding:.85rem;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:2px">Guardar</button>
+          <button onclick="closeEditRoom()" style="flex:1;background:none;border:1px solid var(--warm);color:var(--muted);padding:.85rem;font-family:'Jost',sans-serif;font-size:.85rem;cursor:pointer;border-radius:2px">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB DISPONIBILIDADE -->
+    <div id="admin-tab-availability" style="display:none">
+      <div class="admin-header"><div class="admin-title">Disponibilidade</div></div>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:2rem">Seleciona um quarto e bloqueia ou desbloqueia datas manualmente.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start">
+        <!-- Seletor de quarto -->
+        <div>
+          <div class="form-field" style="margin-bottom:1.5rem">
+            <label style="font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--earth)">Quarto</label>
+            <select id="avail-room-select" onchange="loadRoomAvailability()" style="background:var(--cream);border:1px solid var(--warm);border-radius:2px;padding:.75rem 1rem;font-family:'Jost',sans-serif;font-size:.9rem;color:var(--dark);outline:none;width:100%">
+              <option value="">Seleciona um quarto...</option>
+            </select>
+          </div>
+
+          <!-- Calendário admin -->
+          <div style="background:var(--white);border:1px solid var(--warm);border-radius:4px;padding:1.5rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+              <button onclick="changeAdminMonth(-1)" style="background:none;border:1px solid var(--warm);color:var(--muted);width:32px;height:32px;cursor:pointer;border-radius:2px;font-size:1.1rem;line-height:1">‹</button>
+              <div id="admin-cal-title" style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--dark)"></div>
+              <button onclick="changeAdminMonth(1)" style="background:none;border:1px solid var(--warm);color:var(--muted);width:32px;height:32px;cursor:pointer;border-radius:2px;font-size:1.1rem;line-height:1">›</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:.5rem">
+              <div style="text-align:center;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.3rem">Dom</div>
+              <div style="text-align:center;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.3rem">Seg</div>
+              <div style="text-align:center;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.3rem">Ter</div>
+              <div style="text-align:center;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.3rem">Qua</div>
+              <div style="text-align:center;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.3rem">Qui</div>
+              <div style="text-align:center;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.3rem">Sex</div>
+              <div style="text-align:center;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.3rem">Sáb</div>
+            </div>
+            <div id="admin-cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px"></div>
+            <div style="display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:#dcfce7;border:1px solid #86efac"></div>Disponível</div>
+              <div style="display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:#fee2e2;border:1px solid #fca5a5"></div>Reservado</div>
+              <div style="display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:#fef9c3;border:1px solid #fde047"></div>Bloqueado</div>
+            </div>
+          </div>
+
+          <!-- Botões de ação -->
+          <div style="display:flex;gap:1rem;margin-top:1rem">
+            <button onclick="blockSelectedDates()" style="flex:1;background:var(--dark);color:#fff;border:none;padding:.75rem;font-family:'Jost',sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px">🔒 Bloquear selecionadas</button>
+            <button onclick="unblockSelectedDates()" style="flex:1;background:none;border:1px solid var(--warm);color:var(--muted);padding:.75rem;font-family:'Jost',sans-serif;font-size:.78rem;cursor:pointer;border-radius:2px">🔓 Desbloquear</button>
+          </div>
+        </div>
+
+        <!-- Painel lateral: datas selecionadas + reservas do mês -->
+        <div>
+          <div style="background:var(--white);border:1px solid var(--warm);border-radius:4px;padding:1.5rem;margin-bottom:1rem">
+            <div style="font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--earth);margin-bottom:1rem">Datas selecionadas</div>
+            <div id="admin-selected-dates" style="font-size:.85rem;color:var(--muted)">Nenhuma data selecionada. Clica no calendário para selecionar.</div>
+          </div>
+          <div style="background:var(--white);border:1px solid var(--warm);border-radius:4px;padding:1.5rem">
+            <div style="font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--earth);margin-bottom:1rem">Reservas neste mês</div>
+            <div id="admin-month-reservations" style="font-size:.85rem;color:var(--muted)">Seleciona um quarto para ver as reservas.</div>
+          </div>
+        </div>
       </div>
     </div>
     <div id="admin-tab-stats" style="display:none">
       <div class="admin-header"><div class="admin-title">Estatísticas</div></div>
       <div class="admin-cards">
-        <div class="admin-card"><div class="admin-card-label">Receita total</div><div class="admin-card-num">€38k</div><div class="admin-card-sub">Ano 2026</div></div>
-        <div class="admin-card"><div class="admin-card-label">Média por reserva</div><div class="admin-card-num">€312</div><div class="admin-card-sub">3.2 noites médio</div></div>
-        <div class="admin-card"><div class="admin-card-label">Taxa ocupação</div><div class="admin-card-num">74%</div><div class="admin-card-sub">Média anual</div></div>
-        <div class="admin-card"><div class="admin-card-label">Reservas diretas</div><div class="admin-card-num">91%</div><div class="admin-card-sub">Sem comissões</div></div>
+        <div class="admin-card"><div class="admin-card-label">Receita este mês</div><div class="admin-card-num" id="stat-month-revenue">—</div><div class="admin-card-sub" id="stat-revenue-growth">A carregar...</div></div>
+        <div class="admin-card"><div class="admin-card-label">Total reservas</div><div class="admin-card-num" id="stat-total-res">—</div><div class="admin-card-sub" id="stat-pending">A carregar...</div></div>
+        <div class="admin-card"><div class="admin-card-label">Taxa ocupação hoje</div><div class="admin-card-num" id="stat-occupancy">—</div><div class="admin-card-sub" id="stat-occupancy-detail">A carregar...</div></div>
+        <div class="admin-card"><div class="admin-card-label">Check-ins próximos</div><div class="admin-card-num" id="stat-upcoming">—</div><div class="admin-card-sub">Próximas chegadas</div></div>
+      </div>
+      <div class="admin-table" style="margin-top:1.5rem">
+        <div style="padding:1rem 1.5rem;background:var(--cream);border-bottom:1px solid var(--warm)">
+          <span style="font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Próximos check-ins</span>
+        </div>
+        <div id="stat-upcoming-list"><div style="padding:1.5rem;color:var(--muted);font-size:.85rem">A carregar...</div></div>
       </div>
     </div>
   </div>
@@ -514,7 +602,8 @@ document.getElementById('f-checkin').value=fmt(ci);
 document.getElementById('f-checkout').value=fmt(co);
 
 let calYear=today.getFullYear(),calMonth=today.getMonth(),selStart=null,selEnd=null;
-const unavailDays=[3,7,8,9,14,15,21,22];
+let publicOccupiedDates = new Set(); // datas ocupadas vindas da API
+
 function renderCal(){
   const months=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   document.getElementById('cal-title').textContent=months[calMonth]+' '+calYear;
@@ -523,11 +612,35 @@ function renderCal(){
   const days=new Date(calYear,calMonth+1,0).getDate();
   for(let i=0;i<first;i++){const d=document.createElement('div');d.className='cal-day empty';grid.appendChild(d);}
   for(let d=1;d<=days;d++){
+    const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const el=document.createElement('div');el.className='cal-day';el.textContent=d;
-    if(unavailDays.includes(d))el.classList.add('unavail');
+    const isUnavail = publicOccupiedDates.has(dateStr);
+    if(isUnavail) el.classList.add('unavail');
     if(d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear())el.classList.add('today');
-    if(!unavailDays.includes(d))el.onclick=()=>selectDay(d,el);
+    if(!isUnavail) el.onclick=()=>selectDay(d);
     grid.appendChild(el);
+  }
+}
+
+// Carrega datas ocupadas para o quarto selecionado (ou todos) no mês atual
+async function loadPublicCalAvailability(roomId) {
+  try {
+    if (roomId) {
+      // quarto específico selecionado
+      const res = await fetch(`${API}/availability/room/${roomId}?year=${calYear}&month=${calMonth+1}`);
+      const data = await res.json();
+      publicOccupiedDates = new Set([
+        ...(data.occupiedDates || []),
+        ...(data.blockedDates || []).map(b => b.date)
+      ]);
+    } else {
+      // sem quarto selecionado — mostra dias onde TODOS os quartos estão ocupados
+      publicOccupiedDates = new Set();
+    }
+    renderCal();
+  } catch(err) {
+    console.error('Erro calendário público:', err);
+    renderCal();
   }
 }
 function selectDay(d){
@@ -541,9 +654,40 @@ function selectDay(d){
     if(selEnd&&n===selEnd)el.classList.add('selected');
     if(selEnd&&n>selStart&&n<selEnd)el.classList.add('in-range');
   });
+
+  // Sincronizar datas com o formulário de reserva e barra de pesquisa
+  // Usa formato YYYY-MM-DD direto para evitar problemas de fuso horário
+  function toDateStr(year, month, day) {
+    return `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  }
+  if(selStart) {
+    const ciStr = toDateStr(calYear, calMonth, selStart);
+    document.getElementById('bar-checkin').value = ciStr;
+    document.getElementById('f-checkin').value = ciStr;
+  }
+  if(selEnd) {
+    const ciStr = toDateStr(calYear, calMonth, selStart);
+    const coStr = toDateStr(calYear, calMonth, selEnd);
+    document.getElementById('bar-checkout').value = coStr;
+    document.getElementById('f-checkout').value = coStr;
+    updateSummary();
+
+    // Atualizar disponibilidade com as datas selecionadas
+    fetch(`${API}/availability?checkIn=${ciStr}&checkOut=${coStr}`)
+      .then(r => r.json())
+      .then(data => renderAvailRooms(data.availableRooms, ciStr, coStr))
+      .catch(err => console.error('Erro disponibilidade:', err));
+  }
 }
-function changeMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCal();}
-renderCal();
+function changeMonth(dir){
+  calMonth+=dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  selStart=null;selEnd=null;
+  const roomId = document.getElementById('f-room')?.value;
+  loadPublicCalAvailability(roomId);
+}
+loadPublicCalAvailability(null);
 
 // ── Configuração da API ───────────────────────────────────
 const API = 'https://casadaserra-production.up.railway.app/api';
@@ -654,9 +798,14 @@ function updateSummary() {
   document.getElementById('s-guests').textContent = guests + ' hóspede' + (guests > 1 ? 's' : '');
   document.getElementById('s-total').textContent = nights > 0 ? `€${(price * nights).toLocaleString('pt-PT')}` : '—';
 }
-['f-room','f-checkin','f-checkout','f-guests'].forEach(id =>
+['f-checkin','f-checkout','f-guests'].forEach(id =>
   document.getElementById(id).addEventListener('change', updateSummary)
 );
+document.getElementById('f-room').addEventListener('change', function() {
+  updateSummary();
+  // Atualiza calendário público com disponibilidade do quarto selecionado
+  loadPublicCalAvailability(this.value);
+});
 
 // ── Confirmar reserva → envia para a API ──────────────────
 async function confirmBooking() {
@@ -725,6 +874,13 @@ function adminTab(tab, el) {
   if (tab === 'reservations') loadAdminReservations();
   if (tab === 'stats') loadAdminStats();
   if (tab === 'rooms') loadAdminRooms();
+  if (tab === 'availability') {
+    adminSelectedDates.clear();
+    adminOccupiedDates = new Set();
+    adminBlockedDates = new Set();
+    renderAdminCal();
+    loadAdminRooms();
+  }
 }
 
 function showAdminLogin() {
@@ -787,17 +943,60 @@ async function loadAdminStats() {
   try {
     const res = await fetch(`${API}/admin/stats`, { headers: { Authorization: `Bearer ${adminToken}` } });
     const d = await res.json();
-    document.querySelector('#admin-tab-reservations .admin-card:nth-child(1) .admin-card-num').textContent = d.totalReservations;
-    document.querySelector('#admin-tab-reservations .admin-card:nth-child(2) .admin-card-num').textContent = d.pendingReservations;
-    document.querySelector('#admin-tab-reservations .admin-card:nth-child(3) .admin-card-num').textContent = d.occupancyRate + '%';
-    document.querySelector('#admin-tab-reservations .admin-card:nth-child(4) .admin-card-num').textContent = '€' + (d.monthRevenue || 0).toLocaleString('pt-PT');
+
+    // Cards do separador Reservas
+    const resTotal = document.getElementById('res-card-total');
+    const resTotalSub = document.getElementById('res-card-total-sub');
+    const resPending = document.getElementById('res-card-pending');
+    const resPendingSub = document.getElementById('res-card-pending-sub');
+    const resOcc = document.querySelector('#admin-tab-reservations .admin-card:nth-child(3) .admin-card-num');
+    const resRev = document.querySelector('#admin-tab-reservations .admin-card:nth-child(4) .admin-card-num');
+    if (resTotal) resTotal.textContent = d.totalReservations ?? '—';
+    if (resTotalSub) resTotalSub.textContent = d.revenueGrowth != null ? `${d.revenueGrowth > 0 ? '+' : ''}${d.revenueGrowth}% vs mês anterior` : '';
+    if (resPending) resPending.textContent = d.pendingReservations ?? '—';
+    if (resPendingSub) resPendingSub.textContent = d.pendingReservations === 0 ? 'Tudo em dia' : 'Aguardam confirmação';
+    if (resOcc) resOcc.textContent = (d.occupancyRate ?? '—') + '%';
+    if (resRev) resRev.textContent = '€' + (d.monthRevenue || 0).toLocaleString('pt-PT');
+
+    // Cards do separador Estatísticas
+    const rev = document.getElementById('stat-month-revenue');
+    const revGrowth = document.getElementById('stat-revenue-growth');
+    const totalRes = document.getElementById('stat-total-res');
+    const pending = document.getElementById('stat-pending');
+    const occ = document.getElementById('stat-occupancy');
+    const occDetail = document.getElementById('stat-occupancy-detail');
+    const upcoming = document.getElementById('stat-upcoming');
+    const upcomingList = document.getElementById('stat-upcoming-list');
+
+    if (rev) rev.textContent = '€' + (d.monthRevenue || 0).toLocaleString('pt-PT');
+    if (revGrowth) revGrowth.textContent = d.revenueGrowth != null ? `${d.revenueGrowth > 0 ? '+' : ''}${d.revenueGrowth}% vs mês anterior` : 'Sem dados do mês anterior';
+    if (totalRes) totalRes.textContent = d.totalReservations ?? '—';
+    if (pending) pending.textContent = `${d.pendingReservations ?? 0} pendente(s)`;
+    if (occ) occ.textContent = (d.occupancyRate ?? 0) + '%';
+    if (occDetail) occDetail.textContent = `${d.occupancyToday ?? 0} de ${d.totalRooms ?? 0} quartos ocupados hoje`;
+    if (upcoming) upcoming.textContent = d.upcomingCheckIns?.length ?? 0;
+
+    if (upcomingList) {
+      if (!d.upcomingCheckIns || d.upcomingCheckIns.length === 0) {
+        upcomingList.innerHTML = '<div style="padding:1.5rem;color:var(--muted);font-size:.85rem">Sem check-ins próximos.</div>';
+      } else {
+        upcomingList.innerHTML = d.upcomingCheckIns.map(r => `
+          <div class="admin-table-row" style="grid-template-columns:2fr 1.5fr 1fr 1fr">
+            <div><div class="admin-guest-name">${r.guest.name}</div><div class="admin-guest-email">${r.guest.email}</div></div>
+            <div><span class="admin-room-badge">${r.room.name}</span></div>
+            <div style="font-size:.85rem">${new Date(r.checkIn).toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}</div>
+            <div style="font-size:.85rem">${new Date(r.checkOut).toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}</div>
+          </div>`).join('');
+      }
+    }
   } catch(err) { console.error('Erro stats:', err); }
 }
 
-async function loadAdminReservations() {
+async function loadAdminReservations(statusFilter) {
   if (!adminToken) return;
   try {
-    const res = await fetch(`${API}/reservations`, { headers: { Authorization: `Bearer ${adminToken}` } });
+    const url = statusFilter ? `${API}/reservations?status=${statusFilter}` : `${API}/reservations`;
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${adminToken}` } });
     const data = await res.json();
     const tbody = document.getElementById('admin-reservations-body');
     if (!tbody) return;
@@ -818,6 +1017,12 @@ async function loadAdminReservations() {
   } catch(err) { console.error('Erro reservas:', err); }
 }
 
+function filterReservations(status, el) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  loadAdminReservations(status);
+}
+
 async function updateReservationStatus(id, status) {
   if (!adminToken) return;
   try {
@@ -832,14 +1037,279 @@ async function updateReservationStatus(id, status) {
   } catch(err) { showToast('Erro ao atualizar reserva.'); }
 }
 
+// ── Gestão de Quartos ────────────────────────────────────
 async function loadAdminRooms() {
   if (!adminToken) return;
   try {
-    const res = await fetch(`${API}/rooms`);
+    const res = await fetch(`${API}/rooms`, { headers: { Authorization: `Bearer ${adminToken}` } });
     const rooms = await res.json();
-    const cards = document.querySelectorAll('#admin-tab-rooms .admin-card');
-    if (cards[0]) cards[0].querySelector('.admin-card-num').textContent = rooms.length;
-  } catch(err) { console.error(err); }
+    const tbody = document.getElementById('admin-rooms-body');
+    if (!tbody) return;
+
+    // Populate availability room select too
+    const sel = document.getElementById('avail-room-select');
+    if (sel) {
+      sel.innerHTML = '<option value="">Seleciona um quarto...</option>';
+      rooms.forEach(r => sel.innerHTML += `<option value="${r.id}">${r.name}</option>`);
+    }
+
+    tbody.innerHTML = rooms.map(r => `
+      <div class="admin-table-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 2fr">
+        <div class="admin-guest-name">${r.name}</div>
+        <div><span class="admin-room-badge">${r.type}</span></div>
+        <div style="font-size:.9rem;font-weight:500">€${r.pricePerNight}</div>
+        <div style="font-size:.85rem">${r.capacity} pessoa${r.capacity > 1 ? 's' : ''}</div>
+        <div><span class="admin-status ${r.isActive ? 'confirmed' : 'cancelled'}">${r.isActive ? 'Ativo' : 'Inativo'}</span></div>
+        <div style="display:flex;gap:.4rem">
+          <button class="admin-action" onclick="openEditRoom('${r.id}')">✏ Editar</button>
+          <button class="admin-action" onclick="toggleRoom('${r.id}', ${r.isActive})">${r.isActive ? '🚫 Desativar' : '✓ Ativar'}</button>
+        </div>
+      </div>`).join('');
+  } catch(err) { console.error('Erro quartos:', err); }
+}
+
+function openEditRoom(id) {
+  const room = allRooms.find(r => r.id === id);
+  if (!room) return;
+  document.getElementById('edit-room-id').value = room.id;
+  document.getElementById('edit-room-name').value = room.name;
+  document.getElementById('edit-room-type').value = room.type;
+  document.getElementById('edit-room-price').value = room.pricePerNight;
+  document.getElementById('edit-room-capacity').value = room.capacity;
+  document.getElementById('edit-room-desc').value = room.description;
+  document.getElementById('edit-room-amenities').value = (room.amenities || []).join(', ');
+  document.getElementById('edit-room-active').value = String(room.isActive);
+  document.getElementById('edit-room-modal').style.display = 'flex';
+}
+
+function closeEditRoom() {
+  document.getElementById('edit-room-modal').style.display = 'none';
+}
+
+async function saveRoom() {
+  const id = document.getElementById('edit-room-id').value;
+  const data = {
+    name: document.getElementById('edit-room-name').value,
+    type: document.getElementById('edit-room-type').value,
+    pricePerNight: parseFloat(document.getElementById('edit-room-price').value),
+    capacity: parseInt(document.getElementById('edit-room-capacity').value),
+    description: document.getElementById('edit-room-desc').value,
+    amenities: document.getElementById('edit-room-amenities').value.split(',').map(s => s.trim()).filter(Boolean),
+    isActive: document.getElementById('edit-room-active').value === 'true',
+  };
+  try {
+    const res = await fetch(`${API}/rooms/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify(data)
+    });
+    if (res.ok) {
+      closeEditRoom();
+      showToast('✓ Quarto atualizado com sucesso!');
+      await loadRooms();
+      loadAdminRooms();
+    } else {
+      const err = await res.json();
+      showToast(err.error || 'Erro ao guardar.');
+    }
+  } catch(err) { showToast('Erro de ligação.'); }
+}
+
+async function toggleRoom(id, currentActive) {
+  try {
+    await fetch(`${API}/rooms/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify({ isActive: !currentActive })
+    });
+    showToast(`Quarto ${currentActive ? 'desativado' : 'ativado'}.`);
+    await loadRooms();
+    loadAdminRooms();
+  } catch(err) { showToast('Erro de ligação.'); }
+}
+
+// ── Disponibilidade Admin ─────────────────────────────────
+let adminCalYear = new Date().getFullYear();
+let adminCalMonth = new Date().getMonth();
+let adminSelectedDates = new Set();
+let adminOccupiedDates = new Set();
+let adminBlockedDates = new Set();
+
+function changeAdminMonth(dir) {
+  adminCalMonth += dir;
+  if (adminCalMonth > 11) { adminCalMonth = 0; adminCalYear++; }
+  if (adminCalMonth < 0) { adminCalMonth = 11; adminCalYear--; }
+  adminSelectedDates.clear();
+  updateSelectedDatesPanel();
+  const roomId = document.getElementById('avail-room-select')?.value;
+  if (roomId) {
+    loadRoomAvailability();
+  } else {
+    renderAdminCal();
+  }
+}
+
+async function loadRoomAvailability() {
+  const roomId = document.getElementById('avail-room-select')?.value;
+  if (!roomId) { renderAdminCal(); return; }
+
+  try {
+    const res = await fetch(
+      `${API}/availability/room/${roomId}?year=${adminCalYear}&month=${adminCalMonth + 1}`,
+      { headers: { Authorization: `Bearer ${adminToken}` } }
+    );
+    const data = await res.json();
+
+    adminOccupiedDates = new Set(data.occupiedDates || []);
+    adminBlockedDates = new Set((data.blockedDates || []).map(b => b.date));
+
+    renderAdminCal();
+    renderMonthReservations(data);
+  } catch(err) { console.error('Erro disponibilidade admin:', err); }
+}
+
+function renderAdminCal() {
+  const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const titleEl = document.getElementById('admin-cal-title');
+  const grid = document.getElementById('admin-cal-grid');
+  if (!titleEl || !grid) return;
+
+  titleEl.textContent = `${months[adminCalMonth]} ${adminCalYear}`;
+  grid.innerHTML = '';
+
+  const first = new Date(adminCalYear, adminCalMonth, 1).getDay();
+  const days = new Date(adminCalYear, adminCalMonth + 1, 0).getDate();
+
+  for (let i = 0; i < first; i++) {
+    const el = document.createElement('div');
+    el.style.cssText = 'aspect-ratio:1';
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= days; d++) {
+    const dateStr = `${adminCalYear}-${String(adminCalMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const el = document.createElement('div');
+    el.textContent = d;
+    el.style.cssText = 'aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer;border-radius:2px;border:1px solid transparent;transition:all .15s;font-family:Jost,sans-serif';
+
+    if (adminOccupiedDates.has(dateStr)) {
+      el.style.background = '#fee2e2';
+      el.style.color = '#991b1b';
+      el.style.cursor = 'not-allowed';
+      el.title = 'Reservado';
+    } else if (adminBlockedDates.has(dateStr)) {
+      el.style.background = '#fef9c3';
+      el.style.color = '#854d0e';
+      el.title = 'Bloqueado';
+    } else {
+      el.style.background = '#dcfce7';
+      el.style.color = '#166534';
+      el.title = 'Disponível';
+    }
+
+    if (adminSelectedDates.has(dateStr)) {
+      el.style.outline = '2px solid var(--accent)';
+      el.style.outlineOffset = '1px';
+    }
+
+    if (!adminOccupiedDates.has(dateStr)) {
+      el.addEventListener('click', () => toggleAdminDate(dateStr, el));
+    }
+
+    grid.appendChild(el);
+  }
+}
+
+function toggleAdminDate(dateStr, el) {
+  if (adminSelectedDates.has(dateStr)) {
+    adminSelectedDates.delete(dateStr);
+    el.style.outline = 'none';
+  } else {
+    adminSelectedDates.add(dateStr);
+    el.style.outline = '2px solid var(--accent)';
+    el.style.outlineOffset = '1px';
+  }
+  updateSelectedDatesPanel();
+}
+
+function updateSelectedDatesPanel() {
+  const el = document.getElementById('admin-selected-dates');
+  if (!el) return;
+  if (adminSelectedDates.size === 0) {
+    el.textContent = 'Nenhuma data selecionada. Clica no calendário para selecionar.';
+  } else {
+    const sorted = [...adminSelectedDates].sort();
+    el.innerHTML = sorted.map(d => `<span style="display:inline-block;background:var(--warm);color:var(--earth);font-size:.75rem;padding:.2rem .6rem;border-radius:2px;margin:.2rem">${d}</span>`).join('');
+  }
+}
+
+function renderMonthReservations(data) {
+  const el = document.getElementById('admin-month-reservations');
+  if (!el) return;
+  const occupied = data.occupiedDates || [];
+  const blocked = data.blockedDates || [];
+  if (occupied.length === 0 && blocked.length === 0) {
+    el.textContent = 'Sem reservas ou bloqueios neste mês.';
+    return;
+  }
+  let html = '';
+  if (occupied.length > 0) {
+    html += `<div style="margin-bottom:.75rem"><strong style="font-size:.78rem;color:var(--dark)">${occupied.length} dia(s) reservado(s)</strong></div>`;
+  }
+  if (blocked.length > 0) {
+    html += `<div><strong style="font-size:.78rem;color:var(--dark)">${blocked.length} dia(s) bloqueado(s):</strong><div style="margin-top:.4rem">${blocked.map(b => `<span style="display:inline-block;background:#fef9c3;color:#854d0e;font-size:.75rem;padding:.2rem .6rem;border-radius:2px;margin:.2rem">${b.date}</span>`).join('')}</div></div>`;
+  }
+  el.innerHTML = html;
+}
+
+async function blockSelectedDates() {
+  const roomId = document.getElementById('avail-room-select')?.value;
+  if (!roomId) { showToast('Seleciona um quarto primeiro.'); return; }
+  if (adminSelectedDates.size === 0) { showToast('Seleciona pelo menos uma data.'); return; }
+
+  try {
+    const res = await fetch(`${API}/availability/block`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify({ roomId, dates: [...adminSelectedDates], reason: 'Bloqueado pelo admin' })
+    });
+    if (res.ok) {
+      showToast(`✓ ${adminSelectedDates.size} data(s) bloqueada(s).`);
+      adminSelectedDates.clear();
+      loadRoomAvailability();
+    } else {
+      showToast('Erro ao bloquear datas.');
+    }
+  } catch(err) { showToast('Erro de ligação.'); }
+}
+
+async function unblockSelectedDates() {
+  const roomId = document.getElementById('avail-room-select')?.value;
+  if (!roomId) { showToast('Seleciona um quarto primeiro.'); return; }
+  if (adminSelectedDates.size === 0) { showToast('Seleciona pelo menos uma data.'); return; }
+
+  try {
+    const res = await fetch(`${API}/availability/block`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify({ roomId, dates: [...adminSelectedDates] })
+    });
+    if (res.ok) {
+      showToast(`✓ ${adminSelectedDates.size} data(s) desbloqueada(s).`);
+      adminSelectedDates.clear();
+      loadRoomAvailability();
+    } else {
+      showToast('Erro ao desbloquear datas.');
+    }
+  } catch(err) { showToast('Erro de ligação.'); }
+}
+
+// ── Toast ─────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
 }
 
 // ── Inicialização ─────────────────────────────────────────
