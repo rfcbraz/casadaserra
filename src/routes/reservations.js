@@ -22,7 +22,10 @@ router.post('/', async (req, res, next) => {
       return res.status(400).json({ error: 'Datas inválidas.' });
     }
 
-    if (ciDate < new Date()) {
+    // Permite check-in hoje — compara só a data, não a hora
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    if (ciDate < todayStart) {
       return res.status(400).json({ error: 'A data de check-in não pode ser no passado.' });
     }
 
