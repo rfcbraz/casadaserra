@@ -622,11 +622,10 @@ function renderCal(){
   }
 }
 
-// Carrega datas ocupadas para o quarto selecionado (ou todos) no mês atual
+// Carrega datas ocupadas para o quarto selecionado no mês atual
 async function loadPublicCalAvailability(roomId) {
   try {
     if (roomId) {
-      // quarto específico selecionado
       const res = await fetch(`${API}/availability/room/${roomId}?year=${calYear}&month=${calMonth+1}`);
       const data = await res.json();
       publicOccupiedDates = new Set([
@@ -634,14 +633,13 @@ async function loadPublicCalAvailability(roomId) {
         ...(data.blockedDates || []).map(b => b.date)
       ]);
     } else {
-      // sem quarto selecionado — mostra dias onde TODOS os quartos estão ocupados
       publicOccupiedDates = new Set();
     }
-    renderCal();
   } catch(err) {
     console.error('Erro calendário público:', err);
-    renderCal();
+    publicOccupiedDates = new Set();
   }
+  renderCal();
 }
 function selectDay(d){
   document.querySelectorAll('.cal-day').forEach(el=>{el.classList.remove('selected','in-range');});
@@ -673,10 +671,19 @@ function selectDay(d){
     updateSummary();
 
     // Atualizar disponibilidade com as datas selecionadas
+    const list = document.getElementById('avail-rooms-list');
+    if (list) list.innerHTML = '<p style="color:var(--stone);font-size:.9rem;padding:1rem 0">A verificar disponibilidade...</p>';
     fetch(`${API}/availability?checkIn=${ciStr}&checkOut=${coStr}`)
       .then(r => r.json())
-      .then(data => renderAvailRooms(data.availableRooms, ciStr, coStr))
-      .catch(err => console.error('Erro disponibilidade:', err));
+      .then(data => {
+        renderAvailRooms(data.availableRooms, ciStr, coStr);
+        document.getElementById('f-checkin').value = ciStr;
+        document.getElementById('f-checkout').value = coStr;
+      })
+      .catch(err => {
+        console.error('Erro disponibilidade:', err);
+        if (list) list.innerHTML = '<p style="color:var(--stone);font-size:.9rem;padding:1rem 0">Erro ao verificar disponibilidade.</p>';
+      });
   }
 }
 function changeMonth(dir){
@@ -700,6 +707,9 @@ async function loadRooms() {
     allRooms = await res.json();
     populateRoomSelect();
     renderAvailRooms(allRooms);
+    // Calendário público começa sem datas bloqueadas — só bloqueia quando quarto é selecionado
+    publicOccupiedDates = new Set();
+    renderCal();
   } catch(err) {
     console.error('Erro ao carregar quartos:', err);
     showToast('Não foi possível carregar os quartos. Verifique se o servidor está ligado.');
@@ -803,15 +813,19 @@ function updateSummary() {
   const ci = new Date(document.getElementById('f-checkin').value);
   const co = new Date(document.getElementById('f-checkout').value);
   const nights = Math.max(0, Math.round((co - ci) / 86400000));
-  const guests = document.getElementById('f-guests').value;
+  const guests = parseInt(document.getElementById('f-guests').value) || 1;
+  const breakfast = document.getElementById('f-breakfast').value === '1';
+  const breakfastCost = breakfast ? 10 * guests * nights : 0;
+  const total = (price * nights) + breakfastCost;
   document.getElementById('s-room').textContent = roomName;
   document.getElementById('s-dates').textContent = nights > 0
     ? `${document.getElementById('f-checkin').value} → ${document.getElementById('f-checkout').value}` : '—';
   document.getElementById('s-nights').textContent = nights > 0 ? nights + ' noite' + (nights > 1 ? 's' : '') : '—';
   document.getElementById('s-guests').textContent = guests + ' hóspede' + (guests > 1 ? 's' : '');
-  document.getElementById('s-total').textContent = nights > 0 ? `€${(price * nights).toLocaleString('pt-PT')}` : '—';
+  document.getElementById('s-total').textContent = nights > 0
+    ? `€${total.toLocaleString('pt-PT')}${breakfast ? ` (incl. ${guests}×${nights}×€10 pequeno-almoço)` : ''}` : '—';
 }
-['f-checkin','f-checkout','f-guests'].forEach(id =>
+['f-checkin','f-checkout','f-guests','f-breakfast'].forEach(id =>
   document.getElementById(id).addEventListener('change', updateSummary)
 );
 document.getElementById('f-room').addEventListener('change', function() {

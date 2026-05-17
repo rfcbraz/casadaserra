@@ -64,7 +64,8 @@ router.post('/', async (req, res, next) => {
     }
 
     const nights = Math.round((coDate - ciDate) / (1000 * 60 * 60 * 24));
-    const totalPrice = room.pricePerNight * nights;
+    const breakfastCost = (breakfast !== false) ? 10 * parseInt(guests) * nights : 0;
+    const totalPrice = (room.pricePerNight * nights) + breakfastCost;
 
     // Criar ou encontrar hóspede
     const guest = await prisma.guest.upsert({
