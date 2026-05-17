@@ -1,15 +1,11 @@
-// start.js — corre migrações e arranca o servidor
-const { execSync, spawn } = require('child_process');
+// start.js
+const { execSync } = require('child_process');
 
-console.log('🔄 A correr migrações...');
+console.log('🔧 A preparar base de dados...');
 try {
-  execSync('node node_modules/prisma/build/index.js migrate deploy', {
-    stdio: 'inherit',
-    env: process.env
-  });
-  console.log('✅ Migrações aplicadas.');
-} catch (err) {
-  console.error('⚠️ Migrações falharam, a continuar...', err.message);
+  execSync('node setup-db.js', { stdio: 'inherit', env: process.env });
+} catch(e) {
+  console.error('Setup erro:', e.message);
 }
 
 console.log('🚀 A arrancar servidor...');
