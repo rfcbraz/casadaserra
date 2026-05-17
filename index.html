@@ -206,15 +206,6 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 .footer-col ul li a:hover{color:var(--accent2)}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center}
 .footer-copy{font-size:.75rem;color:rgba(255,255,255,.3)}
-.footer-link-clean {
-    color: inherit;
-    text-decoration: none; /* Remove o sublinhado padrão */
-    transition: text-decoration 0.2s ease;
-}
-
-.footer-link-clean:hover {
-    text-decoration: underline; /* O sublinhado aparece no hover */
-}
 .admin-link{font-size:.72rem;color:rgba(255,255,255,.2);cursor:pointer;transition:color .2s;background:none;border:none;font-family:'Jost',sans-serif}
 .admin-link:hover{color:var(--accent)}
 .divider{height:1px;background:linear-gradient(to right,transparent,var(--warm),transparent);max-width:1200px;margin:0 auto}
@@ -238,7 +229,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   <div class="hero-pattern"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <div class="hero-eyebrow">Guest House · Serra do Larouco</div>
+    <div class="hero-eyebrow">Guest House · Serra da Estrela</div>
     <h1>Um refúgio <em>entre</em><br>montanha e silêncio</h1>
     <p class="hero-sub">Quartos únicos, pequeno-almoço caseiro e a natureza à porta. Uma experiência de alojamento genuinamente portuguesa.</p>
     <div class="hero-actions">
@@ -404,15 +395,15 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     <div class="footer-grid">
       <div>
         <div class="footer-brand">Casa da Serra</div>
-        <p class="footer-tagline">Um refúgio autêntico na Serra do Larouco. Quartos únicos, natureza e hospitalidade portuguesa genuína.</p>
+        <p class="footer-tagline">Um refúgio autêntico na Serra da Estrela. Quartos únicos, natureza e hospitalidade portuguesa genuína.</p>
       </div>
       <div class="footer-col"><h4>Alojamento</h4><ul><li><a href="#">Suite Panorâmica</a></li><li><a href="#">Quarto Deluxe</a></li><li><a href="#">Quarto Superior</a></li><li><a href="#">Quarto Twin</a></li><li><a href="#">Suite Familiar</a></li></ul></div>
       <div class="footer-col"><h4>Informações</h4><ul><li><a href="#">Check-in / Check-out</a></li><li><a href="#">Política de reservas</a></li><li><a href="#">FAQ</a></li><li><a href="#">Como chegar</a></li></ul></div>
-      <div class="footer-col"><h4>Contacto</h4><ul><li><a href="#">📞 +351 960 000 000</a></li><li><a href="#">✉ reservas@casadaserra.pt</a></li><li><a href="#">📍 Serra do Larouco, Portugal</a></li></ul></div>
+      <div class="footer-col"><h4>Contacto</h4><ul><li><a href="#">📞 +351 960 000 000</a></li><li><a href="#">✉ reservas@casadaserra.pt</a></li><li><a href="#">📍 Serra da Estrela, Portugal</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-<div class="footer-copy">    © 2026 Casa da Serra. Todos os direitos reservados. <a href="https://www.rfcb.pt" target="_blank" rel="noopener noreferrer" class="footer-link-clean">rfcb solutions</a></div>
-<button class="admin-link" onclick="openAdmin()">⚙ Painel de gestão</button>
+      <div class="footer-copy">© 2026 Casa da Serra. Todos os direitos reservados.</div>
+      <button class="admin-link" onclick="openAdmin()">⚙ Painel de gestão</button>
     </div>
   </div>
 </footer>
@@ -727,28 +718,41 @@ function populateRoomSelect() {
   updateSummary();
 }
 
-function renderAvailRooms(rooms, checkIn, checkOut) {
+function renderAvailRooms(availableRooms, checkIn, checkOut) {
   const list = document.getElementById('avail-rooms-list');
   list.innerHTML = '';
-  if (!rooms || rooms.length === 0) {
-    list.innerHTML = '<p style="color:var(--stone);font-size:.9rem;padding:1rem 0">Sem quartos disponíveis para as datas selecionadas.</p>';
+
+  if (!checkIn || !checkOut) {
+    // Sem datas selecionadas — mostra todos os quartos
+    allRooms.forEach(r => {
+      list.innerHTML += `
+        <div class="avail-room">
+          <div><div class="avail-room-name">${r.name}</div><div class="avail-room-type">${r.type}</div></div>
+          <div class="avail-status"><div class="status-dot avail"></div>Disponível</div>
+          <div class="avail-price">€${r.pricePerNight}<small>/ noite</small></div>
+          <button class="btn-book" style="font-size:.7rem;padding:.4rem .9rem" onclick="openBookingForRoomId('${r.id}')">Reservar</button>
+        </div>`;
+    });
     return;
   }
-  rooms.forEach(r => {
-    const nights = (checkIn && checkOut)
-      ? Math.round((new Date(checkOut) - new Date(checkIn)) / 86400000)
-      : 1;
-    const total = r.totalPrice || r.pricePerNight;
+
+  const availIds = new Set((availableRooms || []).map(r => r.id));
+
+  // Mostra TODOS os quartos — disponíveis e indisponíveis
+  allRooms.forEach(r => {
+    const isAvail = availIds.has(r.id);
     list.innerHTML += `
-      <div class="avail-room">
-        <div>
-          <div class="avail-room-name">${r.name}</div>
-          <div class="avail-room-type">${r.type}</div>
+      <div class="avail-room" style="${!isAvail ? 'opacity:.6' : ''}">
+        <div><div class="avail-room-name">${r.name}</div><div class="avail-room-type">${r.type}</div></div>
+        <div class="avail-status">
+          <div class="status-dot ${isAvail ? 'avail' : 'unavail'}"></div>
+          ${isAvail ? 'Disponível' : 'Indisponível'}
         </div>
-        <div class="avail-status"><div class="status-dot avail"></div>Disponível</div>
         <div class="avail-price">€${r.pricePerNight}<small>/ noite</small></div>
-        <button class="btn-book" style="font-size:.7rem;padding:.4rem .9rem"
-          onclick="openBookingForRoomId('${r.id}')">Reservar</button>
+        ${isAvail
+          ? `<button class="btn-book" style="font-size:.7rem;padding:.4rem .9rem" onclick="openBookingForRoomId('${r.id}')">Reservar</button>`
+          : `<span style="font-size:.72rem;color:var(--stone)">Ocupado</span>`
+        }
       </div>`;
   });
 }
@@ -1022,6 +1026,11 @@ async function loadAdminReservations(statusFilter) {
           ${r.status==='PENDING'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CONFIRMED')">✓</button>`:''}
           ${r.status!=='CANCELLED'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CANCELLED')">✕</button>`:''}
         </div>
+      </div>
+      <div style="grid-column:1/-1;padding:.4rem 0 .6rem;border-bottom:1px solid var(--warm);font-size:.75rem;color:var(--muted);display:flex;gap:1.5rem">
+        <span>🍳 Pequeno-almoço: <strong style="color:var(--dark)">${r.breakfast ? 'Incluído' : 'Não incluído'}</strong></span>
+        <span>💰 Total: <strong style="color:var(--dark)">€${r.totalPrice?.toFixed(2)}</strong></span>
+        ${r.specialRequests ? `<span>📝 Pedidos: <strong style="color:var(--dark)">${r.specialRequests}</strong></span>` : ''}
       </div>`).join('');
   } catch(err) { console.error('Erro reservas:', err); }
 }
