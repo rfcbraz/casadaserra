@@ -17,10 +17,9 @@ const PORT = process.env.PORT || 3001;
 // ── Segurança ──────────────────────────────────────────────
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL === '*' ? '*' : (process.env.FRONTEND_URL || '*'),
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
 }));
 
 // Webhook do Stripe precisa do body em raw antes do JSON parser
