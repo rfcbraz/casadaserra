@@ -29,25 +29,37 @@ cp .env.example .env
 ```
 Edita o `.env` com os teus dados (base de dados, email, Stripe).
 
-### 3. Criar a base de dados (PostgreSQL local)
-```bash
-# Instala PostgreSQL se ainda não tiveres
-# Mac: brew install postgresql
-# Ubuntu: sudo apt install postgresql
+### 3. Preparar o PostgreSQL
 
-# Cria a base de dados
+#### Opção A — PostgreSQL local
+Se ainda não tens PostgreSQL instalado:
+- **Windows (pgAdmin / PostgreSQL installer)**: instala o PostgreSQL e cria uma base de dados chamada `casadaserra`
+- **macOS**: `brew install postgresql`
+- **Ubuntu**: `sudo apt install postgresql`
+
+Depois cria a base de dados:
+```bash
 createdb casadaserra
 ```
-Ou usa o **Railway** (recomendado — ver secção Deploy).
 
-### 4. Correr as migrações
-```bash
-npx prisma migrate dev --name init
+No `.env`, usa algo como:
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/casadaserra?schema=public"
 ```
 
-### 5. Popular com dados iniciais
+Se estiveres a usar um utilizador diferente, substitui `postgres` pelo teu nome de utilizador e a password pela tua password.
+
+#### Opção B — Railway
+Se preferires usar o Railway, copia o `DATABASE_URL` que o Railway gera para o teu projeto para o `.env`.
+
+### 4. Verificar a ligação à base de dados
 ```bash
-npm run db:seed
+npm run db:check
+```
+
+### 5. Criar as tabelas e popular dados iniciais
+```bash
+npm run db:setup
 ```
 
 ### 6. Iniciar o servidor

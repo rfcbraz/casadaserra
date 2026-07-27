@@ -138,6 +138,18 @@ h2 em{font-style:italic;color:var(--accent)}
 .modal-close-btn:hover{color:var(--dark)}
 .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:.3rem}
 .modal-sub{font-size:.82rem;color:var(--muted);margin-bottom:2rem}
+.room-detail-content{max-width:650px;padding:2rem 2rem 2.2rem}
+.room-detail-visual{height:220px;display:flex;align-items:center;justify-content:center;font-size:4rem;border-radius:var(--radius);margin-bottom:1.25rem;overflow:hidden;color:#fff;box-shadow:inset 0 -40px 60px rgba(0,0,0,.12)}
+.room-detail-visual.suite{background:linear-gradient(135deg,#3d2a20,#8b5a35)}
+.room-detail-visual.deluxe{background:linear-gradient(135deg,#3d3020,#6b4f35)}
+.room-detail-visual.superior{background:linear-gradient(135deg,#2a3d30,#4f6b55)}
+.room-detail-visual.twin{background:linear-gradient(135deg,#2f3b4a,#5c728d)}
+.room-detail-price{font-size:1.05rem;font-weight:600;color:var(--accent);margin-top:.35rem}
+.room-detail-amenities{display:flex;flex-wrap:wrap;gap:.55rem;margin:1rem 0 1.3rem}
+.room-detail-amenities .amenity{background:var(--cream);color:var(--earth);border:1px solid var(--warm);padding:.4rem .7rem;border-radius:999px;font-size:.78rem}
+.room-detail-footer{display:flex;justify-content:flex-end;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
+.btn-secondary{background:none;border:1px solid var(--warm);color:var(--muted);padding:.6rem 1rem;font-family:'Jost',sans-serif;font-size:.75rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px}
+.btn-secondary:hover{background:var(--cream);color:var(--dark)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .form-field{display:flex;flex-direction:column;gap:.4rem}
 .form-field.full{grid-column:1/-1}
@@ -407,6 +419,26 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     </div>
   </div>
 </footer>
+
+<!-- ROOM DETAIL MODAL -->
+<div class="modal" id="room-detail-modal">
+  <div class="modal-backdrop" onclick="closeRoomDetails()"></div>
+  <div class="modal-content room-detail-content">
+    <button class="modal-close-btn" onclick="closeRoomDetails()">×</button>
+    <div class="room-detail-visual" id="room-detail-visual"></div>
+    <div class="room-detail-header">
+      <div class="section-eyebrow">Quarto</div>
+      <h3 id="room-detail-title"></h3>
+      <div class="room-detail-price" id="room-detail-price"></div>
+    </div>
+    <p class="modal-sub" id="room-detail-desc"></p>
+    <div class="room-detail-amenities" id="room-detail-amenities"></div>
+    <div class="room-detail-footer">
+      <button class="btn-book" onclick="handleRoomDetailBooking()">Reservar</button>
+      <button class="btn-secondary" onclick="closeRoomDetails()">Fechar</button>
+    </div>
+  </div>
+</div>
 
 <!-- BOOKING MODAL -->
 <div class="modal" id="booking-modal">
@@ -786,6 +818,58 @@ async function openBookingFromBar() {
   if (checkOut) document.getElementById('f-checkout').value = checkOut;
   openBooking();
 }
+
+// ── Modal de detalhes do quarto ─────────────────────────
+function openRoomDetails(card) {
+  const title = card.querySelector('.room-name')?.textContent?.trim() || '';
+  const desc = card.querySelector('.room-desc')?.textContent?.trim() || '';
+  const price = card.querySelector('.room-price')?.firstChild?.textContent?.trim() || '';
+  const visual = card.querySelector('.room-visual');
+  const amenities = Array.from(card.querySelectorAll('.room-amenities .amenity')).map(el => el.textContent.trim());
+  const themeClass = Array.from(visual?.classList || []).find(cls => ['suite','deluxe','superior','twin'].includes(cls)) || 'suite';
+  const icon = visual?.firstChild?.textContent?.trim() || '🏡';
+
+  document.getElementById('room-detail-title').textContent = title;
+  document.getElementById('room-detail-price').textContent = `${price} / noite`;
+  document.getElementById('room-detail-desc').textContent = desc;
+  document.getElementById('room-detail-visual').className = `room-detail-visual ${themeClass}`;
+  document.getElementById('room-detail-visual').textContent = icon;
+
+  const amenitiesWrap = document.getElementById('room-detail-amenities');
+  amenitiesWrap.innerHTML = '';
+  amenities.forEach(item => {
+    const span = document.createElement('span');
+    span.className = 'amenity';
+    span.textContent = item;
+    amenitiesWrap.appendChild(span);
+  });
+
+  document.getElementById('room-detail-modal').classList.add('open');
+}
+
+function closeRoomDetails() {
+  document.getElementById('room-detail-modal').classList.remove('open');
+}
+
+function handleRoomDetailBooking() {
+  const title = document.getElementById('room-detail-title').textContent.trim();
+  closeRoomDetails();
+  openBookingForRoom(title);
+}
+
+document.querySelectorAll('.room-card').forEach(card => {
+  card.addEventListener('click', (event) => {
+    if (event.target.closest('.btn-book')) return;
+    openRoomDetails(card);
+  });
+  card.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openRoomDetails(card);
+    }
+  });
+  card.setAttribute('tabindex', '0');
+});
 
 // ── Modal de reserva ──────────────────────────────────────
 function openBooking() {
