@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node start.js",
-    "postinstall": "prisma generate",
+    "postinstall": "npx prisma generate",
     "db:check": "node scripts/check-db.js",
     "db:setup": "npm run db:check && npx prisma migrate deploy && node src/seed.js",
     "db:migrate": "npx prisma migrate deploy",
@@ -23,12 +23,12 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.9.9",
+    "prisma": "^5.10.0",
     "stripe": "^14.21.0",
     "uuid": "^9.0.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0",
-    "prisma": "^5.10.0"
+    "nodemon": "^3.1.0"
   }
 }
