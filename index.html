@@ -139,11 +139,20 @@ h2 em{font-style:italic;color:var(--accent)}
 .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:.3rem}
 .modal-sub{font-size:.82rem;color:var(--muted);margin-bottom:2rem}
 .room-detail-content{max-width:650px;padding:2rem 2rem 2.2rem}
-.room-detail-visual{height:220px;display:flex;align-items:center;justify-content:center;font-size:4rem;border-radius:var(--radius);margin-bottom:1.25rem;overflow:hidden;color:#fff;box-shadow:inset 0 -40px 60px rgba(0,0,0,.12)}
-.room-detail-visual.suite{background:linear-gradient(135deg,#3d2a20,#8b5a35)}
-.room-detail-visual.deluxe{background:linear-gradient(135deg,#3d3020,#6b4f35)}
-.room-detail-visual.superior{background:linear-gradient(135deg,#2a3d30,#4f6b55)}
-.room-detail-visual.twin{background:linear-gradient(135deg,#2f3b4a,#5c728d)}
+.room-detail-carousel{position:relative;overflow:hidden;border-radius:var(--radius);margin-bottom:1.25rem;min-height:220px}
+.room-detail-carousel-track{display:flex;transition:transform .35s ease}
+.room-detail-carousel-slide{min-width:100%;display:flex;align-items:flex-end;justify-content:flex-start;padding:1.5rem;position:relative;min-height:220px;color:#fff;box-shadow:inset 0 -40px 60px rgba(0,0,0,.15)}
+.room-detail-carousel-slide::after{content:attr(data-label);position:absolute;left:1.5rem;bottom:1.5rem;font-size:.95rem;font-weight:600;color:#fff;text-shadow:0 10px 20px rgba(0,0,0,.35)}
+.room-detail-carousel-slide:nth-child(1){background:linear-gradient(135deg,#3d2a20,#8b5e2f)}
+.room-detail-carousel-slide:nth-child(2){background:linear-gradient(135deg,#5f472a,#c79955)}
+.room-detail-carousel-slide:nth-child(3){background:linear-gradient(135deg,#3f3d34,#9d7f57)}
+.room-detail-carousel-control{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.9);color:var(--dark);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(0,0,0,.12)}
+.room-detail-carousel-control:hover{background:#fff}
+.room-detail-carousel-control.prev{left:1rem}
+.room-detail-carousel-control.next{right:1rem}
+.room-detail-carousel-dots{display:flex;gap:.5rem;justify-content:center;margin-top:1rem}
+.room-detail-carousel-dot{width:10px;height:10px;border-radius:50%;background:rgba(42,33,24,.2);cursor:pointer;transition:background .2s}
+.room-detail-carousel-dot.active{background:var(--accent)}
 .room-detail-price{font-size:1.05rem;font-weight:600;color:var(--accent);margin-top:.35rem}
 .room-detail-amenities{display:flex;flex-wrap:wrap;gap:.55rem;margin:1rem 0 1.3rem}
 .room-detail-amenities .amenity{background:var(--cream);color:var(--earth);border:1px solid var(--warm);padding:.4rem .7rem;border-radius:999px;font-size:.78rem}
@@ -221,6 +230,64 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 .admin-link{font-size:.72rem;color:rgba(255,255,255,.2);cursor:pointer;transition:color .2s;background:none;border:none;font-family:'Jost',sans-serif}
 .admin-link:hover{color:var(--accent)}
 .divider{height:1px;background:linear-gradient(to right,transparent,var(--warm),transparent);max-width:1200px;margin:0 auto}
+
+@media (max-width:1024px) {
+  nav{padding:1rem 1.5rem}
+  .hero-content{padding:0 1.5rem}
+  .hero-badges{display:none}
+  .booking-bar{flex-wrap:wrap;padding:1.5rem;gap:.75rem}
+  .booking-field{padding:1rem}
+  .booking-submit{width:100%;justify-self:flex-end}
+  section{padding:5rem 1.5rem}
+  .rooms-section > div{padding:0 1.5rem}
+  .rooms-grid{grid-template-columns:repeat(2,1fr)}
+  .about-grid{gap:3rem}
+  .avail-section{padding:5rem 1.5rem}
+  .avail-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:2rem}
+}
+
+@media (max-width:768px) {
+  .nav-links{display:none}
+  .nav-cta{font-size:.75rem;padding:.6rem 1.2rem}
+  .hero{height:auto;padding:5rem 0 3rem}
+  .hero-content{max-width:100%;padding:0 1rem}
+  .hero h1{font-size:clamp(2.5rem,10vw,4rem)}
+  .hero-sub{font-size:.95rem;max-width:100%}
+  .hero-actions{flex-direction:column;align-items:flex-start}
+  .hero-actions button{width:100%}
+  .booking-bar{padding:1rem;gap:.75rem}
+  .booking-field{width:100%}
+  .booking-field input,.booking-field select{font-size:.95rem}
+  .booking-submit{padding:1rem;white-space:normal}
+  .rooms-grid{grid-template-columns:1fr}
+  .room-card{min-width:0}
+  .about-grid{grid-template-columns:1fr;gap:2rem}
+  .about-image{height:320px}
+  .avail-inner{padding:0 1rem}
+  .cal-header{flex-wrap:wrap;gap:.75rem}
+  .cal-nav{width:36px;height:36px}
+  .avail-room{flex-direction:column;align-items:flex-start;gap:.75rem}
+  .avail-room .avail-price{text-align:left}
+  .avail-price{font-size:1.05rem}
+  .modal-content{width:min(95%,560px);padding:2rem}
+  .room-detail-content{padding:1.5rem 1.5rem 1.8rem}
+  .room-detail-carousel-control{width:34px;height:34px}
+  .form-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr;gap:1.5rem}
+}
+
+@media (max-width:540px) {
+  nav{padding:1rem}
+  .hero-content{padding:0 1rem}
+  .booking-bar{padding:1rem}
+  .booking-field{padding:.9rem}
+  .btn-hero,.btn-hero-outline{width:100%;text-align:center}
+  .room-detail-carousel-slide::after{left:1rem;right:1rem;bottom:1rem;font-size:.9rem}
+  .room-detail-carousel-control.prev{left:.75rem}
+  .room-detail-carousel-control.next{right:.75rem}
+  .footer-bottom{flex-direction:column;align-items:flex-start;gap:.75rem}
+}
 </style>
 </head>
 <body>
@@ -425,7 +492,12 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   <div class="modal-backdrop" onclick="closeRoomDetails()"></div>
   <div class="modal-content room-detail-content">
     <button class="modal-close-btn" onclick="closeRoomDetails()">×</button>
-    <div class="room-detail-visual" id="room-detail-visual"></div>
+    <div class="room-detail-carousel" id="room-detail-carousel">
+      <div class="room-detail-carousel-track" id="room-detail-carousel-track"></div>
+      <button class="room-detail-carousel-control prev" onclick="moveRoomCarousel(-1)">‹</button>
+      <button class="room-detail-carousel-control next" onclick="moveRoomCarousel(1)">›</button>
+    </div>
+    <div class="room-detail-carousel-dots" id="room-detail-carousel-dots"></div>
     <div class="room-detail-header">
       <div class="section-eyebrow">Quarto</div>
       <h3 id="room-detail-title"></h3>
@@ -820,20 +892,97 @@ async function openBookingFromBar() {
 }
 
 // ── Modal de detalhes do quarto ─────────────────────────
+const roomCarouselImages = {
+  'Suite Panorâmica': [
+    { label: 'Vista panorâmica da serra' },
+    { label: 'Cama king-size e luz natural' },
+    { label: 'Banheira de hidromassagem privada' }
+  ],
+  'Quarto Deluxe': [
+    { label: 'Espaço acolhedor em madeira natural' },
+    { label: 'Cama queen-size confortável' },
+    { label: 'Casa de banho privada elegante' }
+  ],
+  'Quarto Superior': [
+    { label: 'Vistas para o jardim' },
+    { label: 'Ambiente sereno e luminoso' },
+    { label: 'Detalhes em pedra e madeira' }
+  ],
+  'Quarto Twin': [
+    { label: 'Duas camas individuais' },
+    { label: 'Ideal para amigos ou família' },
+    { label: 'Conforto e praticidade' }
+  ],
+  'Quarto Lareira': [
+    { label: 'Lareira acolhedora a lenha' },
+    { label: 'Ambiente íntimo e quente' },
+    { label: 'Cama king-size e decoração rústica' }
+  ],
+  'Suite Familiar': [
+    { label: 'Dois quartos comunicantes' },
+    { label: 'Sala de estar privativa' },
+    { label: 'Espaço perfeito para famílias' }
+  ],
+  default: [
+    { label: 'Quarto confortável e acolhedor' },
+    { label: 'Detalhes elegantes e naturais' },
+    { label: 'Ambiente ideal para descansar' }
+  ]
+};
+let currentCarouselIndex = 0;
+
+function renderRoomCarousel(roomName) {
+  const track = document.getElementById('room-detail-carousel-track');
+  const dots = document.getElementById('room-detail-carousel-dots');
+  const images = roomCarouselImages[roomName] || roomCarouselImages.default;
+  currentCarouselIndex = 0;
+  track.innerHTML = '';
+  dots.innerHTML = '';
+
+  images.forEach((item, index) => {
+    const slide = document.createElement('div');
+    slide.className = 'room-detail-carousel-slide';
+    slide.dataset.label = item.label;
+    slide.innerHTML = `<span style="font-size:2rem;line-height:1.1;letter-spacing:.02em;">${item.label.split(' ')[0] || 'Quarto'}</span>`;
+    track.appendChild(slide);
+
+    const dot = document.createElement('button');
+    dot.className = 'room-detail-carousel-dot';
+    dot.type = 'button';
+    dot.onclick = () => {
+      currentCarouselIndex = index;
+      updateCarouselPosition();
+    };
+    dots.appendChild(dot);
+  });
+
+  updateCarouselPosition();
+}
+
+function updateCarouselPosition() {
+  const track = document.getElementById('room-detail-carousel-track');
+  const dots = Array.from(document.querySelectorAll('.room-detail-carousel-dot'));
+  if (!track) return;
+  track.style.transform = `translateX(calc(-${currentCarouselIndex * 100}%))`;
+  dots.forEach((dot, index) => dot.classList.toggle('active', index === currentCarouselIndex));
+}
+
+function moveRoomCarousel(delta) {
+  const images = roomCarouselImages[document.getElementById('room-detail-title').textContent.trim()] || roomCarouselImages.default;
+  currentCarouselIndex = (currentCarouselIndex + delta + images.length) % images.length;
+  updateCarouselPosition();
+}
+
 function openRoomDetails(card) {
   const title = card.querySelector('.room-name')?.textContent?.trim() || '';
   const desc = card.querySelector('.room-desc')?.textContent?.trim() || '';
   const price = card.querySelector('.room-price')?.firstChild?.textContent?.trim() || '';
-  const visual = card.querySelector('.room-visual');
   const amenities = Array.from(card.querySelectorAll('.room-amenities .amenity')).map(el => el.textContent.trim());
-  const themeClass = Array.from(visual?.classList || []).find(cls => ['suite','deluxe','superior','twin'].includes(cls)) || 'suite';
-  const icon = visual?.firstChild?.textContent?.trim() || '🏡';
 
   document.getElementById('room-detail-title').textContent = title;
   document.getElementById('room-detail-price').textContent = `${price} / noite`;
   document.getElementById('room-detail-desc').textContent = desc;
-  document.getElementById('room-detail-visual').className = `room-detail-visual ${themeClass}`;
-  document.getElementById('room-detail-visual').textContent = icon;
+  renderRoomCarousel(title);
 
   const amenitiesWrap = document.getElementById('room-detail-amenities');
   amenitiesWrap.innerHTML = '';
