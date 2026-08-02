@@ -9,17 +9,22 @@ datasource db {
 }
 
 model Room {
-  id          String    @id @default(uuid())
-  name        String    @unique
-  type        String
-  description String
-  pricePerNight Float
-  capacity    Int
-  amenities   String[]
-  images      String[]
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id             String   @id @default(uuid())
+  name           String   @unique
+  type           String
+  description    String
+  pricePerNight  Float
+  capacity       Int
+  sizeSqm        Float?
+  bedrooms       Int?
+  beds           Int?
+  amenities      String[]
+  images         String[]
+  bookingIcalUrl String?
+  airbnbIcalUrl  String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   reservations Reservation[]
   blockedDates BlockedDate[]
@@ -47,27 +52,35 @@ model Reservation {
   specialRequests String?
   stripePaymentId String?
   paidAt          DateTime?
-  notes           String?           // notas internas do dono
+  notes           String? // notas internas do dono
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
-  room    Room   @relation(fields: [roomId], references: [id])
-  roomId  String
+  room   Room   @relation(fields: [roomId], references: [id])
+  roomId String
 
   guest   Guest  @relation(fields: [guestId], references: [id])
   guestId String
 }
 
 model BlockedDate {
-  id        String   @id @default(uuid())
-  date      DateTime
-  reason    String?
-  createdAt DateTime @default(now())
+  id          String            @id @default(uuid())
+  date        DateTime
+  reason      String?
+  source      BlockedDateSource @default(MANUAL)
+  externalUid String?
+  createdAt   DateTime          @default(now())
 
   room   Room   @relation(fields: [roomId], references: [id])
   roomId String
 
   @@unique([roomId, date])
+}
+
+enum BlockedDateSource {
+  MANUAL
+  BOOKING_COM
+  AIRBNB
 }
 
 model Admin {
@@ -81,6 +94,7 @@ model Admin {
 enum ReservationStatus {
   PENDING
   CONFIRMED
+  DECLINED
   CANCELLED
   COMPLETED
   PAID

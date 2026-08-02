@@ -22,61 +22,35 @@ async function main() {
   });
   console.log(`✓ Admin criado: ${admin.email}`);
 
-  // Quartos
+  // Unidades
   const rooms = [
     {
-      name: 'Suite Panorâmica',
-      type: 'Suite',
-      description: 'Vista deslumbrante sobre a serra, cama king-size e banheira de hidromassagem privativa.',
-      pricePerNight: 185,
-      capacity: 2,
-      amenities: ['King-size', 'Vista serra', 'Jacuzzi', 'AC', 'Varanda', 'Wi-Fi', 'TV'],
-      images: [],
-    },
-    {
-      name: 'Quarto Deluxe',
-      type: 'Deluxe',
-      description: 'Espaçoso e acolhedor, com decoração em madeira natural e casa de banho em pedra.',
-      pricePerNight: 120,
-      capacity: 2,
-      amenities: ['Queen-size', 'Casa banho privada', 'AC', 'Wi-Fi', 'TV'],
-      images: [],
-    },
-    {
-      name: 'Quarto Superior',
-      type: 'Superior',
-      description: 'Vistas para o jardim e floresta, com cama de casal e ambiente sereno.',
-      pricePerNight: 95,
-      capacity: 2,
-      amenities: ['Casal', 'Vista jardim', 'AC', 'Wi-Fi'],
-      images: [],
-    },
-    {
-      name: 'Quarto Twin',
-      type: 'Twin',
-      description: 'Duas camas individuais, ideal para amigos ou famílias.',
-      pricePerNight: 85,
-      capacity: 2,
-      amenities: ['2 camas', 'AC', 'Wi-Fi', 'TV'],
-      images: [],
-    },
-    {
-      name: 'Quarto Lareira',
-      type: 'Especial',
-      description: 'Lareira a lenha para noites frias de inverno, cama king e ambiente íntimo.',
-      pricePerNight: 145,
-      capacity: 2,
-      amenities: ['King-size', 'Lareira', 'AC', 'Vista'],
-      images: [],
-    },
-    {
-      name: 'Suite Familiar',
-      type: 'Suite',
-      description: 'Dois quartos comunicantes, perfeita para famílias. Sala de estar privativa.',
-      pricePerNight: 220,
+      name: 'T2 Serra',
+      type: 'T2',
+      description: 'Apartamento T2 com sala ampla, cozinha equipada, varanda e vista para a serra.',
+      pricePerNight: 160,
       capacity: 4,
-      amenities: ['2 quartos', 'Sala estar', 'Cozinha', 'AC', 'Wi-Fi'],
+      sizeSqm: 90,
+      bedrooms: 2,
+      beds: 3,
+      amenities: ['Cozinha', 'Wi-Fi', 'TV', 'Aquecimento', 'Varanda', 'Roupa de cama'],
       images: [],
+      bookingIcalUrl: null,
+      airbnbIcalUrl: null,
+    },
+    {
+      name: 'T3 Bosque',
+      type: 'T3',
+      description: 'Espaçosa unidade T3 com jardim privado, sala de estar com lareira e três quartos confortáveis.',
+      pricePerNight: 220,
+      capacity: 6,
+      sizeSqm: 120,
+      bedrooms: 3,
+      beds: 4,
+      amenities: ['Lareira', 'Cozinha', 'Wi-Fi', 'TV', 'Jardim privado', 'Roupa de cama'],
+      images: [],
+      bookingIcalUrl: null,
+      airbnbIcalUrl: null,
     },
   ];
 
@@ -86,7 +60,7 @@ async function main() {
       update: {},
       create: room,
     });
-    console.log(`✓ Quarto criado: ${created.name} (€${created.pricePerNight}/noite)`);
+    console.log(`✓ Unidade criada: ${created.name} (€${created.pricePerNight}/noite)`);
   }
 
   console.log('\n✅ Base de dados populada com sucesso!');
