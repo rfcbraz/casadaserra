@@ -9,7 +9,9 @@ const reservationRoutes = require('./routes/reservations');
 const roomRoutes = require('./routes/rooms');
 const adminRoutes = require('./routes/admin');
 const availabilityRoutes = require('./routes/availability');
+const icalRoutes = require('./routes/ical');
 const webhookRoutes = require('./routes/webhooks');
+const { syncExternalCalendars } = require('./services/ical');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -46,6 +48,23 @@ app.use('/api/rooms', roomRoutes);
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/availability', availabilityRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/ical', icalRoutes);
+
+// Sincronização iCal de unidades importadas
+(async () => {
+  try {
+    await syncExternalCalendars();
+  } catch (err) {
+    console.error('Erro na sincronização inicial iCal:', err);
+  }
+  setInterval(async () => {
+    try {
+      await syncExternalCalendars();
+    } catch (err) {
+      console.error('Erro na sincronização periódica iCal:', err);
+    }
+  }, 60 * 60 * 1000);
+})();
 
 // Health check
 app.get('/health', (req, res) => {

@@ -23,7 +23,7 @@ router.get('/', async (req, res, next) => {
     // Quartos com reservas que se sobrepõem ao período pedido
     const bookedRoomIds = await prisma.reservation.findMany({
       where: {
-        status: { in: ['PENDING', 'CONFIRMED', 'PAID'] },
+        status: { in: ['CONFIRMED', 'PAID'] },
         AND: [
           { checkIn: { lt: coDate } },
           { checkOut: { gt: ciDate } },
@@ -81,7 +81,7 @@ router.get('/room/:roomId', async (req, res, next) => {
     const reservations = await prisma.reservation.findMany({
       where: {
         roomId,
-        status: { in: ['PENDING', 'CONFIRMED', 'PAID'] },
+        status: { in: ['CONFIRMED', 'PAID'] },
         AND: [
           { checkIn: { lt: endOfMonth } },
           { checkOut: { gt: startOfMonth } },
