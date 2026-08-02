@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node start.js",
+    "build": "echo 'No build needed for static site'",
     "postinstall": "npx prisma generate",
     "db:check": "node scripts/check-db.js",
     "db:setup": "npm run db:check && npx prisma migrate deploy && node src/seed.js",
