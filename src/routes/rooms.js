@@ -53,15 +53,40 @@ router.patch('/:id', requireAuth, async (req, res, next) => {
     // Coerce numeric fields when present
     if (data.pricePerNight !== undefined) {
       if (data.pricePerNight === '') data.pricePerNight = null;
-      else data.pricePerNight = parseFloat(data.pricePerNight);
+      else {
+        data.pricePerNight = parseFloat(data.pricePerNight);
+        if (Number.isNaN(data.pricePerNight)) {
+          return res.status(400).json({ error: 'pricePerNight precisa ser um número válido.' });
+        }
+      }
     }
     if (data.capacity !== undefined) {
       if (data.capacity === '') data.capacity = null;
-      else data.capacity = parseInt(data.capacity, 10);
+      else {
+        data.capacity = parseInt(data.capacity, 10);
+        if (Number.isNaN(data.capacity)) {
+          return res.status(400).json({ error: 'capacity precisa ser um número válido.' });
+        }
+      }
     }
-    if (data.sizeSqm !== undefined) data.sizeSqm = parseFloat(data.sizeSqm);
-    if (data.bedrooms !== undefined) data.bedrooms = parseInt(data.bedrooms, 10);
-    if (data.beds !== undefined) data.beds = parseInt(data.beds, 10);
+    if (data.sizeSqm !== undefined) {
+      data.sizeSqm = parseFloat(data.sizeSqm);
+      if (Number.isNaN(data.sizeSqm)) {
+        return res.status(400).json({ error: 'sizeSqm precisa ser um número válido.' });
+      }
+    }
+    if (data.bedrooms !== undefined) {
+      data.bedrooms = parseInt(data.bedrooms, 10);
+      if (Number.isNaN(data.bedrooms)) {
+        return res.status(400).json({ error: 'bedrooms precisa ser um número válido.' });
+      }
+    }
+    if (data.beds !== undefined) {
+      data.beds = parseInt(data.beds, 10);
+      if (Number.isNaN(data.beds)) {
+        return res.status(400).json({ error: 'beds precisa ser um número válido.' });
+      }
+    }
 
     // Normalize arrays (allow comma-separated strings from form submissions)
     if (data.amenities !== undefined && !Array.isArray(data.amenities)) {
@@ -69,6 +94,10 @@ router.patch('/:id', requireAuth, async (req, res, next) => {
     }
     if (data.images !== undefined && !Array.isArray(data.images)) {
       data.images = String(data.images).split(',').map(s => s.trim()).filter(Boolean);
+    }
+
+    if (Object.keys(data).length === 0) {
+      return res.status(400).json({ error: 'Nenhum campo válido enviado para atualizar.' });
     }
 
     // If updating the name, ensure it does not collide with another room
