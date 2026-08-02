@@ -52,7 +52,7 @@ router.get('/stats', requireAuth, async (req, res, next) => {
       totalRooms,
       upcomingCheckIns,
     ] = await Promise.all([
-      prisma.reservation.count({ where: { status: { not: 'CANCELLED' } } }),
+      prisma.reservation.count({ where: { status: { not: ['CANCELLED', 'DECLINED'] } } }),
       prisma.reservation.count({ where: { status: 'PENDING' } }),
       prisma.reservation.aggregate({
         where: { status: { in: ['CONFIRMED', 'PAID'] }, createdAt: { gte: startOfMonth } },

@@ -85,8 +85,9 @@ async function sendReservationStatusUpdate(reservation, newStatus) {
   const { guest, room } = reservation;
   const statusMessages = {
     CONFIRMED: { label: 'Confirmada ✓', msg: 'A sua reserva foi confirmada! Estamos ansiosos por recebê-lo/a.' },
-    CANCELLED: { label: 'Cancelada', msg: 'A sua reserva foi cancelada. Lamentamos qualquer inconveniente.' },
-    PAID:      { label: 'Paga ✓',       msg: 'O pagamento foi processado com sucesso. Tudo pronto!' },
+    DECLINED:  { label: 'Recusada',      msg: 'Lamentamos informar que não foi possível confirmar a sua reserva para as datas solicitadas.' },
+    CANCELLED: { label: 'Cancelada',     msg: 'A sua reserva foi cancelada. Lamentamos qualquer inconveniente.' },
+    PAID:      { label: 'Paga ✓',        msg: 'O pagamento foi processado com sucesso. Tudo pronto!' },
   };
   const info = statusMessages[newStatus] || { label: newStatus, msg: '' };
 

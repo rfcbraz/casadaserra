@@ -79,12 +79,13 @@ O servidor arranca em `http://localhost:3001`.
 | Método | Rota | Descrição |
 |--------|------|-----------|
 | GET | `/health` | Health check |
-| GET | `/api/rooms` | Lista todos os quartos |
-| GET | `/api/rooms/:id` | Detalhes de um quarto |
-| GET | `/api/availability?checkIn=&checkOut=` | Quartos disponíveis |
-| GET | `/api/availability/room/:id?year=&month=` | Datas ocupadas de um quarto |
-| POST | `/api/reservations` | Criar reserva |
+| GET | `/api/rooms` | Lista todas as unidades |
+| GET | `/api/rooms/:id` | Detalhes de uma unidade |
+| GET | `/api/availability?checkIn=&checkOut=` | Unidades disponíveis |
+| GET | `/api/availability/room/:id?year=&month=` | Datas ocupadas de uma unidade |
+| POST | `/api/reservations` | Criar pedido de reserva (ficará pendente até validação admin) |
 | GET | `/api/reservations/:id` | Consultar reserva |
+| GET | `/ical/:roomId.ics` | Exportar calendário iCal da unidade |
 
 ### Admin (requer token JWT)
 
@@ -101,6 +102,7 @@ O servidor arranca em `http://localhost:3001`.
 | DELETE | `/api/rooms/:id` | Desativar quarto |
 | POST | `/api/availability/block` | Bloquear datas |
 | DELETE | `/api/availability/block` | Desbloquear datas |
+| GET | `/ical/:roomId.ics` | Exportar calendário iCal da unidade |
 
 ### Exemplo — Criar reserva
 ```bash
@@ -167,5 +169,5 @@ railway run npm run db:seed
 
 - [ ] Integração Stripe (pagamentos)
 - [ ] Painel admin completo no frontend
-- [ ] Sincronização com iCal (Airbnb/Booking)
+- [x] Sincronização com iCal (Airbnb/Booking)
 - [ ] Multi-idioma nos emails
