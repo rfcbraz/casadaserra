@@ -115,8 +115,7 @@ curl -X POST http://localhost:3001/api/reservations \
     "roomId": "uuid-do-quarto",
     "checkIn": "2026-06-01",
     "checkOut": "2026-06-04",
-    "guests": 2,
-    "breakfast": true
+    "guests": 2
   }'
 ```
 

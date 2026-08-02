@@ -8,11 +8,15 @@ const router = express.Router();
 // POST /api/reservations — criar reserva (público)
 router.post('/', async (req, res, next) => {
   try {
-    const { name, email, phone, roomId, checkIn, checkOut, guests, breakfast, specialRequests } = req.body;
+    const { name, email, phone, roomId, checkIn, checkOut, guests, specialRequests } = req.body;
 
     // Validação básica
     if (!name || !email || !roomId || !checkIn || !checkOut || !guests) {
       return res.status(400).json({ error: 'Campos obrigatórios em falta.' });
+    }
+    const guestCount = Number(guests);
+    if (!Number.isInteger(guestCount) || guestCount < 1) {
+      return res.status(400).json({ error: 'Número de hóspedes inválido.' });
     }
 
     const ciDate = new Date(checkIn);
@@ -20,6 +24,10 @@ router.post('/', async (req, res, next) => {
 
     if (isNaN(ciDate) || isNaN(coDate) || ciDate >= coDate) {
       return res.status(400).json({ error: 'Datas inválidas.' });
+    }
+    const nights = Math.round((coDate - ciDate) / (1000 * 60 * 60 * 24));
+    if (nights < 2) {
+      return res.status(400).json({ error: 'A estadia mínima é de 2 noites.' });
     }
 
     // Permite check-in hoje — compara só a data, não a hora
@@ -33,6 +41,9 @@ router.post('/', async (req, res, next) => {
     const room = await prisma.room.findUnique({ where: { id: roomId } });
     if (!room || !room.isActive) {
       return res.status(404).json({ error: 'Quarto não encontrado.' });
+    }
+    if (guestCount > room.capacity) {
+      return res.status(400).json({ error: `Esta unidade permite até ${room.capacity} hóspedes.` });
     }
 
     // Verificar disponibilidade
@@ -63,9 +74,7 @@ router.post('/', async (req, res, next) => {
       return res.status(409).json({ error: 'O quarto está bloqueado para parte das datas selecionadas.' });
     }
 
-    const nights = Math.round((coDate - ciDate) / (1000 * 60 * 60 * 24));
-    const breakfastCost = (breakfast !== false) ? 10 * parseInt(guests) * nights : 0;
-    const totalPrice = (room.pricePerNight * nights) + breakfastCost;
+    const totalPrice = room.pricePerNight * nights;
 
     // Criar ou encontrar hóspede
     const guest = await prisma.guest.upsert({
@@ -80,9 +89,9 @@ router.post('/', async (req, res, next) => {
         checkIn: ciDate,
         checkOut: coDate,
         nights,
-        guests: parseInt(guests),
+        guests: guestCount,
         totalPrice,
-        breakfast: breakfast !== false,
+        breakfast: false,
         specialRequests: specialRequests || null,
         roomId,
         guestId: guest.id,

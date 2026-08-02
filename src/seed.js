@@ -29,7 +29,7 @@ async function main() {
       type: 'T2',
       description: 'Apartamento T2 com duas zonas de descanso, cozinha equipada, varanda e uma atmosfera acolhedora para escapadas e estadias familiares curtas.',
       pricePerNight: 160,
-      capacity: 4,
+      capacity: 6,
       sizeSqm: 90,
       bedrooms: 2,
       beds: 3,
@@ -43,7 +43,7 @@ async function main() {
       type: 'T3',
       description: 'Unidade T3 ampla e funcional, perfeita para famílias ou grupos, com área de praia privada, estacionamento gratuito e várias comodidades para uma estadia confortável.',
       pricePerNight: 220,
-      capacity: 6,
+      capacity: 9,
       sizeSqm: 120,
       bedrooms: 3,
       beds: 4,
@@ -57,7 +57,7 @@ async function main() {
   for (const room of rooms) {
     const created = await prisma.room.upsert({
       where: { name: room.name },
-      update: {},
+      update: { capacity: room.capacity },
       create: room,
     });
     console.log(`✓ Unidade criada: ${created.name} (€${created.pricePerNight}/noite)`);

@@ -15,7 +15,7 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);min
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--warm)}::-webkit-scrollbar-thumb{background:var(--stone)}
 
 nav{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 3rem;position:fixed;top:0;left:0;right:0;z-index:200;transition:all .4s}
-nav.scrolled{background:rgba(245,240,232,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--warm);box-shadow:0 2px 20px rgba(42,33,24,.06)}
+nav.scrolled{background:var(--cream);backdrop-filter:blur(12px);border-bottom:1px solid var(--warm);box-shadow:0 2px 20px rgba(42,33,24,.06)}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;letter-spacing:.04em;color:var(--white);transition:color .3s;text-decoration:none}
 nav.scrolled .nav-logo{color:var(--dark)}
 .nav-links{display:flex;gap:2rem;list-style:none}
@@ -24,8 +24,17 @@ nav.scrolled .nav-links a{color:var(--muted)}
 .nav-links a:hover{color:var(--accent)}
 .nav-cta{background:var(--accent);color:#fff;border:none;padding:.6rem 1.6rem;border-radius:2px;font-family:'Jost',sans-serif;font-size:.8rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s}
 .nav-cta:hover{background:var(--dark)}
+.nav-toggle{display:none;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid rgba(255,255,255,.35);border-radius:2px;background:transparent;color:#fff;cursor:pointer}
+nav.scrolled .nav-toggle{border-color:rgba(42,33,24,.2);color:var(--dark)}
+.nav-toggle span,.nav-toggle span::before,.nav-toggle span::after{display:block;position:relative;width:18px;height:2px;background:currentColor;border-radius:2px;transition:all .25s ease}
+.nav-toggle span::before,.nav-toggle span::after{content:'';position:absolute;left:0}
+.nav-toggle span::before{top:-6px}
+.nav-toggle span::after{top:6px}
+.nav-toggle.is-open span{background:transparent}
+.nav-toggle.is-open span::before{top:0;transform:rotate(45deg)}
+.nav-toggle.is-open span::after{top:0;transform:rotate(-45deg)}
 
-.hero{height:100vh;position:relative;display:flex;align-items:center;overflow:hidden}
+.hero{height:auto;min-height:100vh;padding:6rem 0 4rem;position:relative;display:flex;align-items:center;overflow:hidden}
 .hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#2a2118 0%,#3d3020 40%,#5a4535 70%,#8b6940 100%);z-index:0}
 .hero-pattern{position:absolute;inset:0;opacity:.06;background-image:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%);background-size:30px 30px;z-index:1}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(42,33,24,.7) 0%,rgba(42,33,24,.2) 60%,transparent 100%);z-index:2}
@@ -62,10 +71,12 @@ h2 em{font-style:italic;color:var(--accent)}
 
 .rooms-section{padding:6rem 0;background:var(--white)}
 .rooms-section > div{max-width:1200px;margin:0 auto;padding:0 3rem}
-.rooms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.rooms-section .section-eyebrow,.rooms-section h2{text-align:center;justify-content:center}
+.rooms-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem;margin:3rem auto 0;max-width:1000px}
 .room-card{background:var(--cream);border:1px solid var(--warm);border-radius:var(--radius);overflow:hidden;transition:transform .3s,box-shadow .3s;cursor:pointer}
 .room-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(42,33,24,.12)}
-.room-visual{height:220px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;overflow:hidden}
+.room-visual{aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;overflow:hidden}
+.room-visual-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#211d19}
 .room-visual.deluxe{background:linear-gradient(135deg,#3d3020,#6b4f35)}
 .room-visual.superior{background:linear-gradient(135deg,#2a3d30,#4f6b55)}
 .room-visual.suite{background:linear-gradient(135deg,#3d2a20,#8b5a35)}
@@ -79,7 +90,7 @@ h2 em{font-style:italic;color:var(--accent)}
 .room-footer{display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--warm)}
 .room-price{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--accent)}
 .room-price span{font-family:'Jost',sans-serif;font-size:.7rem;color:var(--muted)}
-.rooms-intro{color:var(--muted);line-height:1.8;max-width:720px;margin-top:1rem;font-size:.95rem}
+.rooms-intro{color:var(--muted);line-height:1.8;max-width:720px;margin:1rem auto 0;text-align:center;font-size:.95rem}
 .room-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem}
 .room-stat{background:var(--white);border:1px solid var(--warm);border-radius:2px;padding:.65rem .5rem;text-align:center}
 .room-stat span{display:block;font-weight:600;color:var(--dark);font-size:.95rem}
@@ -155,14 +166,21 @@ h2 em{font-style:italic;color:var(--accent)}
 .modal-close-btn:hover{color:var(--dark)}
 .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:.3rem}
 .modal-sub{font-size:.82rem;color:var(--muted);margin-bottom:2rem}
-.room-detail-content{max-width:650px;padding:2rem 2rem 2.2rem}
-.room-detail-carousel{position:relative;overflow:hidden;border-radius:var(--radius);margin-bottom:1.25rem;min-height:220px}
-.room-detail-carousel-track{display:flex;transition:transform .35s ease}
-.room-detail-carousel-slide{min-width:100%;display:flex;align-items:flex-end;justify-content:flex-start;padding:1.5rem;position:relative;min-height:220px;color:#fff;box-shadow:inset 0 -40px 60px rgba(0,0,0,.15)}
-.room-detail-carousel-slide::after{content:attr(data-label);position:absolute;left:1.5rem;bottom:1.5rem;font-size:.95rem;font-weight:600;color:#fff;text-shadow:0 10px 20px rgba(0,0,0,.35)}
-.room-detail-carousel-slide:nth-child(1){background:linear-gradient(135deg,#3d2a20,#8b5e2f)}
-.room-detail-carousel-slide:nth-child(2){background:linear-gradient(135deg,#5f472a,#c79955)}
-.room-detail-carousel-slide:nth-child(3){background:linear-gradient(135deg,#3f3d34,#9d7f57)}
+.room-detail-content{width:min(94vw,1000px);max-width:1000px;padding:2rem 2rem 2.2rem}
+.room-detail-carousel{position:relative;overflow:hidden;border-radius:var(--radius);margin:0 auto 1.25rem;width:min(100%,75vh);aspect-ratio:4/3;min-height:300px}
+.room-detail-carousel-track{display:flex;height:100%;transition:transform .35s ease}
+.room-detail-carousel-slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:flex-start;padding:1.5rem 4rem;min-height:300px;position:relative;color:#fff;box-shadow:inset 0 -40px 60px rgba(0,0,0,.15)}
+.room-detail-carousel-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#211d19}
+.room-detail-carousel-slide.has-image::after{content:"";position:absolute;inset:70% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.38));pointer-events:none}
+.room-detail-carousel-slide:nth-child(3n+1){background:linear-gradient(135deg,#3d2a20,#8b5e2f)}
+.room-detail-carousel-slide:nth-child(3n+2){background:linear-gradient(135deg,#5f472a,#c79955)}
+.room-detail-carousel-slide:nth-child(3n){background:linear-gradient(135deg,#3f3d34,#9d7f57)}
+.room-detail-carousel-copy{max-width:100%;position:relative;z-index:1}
+.room-detail-carousel-slide.has-image .room-detail-carousel-copy{position:absolute;left:50%;bottom:.75rem;transform:translateX(-50%);width:fit-content;max-width:calc(100% - 2rem);padding:.45rem .7rem;border-radius:4px;background:rgba(0,0,0,.48)}
+.room-detail-carousel-slide.has-image .room-detail-carousel-copy h4{margin:0}
+.room-detail-carousel-slide.has-image .room-detail-carousel-copy p{display:none}
+.room-detail-carousel-copy h4{margin:0 0 .65rem;font-size:1.05rem;font-weight:600;color:#fff}
+.room-detail-carousel-copy p{margin:0;font-size:.82rem;line-height:1.55;color:rgba(255,255,255,.92);white-space:pre-line}
 .room-detail-carousel-control{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.9);color:var(--dark);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(0,0,0,.12)}
 .room-detail-carousel-control:hover{background:#fff}
 .room-detail-carousel-control.prev{left:1rem}
@@ -178,6 +196,7 @@ h2 em{font-style:italic;color:var(--accent)}
 .btn-secondary:hover{background:var(--cream);color:var(--dark)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .form-field{display:flex;flex-direction:column;gap:.4rem}
+.form-hint{margin:0;color:var(--muted);font-size:.72rem;line-height:1.5}
 .form-field.full{grid-column:1/-1}
 .form-field label{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--earth)}
 .form-field input,.form-field select,.form-field textarea{background:var(--cream);border:1px solid var(--warm);border-radius:2px;padding:.75rem 1rem;font-family:'Jost',sans-serif;font-size:.9rem;color:var(--dark);outline:none;transition:border-color .2s;width:100%}
@@ -266,7 +285,15 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 }
 
 @media (max-width:768px) {
-  .nav-links{display:none}
+  nav{padding:1rem 1rem}
+  .nav-links{position:absolute;top:100%;left:0;right:0;display:none;flex-direction:column;gap:0;padding:0 1rem 1rem;background:rgba(42,33,24,.96);border-top:1px solid rgba(255,255,255,.08);box-shadow:0 20px 40px rgba(0,0,0,.14)}
+  nav.scrolled .nav-links{background:rgba(245,240,232,.98)}
+  .nav-links.open{display:flex}
+  .nav-links li{border-bottom:1px solid rgba(255,255,255,.08)}
+  nav.scrolled .nav-links li{border-color:rgba(42,33,24,.08)}
+  .nav-links a{display:block;padding:1rem 0;color:rgba(255,255,255,.85)}
+  nav.scrolled .nav-links a{color:var(--dark)}
+  .nav-toggle{display:flex}
   .nav-cta{font-size:.75rem;padding:.6rem 1.2rem}
   .hero{height:auto;padding:5rem 0 3rem}
   .hero-content{max-width:100%;padding:0 1rem}
@@ -290,7 +317,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .avail-room .avail-price{text-align:left}
   .avail-price{font-size:1.05rem}
   .modal-content{width:min(95%,560px);padding:2rem}
-  .room-detail-content{padding:1.5rem 1.5rem 1.8rem}
+  .room-detail-content{width:min(95%,900px);padding:1.5rem 1.5rem 1.8rem}
   .room-detail-carousel-control{width:34px;height:34px}
   .form-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr;gap:1.5rem}
@@ -302,7 +329,11 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .booking-bar{padding:1rem}
   .booking-field{padding:.9rem}
   .btn-hero,.btn-hero-outline{width:100%;text-align:center}
-  .room-detail-carousel-slide::after{left:1rem;right:1rem;bottom:1rem;font-size:.9rem}
+  .room-detail-carousel{aspect-ratio:4/3;min-height:240px}
+  .room-detail-carousel-slide{padding:1.25rem 3.25rem;min-height:240px}
+  .room-detail-carousel-slide.has-image .room-detail-carousel-copy{max-width:100%;padding:.65rem .75rem}
+  .room-detail-carousel-copy h4{font-size:.98rem}
+  .room-detail-carousel-copy p{font-size:.76rem}
   .room-detail-carousel-control.prev{left:.75rem}
   .room-detail-carousel-control.next{right:.75rem}
   .footer-bottom{flex-direction:column;align-items:flex-start;gap:.75rem}
@@ -312,9 +343,12 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 <body>
 
 <nav id="main-nav">
-  <a href="#" class="nav-logo">Casa da Serra</a>
-  <ul class="nav-links">
-    <li><a href="#rooms">Quartos</a></li>
+  <a href="#" class="nav-logo">Casa do Ferreiro</a>
+  <button class="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" onclick="toggleMobileMenu()">
+    <span></span>
+  </button>
+  <ul class="nav-links" id="main-nav-links">
+    <li><a href="#rooms">Acomodações</a></li>
     <li><a href="#about">Sobre nós</a></li>
     <li><a href="#availability">Disponibilidade</a></li>
     <li><a href="#contact">Contacto</a></li>
@@ -327,9 +361,9 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   <div class="hero-pattern"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <div class="hero-eyebrow">Guest House · Serra da Estrela</div>
-    <h1>Um refúgio <em>entre</em><br>montanha e silêncio</h1>
-    <p class="hero-sub">Quartos únicos, pequeno-almoço caseiro e a natureza à porta. Uma experiência de alojamento genuinamente portuguesa.</p>
+    <div class="hero-eyebrow">Turismo Rural · Barroso</div>
+    <h1>Refúgio de <em>tranquilidade</em><br>entre a albufeira e o Gerês</h1>
+    <p class="hero-sub">A Casa do Ferreiro combina a tradição da região de Barroso com conforto contemporâneo, na proximidade da Albufeira de Venda Nova e da Serra do Gerês.</p>
     <div class="hero-actions">
       <button class="btn-hero" onclick="openBooking()">Reservar agora</button>
       <button class="btn-hero-outline" onclick="document.getElementById('rooms').scrollIntoView({behavior:'smooth'})">Ver quartos</button>
@@ -366,10 +400,15 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   <div class="booking-field">
     <div class="booking-field-label">Hóspedes</div>
     <select id="bar-guests">
-      <option>1 hóspede</option>
-      <option selected>2 hóspedes</option>
-      <option>3 hóspedes</option>
-      <option>4 hóspedes</option>
+      <option value="1">1 hóspede</option>
+      <option value="2" selected>2 hóspedes</option>
+      <option value="3">3 hóspedes</option>
+      <option value="4">4 hóspedes</option>
+      <option value="5">5 hóspedes</option>
+      <option value="6">6 hóspedes</option>
+      <option value="7">7 hóspedes</option>
+      <option value="8">8 hóspedes</option>
+      <option value="9">9 hóspedes</option>
     </select>
   </div>
   <button class="booking-submit" onclick="openBookingFromBar()">Verificar Disponibilidade</button>
@@ -377,9 +416,9 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 
 <div id="rooms" class="rooms-section">
   <div>
-    <div class="section-eyebrow">As nossas unidades</div>
-    <h2>Unidades <em>T2 & T3</em></h2>
-    <p class="rooms-intro">Escolha entre duas unidades independentes, com o seu próprio calendário, preços e disponibilidade. Cada uma oferece um espaço único para descansar, trabalhar ou reunir a família.</p>
+    <div class="section-eyebrow">As nossas acomodações</div>
+    <h2>Acomodações <em>T2 & T3</em></h2>
+    <p class="rooms-intro">A Casa do Ferreiro oferece espaços acolhedores, modernos e funcionais, ideais para famílias, casais ou pequenos grupos que querem viver a tranquilidade da região com conforto total.</p>
     <div class="rooms-grid" id="rooms-grid"></div>
   </div>
 </div>
@@ -391,14 +430,14 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     <div class="about-image">🏡</div>
     <div class="about-text">
       <div class="section-eyebrow">A nossa história</div>
-      <h2>Uma casa com <em>alma</em></h2>
-      <p>A Casa da Serra nasceu do sonho de criar um refúgio autêntico, onde os hóspedes possam desligar do ritmo acelerado da cidade e reconectar com a natureza e consigo próprios.</p>
-      <p>Cada unidade foi decorada com peças únicas, materiais naturais e uma atenção especial ao conforto. O pequeno-almoço é preparado diariamente com produtos locais e caseiros.</p>
+      <h2>Um refúgio de <em>tranquilidade</em></h2>
+      <p>A Casa do Ferreiro é um alojamento acolhedor e moderno que combina a tradição da região de Barroso com o conforto contemporâneo. Localizada numa posição privilegiada junto à albufeira da Venda Nova, oferece vistas deslumbrantes sobre a água e as montanhas.</p>
+      <p>Com aproximadamente 115 m², a casa foi pensada para proporcionar momentos de descanso, natureza e convivência, sendo o ponto de partida ideal para explorar a Serra do Gerês, praticar desporto ao ar livre ou simplesmente relaxar ao sol e à vista da paisagem.</p>
       <div class="about-features">
-        <div class="about-feature"><div class="about-feature-icon">☕</div><div class="about-feature-text"><span class="about-feature-title">Pequeno-almoço incluído</span>Produtos locais e receitas tradicionais</div></div>
-        <div class="about-feature"><div class="about-feature-icon">🌲</div><div class="about-feature-text"><span class="about-feature-title">Natureza à porta</span>Trilhos e paisagens únicas</div></div>
-        <div class="about-feature"><div class="about-feature-icon">🤝</div><div class="about-feature-text"><span class="about-feature-title">Atendimento personalizado</span>Sempre disponíveis para ajudar</div></div>
-        <div class="about-feature"><div class="about-feature-icon">🔒</div><div class="about-feature-text"><span class="about-feature-title">Reserva direta</span>Sem comissões, melhor preço garantido</div></div>
+        <div class="about-feature"><div class="about-feature-icon">🏡</div><div class="about-feature-text"><span class="about-feature-title">Alojamento acolhedor</span>Espaço moderno, funcional e envolvente</div></div>
+        <div class="about-feature"><div class="about-feature-icon">🌊</div><div class="about-feature-text"><span class="about-feature-title">Vista para a albufeira</span>Deslumbrante sobre a água e a montanha</div></div>
+        <div class="about-feature"><div class="about-feature-icon">🍽️</div><div class="about-feature-text"><span class="about-feature-title">Cozinha integrada</span>Placa, forno, micro-ondas, frigorífico e muito mais</div></div>
+        <div class="about-feature"><div class="about-feature-icon">🌿</div><div class="about-feature-text"><span class="about-feature-title">Natureza envolvente</span>Ideial para caminhadas, piqueniques e desporto ao ar livre</div></div>
       </div>
     </div>
   </div>
@@ -407,24 +446,30 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 <section class="info-section">
   <div class="info-grid">
     <div class="info-card">
-      <h3>Check-in</h3>
-      <p>Das 16:00 às 18:00</p>
-      <p>Terá de informar a sua hora de chegada com antecedência ao alojamento.</p>
+      <h3>Ficha técnica do alojamento</h3>
+      <p><strong>Casa do Ferreiro T2:</strong> 115 m² · Até 6 hóspedes · Licença AL: <strong>167437/AL</strong>.</p>
+      <p><strong>Casa do Ferreiro T3:</strong> 125 m² · Até 9 hóspedes · Classificação: <strong>9,6/10</strong> · Localização: <strong>10/10</strong>.</p>
+      <p>Anfitrião: <strong>Sr. André</strong> · Português, Inglês e Espanhol.</p>
     </div>
     <div class="info-card">
-      <h3>Check-out</h3>
-      <p>Das 08:00 às 11:00</p>
+      <h3>Localização & endereço</h3>
+      <p>R. Ferreiro 3, 5470-504 Venda Nova, Montalegre, Portugal.</p>
+      <p>Situado em frente à praia/albufeira, com vistas sobre o lago, montanhas e jardim, num ambiente de paz, sossego e natureza envolvente.</p>
     </div>
     <div class="info-card">
-      <h3>Cancelamento / pré-pagamento</h3>
-      <p>As condições variam conforme a unidade e a data selecionada.</p>
-      <p>Consulte as condições aplicáveis antes de confirmar a reserva.</p>
+      <h3>Conforto e comodidade</h3>
+      <p>Estacionamento privado gratuito, Wi‑Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, além de acesso a jardim e área de praia privada.</p>
+      <p>Cozinha totalmente equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.</p>
     </div>
     <div class="info-card">
-      <h3>Mais informações</h3>
+      <h3>Regras da propriedade</h3>
       <ul>
-        <li>Crianças são bem-vindas.</li>
-        <li>Não é permitido fumar nem realizar festas.</li>
+        <li>Check-in: das 15:00 às 18:00 (necessário informar a hora de chegada com antecedência).</li>
+        <li>Check-out: das 08:00 às 11:00.</li>
+        <li>Estadia mínima: 2 noites.</li>
+        <li>Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.</li>
+        <li>Não existem camas extra disponíveis.</li>
+        <li>Não é permitido fumar no interior nem realizar festas ou eventos.</li>
         <li>Animais de estimação não são admitidos.</li>
       </ul>
     </div>
@@ -465,15 +510,15 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   <div class="footer-inner">
     <div class="footer-grid">
       <div>
-        <div class="footer-brand">Casa da Serra</div>
-        <p class="footer-tagline">Um refúgio autêntico na Serra da Estrela. Quartos únicos, natureza e hospitalidade portuguesa genuína.</p>
+        <div class="footer-brand">Casa do Ferreiro</div>
+        <p class="footer-tagline">Refúgio de tranquilidade entre a Albufeira de Venda Nova e a Serra do Gerês, com conforto, vistas e natureza envolvente.</p>
       </div>
       <div class="footer-col"><h4>Alojamento</h4><ul><li><a href="#rooms">T2</a></li><li><a href="#rooms">T3</a></li></ul></div>
-      <div class="footer-col"><h4>Informações</h4><ul><li><a href="#">Check-in / Check-out</a></li><li><a href="#">Política de reservas</a></li><li><a href="#">FAQ</a></li><li><a href="#">Como chegar</a></li></ul></div>
-      <div class="footer-col"><h4>Contacto</h4><ul><li><a href="#">📞 +351 960 000 000</a></li><li><a href="#">✉ reservas@casadaserra.pt</a></li><li><a href="#">📍 Serra da Estrela, Portugal</a></li></ul></div>
+      <div class="footer-col"><h4>Informações</h4><ul><li><a href="#">Check-in flexível</a></li><li><a href="#">Alojamento Local</a></li><li><a href="#">Localização</a></li><li><a href="#">Políticas</a></li></ul></div>
+      <div class="footer-col"><h4>Contacto</h4><ul><li><a href="#">📍 Rua do Ferreiro nº 3, 5470-504 Venda Nova, Montalegre, Portugal</a></li><li><a href="#">✉ reservas@casadoferreiro.pt</a></li><li><a href="#">📞 +351 938 750 239</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">© 2026 Casa da Serra. Todos os direitos reservados.</div>
+      <div class="footer-copy">© 2026 Casa do Ferreiro. Todos os direitos reservados.</div>
       <button class="admin-link" onclick="openAdmin()">⚙ Painel de gestão</button>
     </div>
   </div>
@@ -523,9 +568,10 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       </div>
       <div class="form-field"><label>Check-in</label><input type="date" id="f-checkin"></div>
       <div class="form-field"><label>Check-out</label><input type="date" id="f-checkout"></div>
-      <div class="form-field"><label>Hóspedes</label><select id="f-guests"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
-      <div class="form-field"><label>Pequeno-almoço</label><select id="f-breakfast"><option value="1">Incluído</option><option value="0">Sem pequeno-almoço</option></select></div>
-      <div class="form-field full"><label>Pedidos especiais</label><textarea id="f-notes" placeholder="Alergias, preferências, ocasiões especiais..."></textarea></div>
+      <div class="form-field"><label for="f-arrival-time">Hora prevista de chegada</label><select id="f-arrival-time" required disabled><option value="">Selecione primeiro a unidade</option></select></div>
+      <div class="form-field"><label>Hóspedes</label><select id="f-guests"><option value="1">1 hóspede</option><option value="2" selected>2 hóspedes</option><option value="3">3 hóspedes</option><option value="4">4 hóspedes</option><option value="5">5 hóspedes</option><option value="6">6 hóspedes</option><option value="7">7 hóspedes</option><option value="8">8 hóspedes</option><option value="9">9 hóspedes</option></select><small class="form-hint" id="guest-limit-hint"></small></div>
+      <div class="form-field full"><p class="form-hint" id="booking-policy-hint">Estadia mínima: 2 noites. Check-out: 08:00–11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.</p></div>
+      <div class="form-field full"><label>Observações sobre a estadia</label><textarea id="f-notes" placeholder="Informações adicionais sobre a sua reserva (opcional)..."></textarea></div>
     </div>
     <div class="form-summary">
       <div class="summary-item"><strong id="s-room">—</strong>Quarto</div>
@@ -541,7 +587,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 <!-- ADMIN PANEL -->
 <div class="admin-panel" id="admin-panel">
   <div class="admin-sidebar">
-    <div class="admin-logo">Casa da Serra <span>Painel de Gestão</span></div>
+    <div class="admin-logo">Casa do Ferreiro <span>Painel de Gestão</span></div>
     <div class="admin-nav">
       <div class="admin-nav-item active" onclick="adminTab('reservations',this)">📋 Reservas</div>
       <div class="admin-nav-item" onclick="adminTab('rooms',this)">🛏 Quartos</div>
@@ -689,6 +735,26 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 
 <script>
 window.addEventListener('scroll',()=>document.getElementById('main-nav').classList.toggle('scrolled',scrollY>60));
+function toggleMobileMenu() {
+  const navLinks = document.getElementById('main-nav-links');
+  const toggle = document.querySelector('.nav-toggle');
+  if (!navLinks || !toggle) return;
+  const isOpen = navLinks.classList.toggle('open');
+  toggle.classList.toggle('is-open', isOpen);
+  toggle.setAttribute('aria-expanded', String(isOpen));
+}
+
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    const navLinks = document.getElementById('main-nav-links');
+    const toggle = document.querySelector('.nav-toggle');
+    if (navLinks) navLinks.classList.remove('open');
+    if (toggle) {
+      toggle.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+});
 const today=new Date();
 const ci=new Date(today);ci.setDate(today.getDate()+1);
 const co=new Date(today);co.setDate(today.getDate()+4);
@@ -800,33 +866,39 @@ let roomCardEventsBound = false;
 
 const ROOM_OVERRIDES = {
   T2: {
-    displayName: 'T2',
-    description: 'Apartamento T2 com duas zonas de descanso, cozinha equipada, varanda e uma atmosfera acolhedora para escapadas e estadias familiares curtas.',
-    amenities: ['Quartos para não fumadores', 'Quartos familiares', 'Frente à praia', 'Estacionamento gratuito', 'Acesso Wi-Fi gratuito'],
-    sizeSqm: 90,
+    displayName: 'Casa do Ferreiro T2',
+    description: 'Casa de férias T2 com 115 m², composta por 2 quartos de casal com casa de banho privativa, sala espaçosa, cozinha totalmente equipada e varanda/terraço com vista panorâmica para a albufeira e as montanhas.',
+    amenities: ['2 quartos de casal', '3 casas de banho', 'Cozinha totalmente equipada', 'Varanda e terraço', 'Wi‑Fi gratuito', 'Estacionamento privado', 'Sala de estar com sofá-cama', 'Jardim e espaço exterior'],
+    sizeSqm: 115,
     bedrooms: 2,
-    beds: 3,
+    beds: 2,
+    maxGuests: 6,
+    coverImage: 'assets/images/t2-capa.jpg',
+    coverAlt: 'Quarto de casal do T2 com ar condicionado e televisão',
     emoji: '🏡',
     badge: 'T2',
     slides: [
-      { label: 'Quartos para não fumadores' },
-      { label: 'Espaço acolhedor para famílias' },
-      { label: 'Vista para a praia e a serra' }
+      { label: 'Quartos com casa de banho privativa' },
+      { label: 'Vista para a albufeira e as montanhas' },
+      { label: 'Cozinha ampla e totalmente equipada' }
     ]
   },
   T3: {
-    displayName: 'T3',
-    description: 'Unidade T3 ampla e funcional, perfeita para famílias ou grupos, com área de praia privada, estacionamento gratuito e várias comodidades para uma estadia confortável.',
-    amenities: ['Quartos para não fumadores', 'Quartos familiares', 'Frente à praia', 'Estacionamento gratuito', 'Acesso Wi-Fi gratuito', 'Área de praia privada'],
-    sizeSqm: 120,
+    displayName: 'Casa do Ferreiro T3',
+    description: 'Apartamento / casa de férias T3 com 125 m², localizado em frente à praia/albufeira, com 3 quartos de casal, sala de estar espaçosa com sofá-cama, cozinha totalmente equipada, varanda e terraço com vistas deslumbrantes sobre o lago, montanhas e jardim.',
+    amenities: ['3 quartos de casal', '3 casas de banho completas', 'Sala de estar com sofá-cama', 'Cozinha totalmente equipada', 'Varanda e terraço', 'Área de praia privada', 'Wi‑Fi gratuito', 'Estacionamento privado gratuito', 'Ar condicionado', 'Quartos para não fumadores'],
+    sizeSqm: 125,
     bedrooms: 3,
     beds: 4,
-    emoji: '🌊',
+    maxGuests: 9,
+    coverImage: 'assets/images/t3-capa.jpg',
+    coverAlt: 'Quarto de casal do T3 com televisão e ar condicionado',
+    emoji: '🏞️',
     badge: 'T3',
     slides: [
       { label: 'Área de praia privada' },
-      { label: 'Espaço familiar e confortável' },
-      { label: 'Estacionamento e Wi-Fi gratuitos' }
+      { label: 'Vista para o lago e montanhas' },
+      { label: 'Conforto para famílias e grupos' }
     ]
   }
 };
@@ -841,6 +913,8 @@ function getRoomPresentation(room) {
     sizeSqm: override?.sizeSqm || room?.sizeSqm || null,
     bedrooms: override?.bedrooms || room?.bedrooms || null,
     beds: override?.beds || room?.beds || null,
+    coverImage: override?.coverImage || null,
+    coverAlt: override?.coverAlt || '',
     emoji: override?.emoji || '🏡',
     badge: override?.badge || room?.type || 'Unidade',
     slides: override?.slides || [
@@ -849,6 +923,11 @@ function getRoomPresentation(room) {
       { label: 'Ideal para férias' }
     ]
   };
+}
+
+function getRoomMaxGuests(room) {
+  const type = (room?.type || '').toUpperCase();
+  return ROOM_OVERRIDES[type]?.maxGuests || room?.capacity || 9;
 }
 
 function renderRoomCards() {
@@ -867,7 +946,7 @@ function renderRoomCards() {
     return `
       <div class="room-card" data-room-id="${room.id}" tabindex="0">
         <div class="room-visual t${(room.type || '').toUpperCase().replace('T','')}">
-          <span style="font-size:3.5rem;line-height:1">${presentation.emoji}</span>
+          ${presentation.coverImage ? `<img class="room-visual-photo" src="${presentation.coverImage}" alt="${presentation.coverAlt}" loading="lazy" decoding="async">` : `<span style="font-size:3.5rem;line-height:1">${presentation.emoji}</span>`}
           <div class="room-visual-badge">${presentation.badge}</div>
         </div>
         <div class="room-body">
@@ -932,10 +1011,64 @@ function populateRoomSelect() {
   barSel.innerHTML = '<option value="">Qualquer unidade</option>';
   const visibleRooms = (allRooms || []).filter(room => ['T2', 'T3'].includes((room.type || '').toUpperCase()));
   visibleRooms.forEach(r => {
-    sel.innerHTML += `<option value="${r.id}" data-price="${r.pricePerNight}" data-name="${r.name}">${r.name} — €${r.pricePerNight}/noite</option>`;
-    barSel.innerHTML += `<option value="${r.id}">${r.name}</option>`;
+    sel.innerHTML += `<option value="${r.id}" data-price="${r.pricePerNight}" data-name="${r.name}" data-capacity="${getRoomMaxGuests(r)}">${r.name} — €${r.pricePerNight}/noite</option>`;
+    barSel.innerHTML += `<option value="${r.id}" data-capacity="${getRoomMaxGuests(r)}">${r.name}</option>`;
   });
+  syncGuestOptions('bar-room', 'bar-guests');
+  syncGuestOptions('f-room', 'f-guests', 'guest-limit-hint');
+  updateBookingPolicyHint();
+  updateArrivalTimeOptions();
   updateSummary();
+}
+
+function syncGuestOptions(roomSelectId, guestsSelectId, hintId) {
+  const roomId = document.getElementById(roomSelectId).value;
+  const room = allRooms.find(item => item.id === roomId);
+  const maxGuests = room ? getRoomMaxGuests(room) : Math.max(9, ...allRooms.map(getRoomMaxGuests));
+  const guestSelect = document.getElementById(guestsSelectId);
+  const selectedGuests = Math.min(parseInt(guestSelect.value, 10) || 2, maxGuests);
+
+  guestSelect.innerHTML = Array.from({ length: maxGuests }, (_, index) => {
+    const count = index + 1;
+    return `<option value="${count}">${count} hóspede${count === 1 ? '' : 's'}</option>`;
+  }).join('');
+  guestSelect.value = String(selectedGuests);
+
+  if (hintId) {
+    document.getElementById(hintId).textContent = room
+      ? `Capacidade máxima desta unidade: ${maxGuests} hóspedes.`
+      : `Selecione uma unidade; capacidade máxima: ${maxGuests} hóspedes.`;
+  }
+}
+
+function updateBookingPolicyHint() {
+  const room = allRooms.find(item => item.id === document.getElementById('f-room').value);
+  const checkInWindow = room?.type?.toUpperCase() === 'T2' ? '16:00–18:00' : '15:00–18:00';
+  const text = room
+    ? `Check-in: ${checkInWindow} (avise a hora de chegada). Check-out: 08:00–11:00. Estadia mínima: 2 noites. Crianças com 18 ou mais anos pagam tarifa de adulto; berço gratuito dos 0 aos 2 anos, mediante pedido. Não há camas extra.`
+    : 'Check-in T2: 16:00–18:00; T3: 15:00–18:00. Check-out: 08:00–11:00. Estadia mínima: 2 noites. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.';
+  document.getElementById('booking-policy-hint').textContent = text;
+}
+
+function updateArrivalTimeOptions() {
+  const room = allRooms.find(item => item.id === document.getElementById('f-room').value);
+  const select = document.getElementById('f-arrival-time');
+  if (!room) {
+    select.innerHTML = '<option value="">Selecione primeiro a unidade</option>';
+    select.disabled = true;
+    return;
+  }
+
+  const previousValue = select.value;
+  const firstMinute = room.type.toUpperCase() === 'T2' ? 16 * 60 : 15 * 60;
+  const options = [];
+  for (let minute = firstMinute; minute <= 18 * 60; minute += 30) {
+    const time = `${String(Math.floor(minute / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
+    options.push(`<option value="${time}">${time}</option>`);
+  }
+  select.innerHTML = '<option value="">Selecione a hora prevista</option>' + options.join('');
+  select.disabled = false;
+  select.value = options.some(option => option.includes(`value="${previousValue}"`)) ? previousValue : '';
 }
 
 function renderAvailRooms(availableRooms, checkIn, checkOut) {
@@ -982,6 +1115,11 @@ async function openBookingFromBar() {
   const roomId = document.getElementById('bar-room').value;
   const checkIn = document.getElementById('bar-checkin').value;
   const checkOut = document.getElementById('bar-checkout').value;
+  document.getElementById('f-room').value = roomId;
+  document.getElementById('f-guests').value = document.getElementById('bar-guests').value;
+  if (checkIn) document.getElementById('f-checkin').value = checkIn;
+  if (checkOut) document.getElementById('f-checkout').value = checkOut;
+  syncGuestOptions('f-room', 'f-guests', 'guest-limit-hint');
 
   if (!checkIn || !checkOut) { openBooking(); return; }
 
@@ -991,23 +1129,27 @@ async function openBookingFromBar() {
     renderAvailRooms(data.availableRooms, checkIn, checkOut);
   } catch(err) { console.error(err); }
 
-  if (roomId) document.getElementById('f-room').value = roomId;
-  if (checkIn) document.getElementById('f-checkin').value = checkIn;
-  if (checkOut) document.getElementById('f-checkout').value = checkOut;
   openBooking();
 }
 
 // ── Modal de detalhes do quarto ─────────────────────────
 const roomCarouselImages = {
   T2: [
-    { label: 'Quartos para não fumadores' },
-    { label: 'Espaço acolhedor para famílias' },
-    { label: 'Vista para a praia e a serra' }
+    { src: 'assets/images/t2-slide-1.jpg', alt: 'Casa de banho do T2 com chuveiro envidraçado', title: 'Casa de banho', text: 'Casa de banho moderna com chuveiro.' },
+    { src: 'assets/images/t2-slide-2.jpg', alt: 'Quarto do T2 com cama de casal e berço', title: 'Quarto com berço', text: 'Quarto de casal preparado para receber famílias.' },
+    { src: 'assets/images/t2-slide-3.jpg', alt: 'Sala de estar do T2 com sofá e televisão', title: 'Sala de estar', text: 'Sala luminosa com sofá, televisão e zona de estar.' }
   ],
   T3: [
-    { label: 'Área de praia privada' },
-    { label: 'Espaço familiar e confortável' },
-    { label: 'Estacionamento e Wi-Fi gratuitos' }
+    { src: 'assets/images/t3-slide-1.jpg', alt: 'Quarto de casal do T3 com televisão e ar condicionado', title: 'Quarto de casal', text: 'Quarto confortável com cama de casal, televisão e ar condicionado.' },
+    { src: 'assets/images/t3-slide-2.jpg', alt: 'Quarto de casal do T3 com vista para a albufeira', title: 'Quarto com vista', text: 'Quarto de casal com acesso à varanda e vista para a albufeira.' },
+    { src: 'assets/images/t3-slide-3.jpg', alt: 'Cozinha equipada do T3', title: 'Cozinha equipada', text: 'Cozinha equipada integrada no alojamento.' },
+    { title: 'Ficha técnica', text: 'Casa do Ferreiro T3 · Apartamento / casa de férias\nLicença AL: 167437/AL · 125 m² · Até 9 hóspedes\nClassificação: 9,6/10 · Localização: 10/10' },
+    { title: 'Localização & envolvente', text: 'R. Ferreiro 3, 5470-504 Venda Nova, Montalegre, Portugal\nEm frente à praia/albufeira, com área de praia privada e vistas sobre o lago e as montanhas, num ambiente tranquilo.' },
+    { title: 'Pontos de interesse', text: 'Parque Nacional da Peneda-Gerês: 0 km\nParque de Merendas de Moinhos de Rei: 15 km · Barragem da Paradela: 16 km\nBarragem da Caniçada: 29 km · Santuário de São Bento da Porta Aberta: 31 km\nAeroporto Francisco Sá Carneiro: 117 km' },
+    { title: 'Quartos & casas de banho', text: '3 quartos, cada um com uma cama de casal grande; sofá-cama na sala (4 camas no total).\n3 casas de banho completas com bidé e chuveiro. Toalhas e roupa de cama incluídas.' },
+    { title: 'Sala & cozinha', text: 'Sala de estar espaçosa com sofá-cama e ar condicionado.\nCozinha totalmente equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios.' },
+    { title: 'Exterior & comodidades', text: 'Varanda e terraço mobilados, com vistas para o lago, montanhas, jardim e cidade. Acesso ao jardim e à área de praia privada.\nEstacionamento privado gratuito, Wi-Fi de alta velocidade, quartos familiares e para não fumadores, ar condicionado e condições de acessibilidade especial.' },
+    { title: 'Regras & horários', text: 'Check-in: 15:00–18:00; informe a hora de chegada com antecedência. Check-out: 08:00–11:00. Estadia mínima: 2 noites.\nCrianças bem-vindas; hóspedes com 18 ou mais anos pagam tarifa de adulto. Berço gratuito dos 0 aos 2 anos, mediante pedido.\nNão há camas extra. Animais, fumo no interior, festas e eventos não são permitidos.' }
   ],
   default: [
     { label: 'Espaço acolhedor' },
@@ -1028,8 +1170,25 @@ function renderRoomCarousel(room) {
   images.forEach((item, index) => {
     const slide = document.createElement('div');
     slide.className = 'room-detail-carousel-slide';
-    slide.dataset.label = item.label;
-    slide.innerHTML = `<span style="font-size:2rem;line-height:1.1;letter-spacing:.02em;">${item.label.split(' ')[0] || 'Unidade'}</span>`;
+    if (item.src) {
+      const image = document.createElement('img');
+      image.src = item.src;
+      image.alt = item.alt || item.title || item.label || 'Fotografia do alojamento';
+      image.loading = 'lazy';
+      slide.classList.add('has-image');
+      slide.appendChild(image);
+    }
+    const copy = document.createElement('div');
+    copy.className = 'room-detail-carousel-copy';
+    const title = document.createElement('h4');
+    title.textContent = item.title || item.label || 'Unidade';
+    copy.appendChild(title);
+    if (item.text) {
+      const text = document.createElement('p');
+      text.textContent = item.text;
+      copy.appendChild(text);
+    }
+    slide.appendChild(copy);
     track.appendChild(slide);
 
     const dot = document.createElement('button');
@@ -1114,6 +1273,10 @@ document.querySelectorAll('.room-card').forEach(card => {
 
 // ── Modal de reserva ──────────────────────────────────────
 function openBooking() {
+  syncGuestOptions('f-room', 'f-guests', 'guest-limit-hint');
+  updateBookingPolicyHint();
+  updateArrivalTimeOptions();
+  updateMinimumCheckoutDate();
   document.getElementById('booking-modal').classList.add('open');
   updateSummary();
 }
@@ -1139,21 +1302,38 @@ function updateSummary() {
   const co = new Date(document.getElementById('f-checkout').value);
   const nights = Math.max(0, Math.round((co - ci) / 86400000));
   const guests = parseInt(document.getElementById('f-guests').value) || 1;
-  const breakfast = document.getElementById('f-breakfast').value === '1';
-  const breakfastCost = breakfast ? 10 * guests * nights : 0;
-  const total = (price * nights) + breakfastCost;
+  const total = price * nights;
   document.getElementById('s-room').textContent = roomName;
   document.getElementById('s-dates').textContent = nights > 0
     ? `${document.getElementById('f-checkin').value} → ${document.getElementById('f-checkout').value}` : '—';
   document.getElementById('s-nights').textContent = nights > 0 ? nights + ' noite' + (nights > 1 ? 's' : '') : '—';
   document.getElementById('s-guests').textContent = guests + ' hóspede' + (guests > 1 ? 's' : '');
-  document.getElementById('s-total').textContent = nights > 0
-    ? `€${total.toLocaleString('pt-PT')}${breakfast ? ` (incl. ${guests}×${nights}×€10 pequeno-almoço)` : ''}` : '—';
+  document.getElementById('s-total').textContent = nights > 0 ? `€${total.toLocaleString('pt-PT')}` : '—';
 }
-['f-checkin','f-checkout','f-guests','f-breakfast'].forEach(id =>
+function updateMinimumCheckoutDate() {
+  const checkInValue = document.getElementById('f-checkin').value;
+  const checkOutInput = document.getElementById('f-checkout');
+  if (!checkInValue) {
+    checkOutInput.removeAttribute('min');
+    return;
+  }
+  const minDate = new Date(`${checkInValue}T00:00:00`);
+  minDate.setDate(minDate.getDate() + 2);
+  checkOutInput.min = `${minDate.getFullYear()}-${String(minDate.getMonth() + 1).padStart(2, '0')}-${String(minDate.getDate()).padStart(2, '0')}`;
+}
+document.getElementById('f-checkin').addEventListener('change', () => {
+  updateMinimumCheckoutDate();
+  updateSummary();
+});
+['f-checkout','f-guests'].forEach(id =>
   document.getElementById(id).addEventListener('change', updateSummary)
 );
+document.getElementById('bar-room').addEventListener('change', () => syncGuestOptions('bar-room', 'bar-guests'));
 document.getElementById('f-room').addEventListener('change', function() {
+  syncGuestOptions('f-room', 'f-guests', 'guest-limit-hint');
+  updateBookingPolicyHint();
+  updateArrivalTimeOptions();
+  updateMinimumCheckoutDate();
   updateSummary();
   // Atualiza calendário público com disponibilidade do quarto selecionado
   loadPublicCalAvailability(this.value);
@@ -1168,12 +1348,23 @@ async function confirmBooking() {
   const checkIn = document.getElementById('f-checkin').value;
   const checkOut = document.getElementById('f-checkout').value;
   const guests = document.getElementById('f-guests').value;
-  const breakfast = document.getElementById('f-breakfast').value === '1';
+  const arrivalTime = document.getElementById('f-arrival-time').value;
   const specialRequests = document.getElementById('f-notes').value.trim();
 
   if (!name || !email) { showToast('Por favor preencha nome e email.'); return; }
   if (!checkIn || !checkOut) { showToast('Por favor selecione as datas.'); return; }
   if (!roomId) { showToast('Por favor selecione um quarto.'); return; }
+  if (!arrivalTime) { showToast('Indique a hora prevista de chegada.'); return; }
+  const selectedRoom = allRooms.find(room => room.id === roomId);
+  const guestCount = parseInt(guests, 10);
+  const maxGuests = selectedRoom ? getRoomMaxGuests(selectedRoom) : 9;
+  if (!Number.isInteger(guestCount) || guestCount < 1 || guestCount > maxGuests) {
+    showToast(`Esta unidade permite até ${maxGuests} hóspedes.`);
+    return;
+  }
+  const nights = Math.round((new Date(checkOut) - new Date(checkIn)) / 86400000);
+  if (nights < 2) { showToast('A estadia mínima é de 2 noites.'); return; }
+  const reservationNotes = [`Hora prevista de chegada: ${arrivalTime}`, specialRequests].filter(Boolean).join('\n');
 
   const btn = document.querySelector('.btn-confirm');
   btn.disabled = true;
@@ -1183,7 +1374,7 @@ async function confirmBooking() {
     const res = await fetch(`${API}/reservations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, phone, roomId, checkIn, checkOut, guests: parseInt(guests), breakfast, specialRequests })
+      body: JSON.stringify({ name, email, phone, roomId, checkIn, checkOut, guests: guestCount, specialRequests: reservationNotes })
     });
 
     const data = await res.json();
@@ -1193,6 +1384,7 @@ async function confirmBooking() {
       showToast(`✓ Reserva #${data.reservation.ref} enviada! Verifique o seu email.`);
       // Limpar formulário
       ['f-name','f-email','f-phone','f-notes'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('f-arrival-time').value = '';
     } else {
       showToast(data.error || 'Erro ao criar reserva. Tente novamente.');
     }
@@ -1367,8 +1559,7 @@ async function loadAdminReservations(statusFilter) {
           ${r.status!=='CANCELLED' && r.status!=='DECLINED' && r.status!=='PENDING'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CANCELLED')">↺ Cancelar</button>`:''}
         </div>
       </div>
-      <div style="grid-column:1/-1;padding:.4rem 0 .6rem;border-bottom:1px solid var(--warm);font-size:.75rem;color:var(--muted);display:flex;gap:1.5rem">
-        <span>🍳 Pequeno-almoço: <strong style="color:var(--dark)">${r.breakfast ? 'Incluído' : 'Não incluído'}</strong></span>
+      <div style="grid-column:1/-1;padding:.4rem 0 .6rem;border-bottom:1px solid var(--warm);font-size:.75rem;color:var(--muted);display:flex;gap:1.5rem;flex-wrap:wrap">
         <span>💰 Total: <strong style="color:var(--dark)">€${r.totalPrice?.toFixed(2)}</strong></span>
         ${r.specialRequests ? `<span>📝 Pedidos: <strong style="color:var(--dark)">${r.specialRequests}</strong></span>` : ''}
       </div>`).join('');
