@@ -79,6 +79,23 @@ h2 em{font-style:italic;color:var(--accent)}
 .room-footer{display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--warm)}
 .room-price{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--accent)}
 .room-price span{font-family:'Jost',sans-serif;font-size:.7rem;color:var(--muted)}
+.rooms-intro{color:var(--muted);line-height:1.8;max-width:720px;margin-top:1rem;font-size:.95rem}
+.room-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem}
+.room-stat{background:var(--white);border:1px solid var(--warm);border-radius:2px;padding:.65rem .5rem;text-align:center}
+.room-stat span{display:block;font-weight:600;color:var(--dark);font-size:.95rem}
+.room-stat small{display:block;font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem}
+.room-visual.t2{background:linear-gradient(135deg,#3d3020,#8b6940)}
+.room-visual.t3{background:linear-gradient(135deg,#2a3d30,#4f6b55)}
+.info-section{padding:0 3rem 6rem;max-width:1200px;margin:0 auto}
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.info-card{background:var(--cream);border:1px solid var(--warm);border-radius:var(--radius);padding:1.5rem}
+.info-card h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--dark);margin-bottom:.75rem}
+.info-card p,.info-card li{color:var(--muted);line-height:1.8;font-size:.92rem}
+.info-card ul{margin:.25rem 0 0 1rem}
+.room-detail-specs{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1rem 0 1.2rem}
+.room-detail-spec{background:var(--cream);border:1px solid var(--warm);border-radius:2px;padding:.8rem;text-align:center}
+.room-detail-spec strong{display:block;font-size:1rem;color:var(--dark)}
+.room-detail-spec span{display:block;font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem}
 .btn-book{background:var(--dark);color:#fff;border:none;padding:.55rem 1.2rem;font-family:'Jost',sans-serif;font-size:.75rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:background .2s}
 .btn-book:hover{background:var(--accent)}
 
@@ -205,9 +222,10 @@ h2 em{font-style:italic;color:var(--accent)}
 .admin-status{display:inline-flex;align-items:center;gap:.4rem;font-size:.75rem;padding:.25rem .7rem;border-radius:2px;font-weight:500}
 .admin-status.confirmed{background:#dcfce7;color:#166534}
 .admin-status.pending{background:#fef9c3;color:#854d0e}
-.admin-status.cancelled{background:#fee2e2;color:#991b1b}
+.admin-status.cancelled,.admin-status.declined{background:#fee2e2;color:#991b1b}
 .admin-action{background:none;border:1px solid var(--warm);color:var(--muted);padding:.3rem .7rem;border-radius:2px;font-size:.72rem;cursor:pointer;transition:all .2s}
 .admin-action:hover{border-color:var(--accent);color:var(--accent)}
+.admin-actions{display:flex;gap:.4rem;flex-wrap:wrap}
 .admin-tabs{display:flex;gap:0;margin-bottom:1.5rem;border:1px solid var(--warm);border-radius:var(--radius);overflow:hidden;width:fit-content}
 .admin-tab{padding:.6rem 1.5rem;font-size:.78rem;font-weight:500;cursor:pointer;border:none;background:var(--white);color:var(--muted);transition:all .2s}
 .admin-tab.active{background:var(--dark);color:#fff}
@@ -262,6 +280,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .booking-submit{padding:1rem;white-space:normal}
   .rooms-grid{grid-template-columns:1fr}
   .room-card{min-width:0}
+  .info-grid{grid-template-columns:1fr}
   .about-grid{grid-template-columns:1fr;gap:2rem}
   .about-image{height:320px}
   .avail-inner{padding:0 1rem}
@@ -317,7 +336,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     </div>
   </div>
   <div class="hero-badges">
-    <div class="hero-badge"><span class="hero-badge-num">12</span><span class="hero-badge-label">Quartos</span></div>
+    <div class="hero-badge"><span class="hero-badge-num">2</span><span class="hero-badge-label">Unidades</span></div>
     <div class="hero-badge"><span class="hero-badge-num">4.9</span><span class="hero-badge-label">Avaliação</span></div>
     <div class="hero-badge"><span class="hero-badge-num">8+</span><span class="hero-badge-label">Anos</span></div>
   </div>
@@ -333,9 +352,9 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     <input type="date" id="bar-checkout">
   </div>
   <div class="booking-field">
-    <div class="booking-field-label">Quarto</div>
+    <div class="booking-field-label">Unidade</div>
     <select id="bar-room">
-      <option value="">Qualquer quarto</option>
+      <option value="">Qualquer unidade</option>
       <option>Suite Panorâmica</option>
       <option>Quarto Deluxe</option>
       <option>Quarto Superior</option>
@@ -358,64 +377,10 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 
 <div id="rooms" class="rooms-section">
   <div>
-    <div class="section-eyebrow">Os nossos espaços</div>
-    <h2>Quartos & <em>Suites</em></h2>
-    <div class="rooms-grid">
-      <div class="room-card">
-        <div class="room-visual suite">🏔️<div class="room-visual-badge">Mais popular</div></div>
-        <div class="room-body">
-          <div class="room-name">Suite Panorâmica</div>
-          <div class="room-desc">Vista deslumbrante sobre a serra, cama king-size e banheira de hidromassagem privativa.</div>
-          <div class="room-amenities"><span class="amenity">King-size</span><span class="amenity">Vista serra</span><span class="amenity">Jacuzzi</span><span class="amenity">AC</span><span class="amenity">Varanda</span></div>
-          <div class="room-footer"><div class="room-price">€185 <span>/ noite</span></div><button class="btn-book" onclick="openBookingForRoom('Suite Panorâmica',185)">Reservar</button></div>
-        </div>
-      </div>
-      <div class="room-card">
-        <div class="room-visual deluxe">🌲</div>
-        <div class="room-body">
-          <div class="room-name">Quarto Deluxe</div>
-          <div class="room-desc">Espaçoso e acolhedor, com decoração em madeira natural e casa de banho em pedra.</div>
-          <div class="room-amenities"><span class="amenity">Queen-size</span><span class="amenity">Casa banho privada</span><span class="amenity">AC</span><span class="amenity">Wi-Fi</span></div>
-          <div class="room-footer"><div class="room-price">€120 <span>/ noite</span></div><button class="btn-book" onclick="openBookingForRoom('Quarto Deluxe',120)">Reservar</button></div>
-        </div>
-      </div>
-      <div class="room-card">
-        <div class="room-visual superior">🌿</div>
-        <div class="room-body">
-          <div class="room-name">Quarto Superior</div>
-          <div class="room-desc">Vistas para o jardim e floresta, com cama de casal e ambiente sereno.</div>
-          <div class="room-amenities"><span class="amenity">Casal</span><span class="amenity">Vista jardim</span><span class="amenity">AC</span><span class="amenity">Wi-Fi</span></div>
-          <div class="room-footer"><div class="room-price">€95 <span>/ noite</span></div><button class="btn-book" onclick="openBookingForRoom('Quarto Superior',95)">Reservar</button></div>
-        </div>
-      </div>
-      <div class="room-card">
-        <div class="room-visual twin">🛏️</div>
-        <div class="room-body">
-          <div class="room-name">Quarto Twin</div>
-          <div class="room-desc">Duas camas individuais, ideal para amigos ou famílias. Conforto e praticidade.</div>
-          <div class="room-amenities"><span class="amenity">2 camas</span><span class="amenity">AC</span><span class="amenity">Wi-Fi</span><span class="amenity">TV</span></div>
-          <div class="room-footer"><div class="room-price">€85 <span>/ noite</span></div><button class="btn-book" onclick="openBookingForRoom('Quarto Twin',85)">Reservar</button></div>
-        </div>
-      </div>
-      <div class="room-card">
-        <div class="room-visual deluxe">🔥</div>
-        <div class="room-body">
-          <div class="room-name">Quarto Lareira</div>
-          <div class="room-desc">Lareira a lenha para noites frias de inverno, cama king e ambiente íntimo.</div>
-          <div class="room-amenities"><span class="amenity">King-size</span><span class="amenity">Lareira</span><span class="amenity">AC</span><span class="amenity">Vista</span></div>
-          <div class="room-footer"><div class="room-price">€145 <span>/ noite</span></div><button class="btn-book" onclick="openBookingForRoom('Quarto Lareira',145)">Reservar</button></div>
-        </div>
-      </div>
-      <div class="room-card">
-        <div class="room-visual suite">✨</div>
-        <div class="room-body">
-          <div class="room-name">Suite Familiar</div>
-          <div class="room-desc">Dois quartos comunicantes, perfeita para famílias. Sala de estar privativa.</div>
-          <div class="room-amenities"><span class="amenity">2 quartos</span><span class="amenity">Sala estar</span><span class="amenity">Cozinha</span><span class="amenity">AC</span></div>
-          <div class="room-footer"><div class="room-price">€220 <span>/ noite</span></div><button class="btn-book" onclick="openBookingForRoom('Suite Familiar',220)">Reservar</button></div>
-        </div>
-      </div>
-    </div>
+    <div class="section-eyebrow">As nossas unidades</div>
+    <h2>Unidades <em>T2 & T3</em></h2>
+    <p class="rooms-intro">Escolha entre duas unidades independentes, com o seu próprio calendário, preços e disponibilidade. Cada uma oferece um espaço único para descansar, trabalhar ou reunir a família.</p>
+    <div class="rooms-grid" id="rooms-grid"></div>
   </div>
 </div>
 
@@ -428,13 +393,40 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <div class="section-eyebrow">A nossa história</div>
       <h2>Uma casa com <em>alma</em></h2>
       <p>A Casa da Serra nasceu do sonho de criar um refúgio autêntico, onde os hóspedes possam desligar do ritmo acelerado da cidade e reconectar com a natureza e consigo próprios.</p>
-      <p>Cada quarto foi decorado com peças únicas, materiais naturais e uma atenção especial ao conforto. O pequeno-almoço é preparado diariamente com produtos locais e caseiros.</p>
+      <p>Cada unidade foi decorada com peças únicas, materiais naturais e uma atenção especial ao conforto. O pequeno-almoço é preparado diariamente com produtos locais e caseiros.</p>
       <div class="about-features">
         <div class="about-feature"><div class="about-feature-icon">☕</div><div class="about-feature-text"><span class="about-feature-title">Pequeno-almoço incluído</span>Produtos locais e receitas tradicionais</div></div>
         <div class="about-feature"><div class="about-feature-icon">🌲</div><div class="about-feature-text"><span class="about-feature-title">Natureza à porta</span>Trilhos e paisagens únicas</div></div>
         <div class="about-feature"><div class="about-feature-icon">🤝</div><div class="about-feature-text"><span class="about-feature-title">Atendimento personalizado</span>Sempre disponíveis para ajudar</div></div>
         <div class="about-feature"><div class="about-feature-icon">🔒</div><div class="about-feature-text"><span class="about-feature-title">Reserva direta</span>Sem comissões, melhor preço garantido</div></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="info-section">
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>Check-in</h3>
+      <p>Das 16:00 às 18:00</p>
+      <p>Terá de informar a sua hora de chegada com antecedência ao alojamento.</p>
+    </div>
+    <div class="info-card">
+      <h3>Check-out</h3>
+      <p>Das 08:00 às 11:00</p>
+    </div>
+    <div class="info-card">
+      <h3>Cancelamento / pré-pagamento</h3>
+      <p>As condições variam conforme a unidade e a data selecionada.</p>
+      <p>Consulte as condições aplicáveis antes de confirmar a reserva.</p>
+    </div>
+    <div class="info-card">
+      <h3>Mais informações</h3>
+      <ul>
+        <li>Crianças são bem-vindas.</li>
+        <li>Não é permitido fumar nem realizar festas.</li>
+        <li>Animais de estimação não são admitidos.</li>
+      </ul>
     </div>
   </div>
 </section>
@@ -476,7 +468,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
         <div class="footer-brand">Casa da Serra</div>
         <p class="footer-tagline">Um refúgio autêntico na Serra da Estrela. Quartos únicos, natureza e hospitalidade portuguesa genuína.</p>
       </div>
-      <div class="footer-col"><h4>Alojamento</h4><ul><li><a href="#">Suite Panorâmica</a></li><li><a href="#">Quarto Deluxe</a></li><li><a href="#">Quarto Superior</a></li><li><a href="#">Quarto Twin</a></li><li><a href="#">Suite Familiar</a></li></ul></div>
+      <div class="footer-col"><h4>Alojamento</h4><ul><li><a href="#rooms">T2</a></li><li><a href="#rooms">T3</a></li></ul></div>
       <div class="footer-col"><h4>Informações</h4><ul><li><a href="#">Check-in / Check-out</a></li><li><a href="#">Política de reservas</a></li><li><a href="#">FAQ</a></li><li><a href="#">Como chegar</a></li></ul></div>
       <div class="footer-col"><h4>Contacto</h4><ul><li><a href="#">📞 +351 960 000 000</a></li><li><a href="#">✉ reservas@casadaserra.pt</a></li><li><a href="#">📍 Serra da Estrela, Portugal</a></li></ul></div>
     </div>
@@ -499,11 +491,12 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     </div>
     <div class="room-detail-carousel-dots" id="room-detail-carousel-dots"></div>
     <div class="room-detail-header">
-      <div class="section-eyebrow">Quarto</div>
+      <div class="section-eyebrow">Unidade</div>
       <h3 id="room-detail-title"></h3>
       <div class="room-detail-price" id="room-detail-price"></div>
     </div>
     <p class="modal-sub" id="room-detail-desc"></p>
+    <div class="room-detail-specs" id="room-detail-specs"></div>
     <div class="room-detail-amenities" id="room-detail-amenities"></div>
     <div class="room-detail-footer">
       <button class="btn-book" onclick="handleRoomDetailBooking()">Reservar</button>
@@ -523,14 +516,9 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <div class="form-field"><label>Nome completo</label><input type="text" id="f-name" placeholder="João Silva"></div>
       <div class="form-field"><label>Email</label><input type="email" id="f-email" placeholder="joao@email.com"></div>
       <div class="form-field"><label>Telefone</label><input type="tel" id="f-phone" placeholder="+351 9xx xxx xxx"></div>
-      <div class="form-field"><label>Quarto</label>
+      <div class="form-field"><label>Unidade</label>
         <select id="f-room">
-          <option value="Suite Panorâmica" data-price="185">Suite Panorâmica — €185/noite</option>
-          <option value="Quarto Deluxe" data-price="120">Quarto Deluxe — €120/noite</option>
-          <option value="Quarto Superior" data-price="95">Quarto Superior — €95/noite</option>
-          <option value="Quarto Twin" data-price="85">Quarto Twin — €85/noite</option>
-          <option value="Quarto Lareira" data-price="145">Quarto Lareira — €145/noite</option>
-          <option value="Suite Familiar" data-price="220">Suite Familiar — €220/noite</option>
+          <option value="">A carregar unidades...</option>
         </select>
       </div>
       <div class="form-field"><label>Check-in</label><input type="date" id="f-checkin"></div>
@@ -564,7 +552,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   </div>
   <div class="admin-main">
     <div id="admin-tab-reservations">
-      <div class="admin-header"><div class="admin-title">Reservas</div><div class="admin-tabs"><div class="admin-tab active" onclick="filterReservations(null,this)">Todas</div><div class="admin-tab" onclick="filterReservations('CONFIRMED',this)">Confirmadas</div><div class="admin-tab" onclick="filterReservations('PENDING',this)">Pendentes</div></div></div>
+      <div class="admin-header"><div class="admin-title">Reservas</div><div class="admin-tabs"><div class="admin-tab active" onclick="filterReservations(null,this)">Todas</div><div class="admin-tab" onclick="filterReservations('CONFIRMED',this)">Confirmadas</div><div class="admin-tab" onclick="filterReservations('PENDING',this)">Pendentes</div><div class="admin-tab" onclick="filterReservations('DECLINED',this)">Recusadas</div></div></div>
       <div class="admin-cards">
         <div class="admin-card"><div class="admin-card-label">Total reservas</div><div class="admin-card-num" id="res-card-total">—</div><div class="admin-card-sub" id="res-card-total-sub">A carregar...</div></div>
         <div class="admin-card"><div class="admin-card-label">Pendentes</div><div class="admin-card-num" id="res-card-pending">—</div><div class="admin-card-sub" id="res-card-pending-sub">A carregar...</div></div>
@@ -599,6 +587,9 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
           <div class="form-field"><label>Tipo</label><input type="text" id="edit-room-type"></div>
           <div class="form-field"><label>Preço / noite (€)</label><input type="number" id="edit-room-price"></div>
           <div class="form-field"><label>Capacidade</label><input type="number" id="edit-room-capacity"></div>
+          <div class="form-field"><label>m²</label><input type="number" id="edit-room-size"></div>
+          <div class="form-field"><label>Quartos</label><input type="number" id="edit-room-bedrooms"></div>
+          <div class="form-field"><label>Camas</label><input type="number" id="edit-room-beds"></div>
           <div class="form-field"><label>Estado</label>
             <select id="edit-room-active">
               <option value="true">Ativo</option>
@@ -607,6 +598,8 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
           </div>
           <div class="form-field" style="grid-column:1/-1"><label>Descrição</label><textarea id="edit-room-desc" style="min-height:80px;background:var(--cream);border:1px solid var(--warm);border-radius:2px;padding:.75rem 1rem;font-family:'Jost',sans-serif;font-size:.9rem;width:100%;outline:none;resize:vertical"></textarea></div>
           <div class="form-field" style="grid-column:1/-1"><label>Comodidades (separadas por vírgula)</label><input type="text" id="edit-room-amenities"></div>
+          <div class="form-field" style="grid-column:1/-1"><label>URL iCal Booking.com</label><input type="text" id="edit-room-booking-ical"></div>
+          <div class="form-field" style="grid-column:1/-1"><label>URL iCal Airbnb</label><input type="text" id="edit-room-airbnb-ical"></div>
         </div>
         <div style="display:flex;gap:1rem;margin-top:1.5rem">
           <button onclick="saveRoom()" style="flex:1;background:var(--accent);color:#fff;border:none;padding:.85rem;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:2px">Guardar</button>
@@ -803,6 +796,116 @@ loadPublicCalAvailability(null);
 // ── Configuração da API ───────────────────────────────────
 const API = 'https://casadaserra-production.up.railway.app/api';
 let allRooms = []; // quartos carregados da API
+let roomCardEventsBound = false;
+
+const ROOM_OVERRIDES = {
+  T2: {
+    displayName: 'T2',
+    description: 'Apartamento T2 com duas zonas de descanso, cozinha equipada, varanda e uma atmosfera acolhedora para escapadas e estadias familiares curtas.',
+    amenities: ['Quartos para não fumadores', 'Quartos familiares', 'Frente à praia', 'Estacionamento gratuito', 'Acesso Wi-Fi gratuito'],
+    sizeSqm: 90,
+    bedrooms: 2,
+    beds: 3,
+    emoji: '🏡',
+    badge: 'T2',
+    slides: [
+      { label: 'Quartos para não fumadores' },
+      { label: 'Espaço acolhedor para famílias' },
+      { label: 'Vista para a praia e a serra' }
+    ]
+  },
+  T3: {
+    displayName: 'T3',
+    description: 'Unidade T3 ampla e funcional, perfeita para famílias ou grupos, com área de praia privada, estacionamento gratuito e várias comodidades para uma estadia confortável.',
+    amenities: ['Quartos para não fumadores', 'Quartos familiares', 'Frente à praia', 'Estacionamento gratuito', 'Acesso Wi-Fi gratuito', 'Área de praia privada'],
+    sizeSqm: 120,
+    bedrooms: 3,
+    beds: 4,
+    emoji: '🌊',
+    badge: 'T3',
+    slides: [
+      { label: 'Área de praia privada' },
+      { label: 'Espaço familiar e confortável' },
+      { label: 'Estacionamento e Wi-Fi gratuitos' }
+    ]
+  }
+};
+
+function getRoomPresentation(room) {
+  const type = (room?.type || '').toUpperCase();
+  const override = ROOM_OVERRIDES[type] || null;
+  return {
+    name: override?.displayName || room?.name || 'Unidade',
+    description: override?.description || room?.description || 'Descrição em atualização.',
+    amenities: override?.amenities || room?.amenities || [],
+    sizeSqm: override?.sizeSqm || room?.sizeSqm || null,
+    bedrooms: override?.bedrooms || room?.bedrooms || null,
+    beds: override?.beds || room?.beds || null,
+    emoji: override?.emoji || '🏡',
+    badge: override?.badge || room?.type || 'Unidade',
+    slides: override?.slides || [
+      { label: 'Espaço acolhedor' },
+      { label: 'Conforto e serenidade' },
+      { label: 'Ideal para férias' }
+    ]
+  };
+}
+
+function renderRoomCards() {
+  const grid = document.getElementById('rooms-grid');
+  if (!grid) return;
+
+  const visibleRooms = (allRooms || []).filter(room => ['T2', 'T3'].includes((room.type || '').toUpperCase()));
+  if (!visibleRooms.length) {
+    grid.innerHTML = '<div class="info-card" style="grid-column:1/-1">A carregar as unidades...</div>';
+    return;
+  }
+
+  grid.innerHTML = visibleRooms.map(room => {
+    const presentation = getRoomPresentation(room);
+    const amenities = presentation.amenities.slice(0, 6).map(item => `<span class="amenity">${item}</span>`).join('');
+    return `
+      <div class="room-card" data-room-id="${room.id}" tabindex="0">
+        <div class="room-visual t${(room.type || '').toUpperCase().replace('T','')}">
+          <span style="font-size:3.5rem;line-height:1">${presentation.emoji}</span>
+          <div class="room-visual-badge">${presentation.badge}</div>
+        </div>
+        <div class="room-body">
+          <div class="room-name">${presentation.name}</div>
+          <div class="room-desc">${presentation.description}</div>
+          <div class="room-stats">
+            <div class="room-stat"><span>${presentation.sizeSqm ? `${presentation.sizeSqm} m²` : '—'}</span><small>Tamanho</small></div>
+            <div class="room-stat"><span>${presentation.bedrooms ? `${presentation.bedrooms} quarto${presentation.bedrooms > 1 ? 's' : ''}` : '—'}</span><small>Quartos</small></div>
+            <div class="room-stat"><span>${presentation.beds ? `${presentation.beds} cama${presentation.beds > 1 ? 's' : ''}` : '—'}</span><small>Camas</small></div>
+          </div>
+          <div class="room-amenities">${amenities}</div>
+          <div class="room-footer">
+            <div class="room-price">€${room.pricePerNight}<span>/ noite</span></div>
+            <button class="btn-book" onclick="event.stopPropagation(); openBookingForRoom('${room.id}')">Reservar</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function bindRoomCardEvents() {
+  const grid = document.getElementById('rooms-grid');
+  if (!grid || roomCardEventsBound) return;
+  roomCardEventsBound = true;
+  grid.addEventListener('click', (event) => {
+    const card = event.target.closest('.room-card');
+    if (!card || event.target.closest('.btn-book')) return;
+    openRoomDetails(card.dataset.roomId);
+  });
+  grid.addEventListener('keydown', (event) => {
+    const card = event.target.closest('.room-card');
+    if (!card) return;
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openRoomDetails(card.dataset.roomId);
+    }
+  });
+}
 
 // ── Carregar quartos da API ───────────────────────────────
 async function loadRooms() {
@@ -810,6 +913,8 @@ async function loadRooms() {
     const res = await fetch(`${API}/rooms`);
     allRooms = await res.json();
     populateRoomSelect();
+    renderRoomCards();
+    bindRoomCardEvents();
     renderAvailRooms(allRooms);
     // Calendário público começa sem datas bloqueadas — só bloqueia quando quarto é selecionado
     publicOccupiedDates = new Set();
@@ -824,8 +929,9 @@ function populateRoomSelect() {
   const sel = document.getElementById('f-room');
   const barSel = document.getElementById('bar-room');
   sel.innerHTML = '';
-  barSel.innerHTML = '<option value="">Qualquer quarto</option>';
-  allRooms.forEach(r => {
+  barSel.innerHTML = '<option value="">Qualquer unidade</option>';
+  const visibleRooms = (allRooms || []).filter(room => ['T2', 'T3'].includes((room.type || '').toUpperCase()));
+  visibleRooms.forEach(r => {
     sel.innerHTML += `<option value="${r.id}" data-price="${r.pricePerNight}" data-name="${r.name}">${r.name} — €${r.pricePerNight}/noite</option>`;
     barSel.innerHTML += `<option value="${r.id}">${r.name}</option>`;
   });
@@ -836,9 +942,10 @@ function renderAvailRooms(availableRooms, checkIn, checkOut) {
   const list = document.getElementById('avail-rooms-list');
   list.innerHTML = '';
 
+  const visibleRooms = (allRooms || []).filter(room => ['T2', 'T3'].includes((room.type || '').toUpperCase()));
+
   if (!checkIn || !checkOut) {
-    // Sem datas selecionadas — mostra todos os quartos
-    allRooms.forEach(r => {
+    visibleRooms.forEach(r => {
       list.innerHTML += `
         <div class="avail-room">
           <div><div class="avail-room-name">${r.name}</div><div class="avail-room-type">${r.type}</div></div>
@@ -852,8 +959,7 @@ function renderAvailRooms(availableRooms, checkIn, checkOut) {
 
   const availIds = new Set((availableRooms || []).map(r => r.id));
 
-  // Mostra TODOS os quartos — disponíveis e indisponíveis
-  allRooms.forEach(r => {
+  visibleRooms.forEach(r => {
     const isAvail = availIds.has(r.id);
     list.innerHTML += `
       <div class="avail-room" style="${!isAvail ? 'opacity:.6' : ''}">
@@ -893,48 +999,28 @@ async function openBookingFromBar() {
 
 // ── Modal de detalhes do quarto ─────────────────────────
 const roomCarouselImages = {
-  'Suite Panorâmica': [
-    { label: 'Vista panorâmica da serra' },
-    { label: 'Cama king-size e luz natural' },
-    { label: 'Banheira de hidromassagem privada' }
+  T2: [
+    { label: 'Quartos para não fumadores' },
+    { label: 'Espaço acolhedor para famílias' },
+    { label: 'Vista para a praia e a serra' }
   ],
-  'Quarto Deluxe': [
-    { label: 'Espaço acolhedor em madeira natural' },
-    { label: 'Cama queen-size confortável' },
-    { label: 'Casa de banho privada elegante' }
-  ],
-  'Quarto Superior': [
-    { label: 'Vistas para o jardim' },
-    { label: 'Ambiente sereno e luminoso' },
-    { label: 'Detalhes em pedra e madeira' }
-  ],
-  'Quarto Twin': [
-    { label: 'Duas camas individuais' },
-    { label: 'Ideal para amigos ou família' },
-    { label: 'Conforto e praticidade' }
-  ],
-  'Quarto Lareira': [
-    { label: 'Lareira acolhedora a lenha' },
-    { label: 'Ambiente íntimo e quente' },
-    { label: 'Cama king-size e decoração rústica' }
-  ],
-  'Suite Familiar': [
-    { label: 'Dois quartos comunicantes' },
-    { label: 'Sala de estar privativa' },
-    { label: 'Espaço perfeito para famílias' }
+  T3: [
+    { label: 'Área de praia privada' },
+    { label: 'Espaço familiar e confortável' },
+    { label: 'Estacionamento e Wi-Fi gratuitos' }
   ],
   default: [
-    { label: 'Quarto confortável e acolhedor' },
-    { label: 'Detalhes elegantes e naturais' },
-    { label: 'Ambiente ideal para descansar' }
+    { label: 'Espaço acolhedor' },
+    { label: 'Conforto e serenidade' },
+    { label: 'Ideal para férias' }
   ]
 };
 let currentCarouselIndex = 0;
 
-function renderRoomCarousel(roomName) {
+function renderRoomCarousel(room) {
   const track = document.getElementById('room-detail-carousel-track');
   const dots = document.getElementById('room-detail-carousel-dots');
-  const images = roomCarouselImages[roomName] || roomCarouselImages.default;
+  const images = roomCarouselImages[(room?.type || '').toUpperCase()] || roomCarouselImages.default;
   currentCarouselIndex = 0;
   track.innerHTML = '';
   dots.innerHTML = '';
@@ -943,7 +1029,7 @@ function renderRoomCarousel(roomName) {
     const slide = document.createElement('div');
     slide.className = 'room-detail-carousel-slide';
     slide.dataset.label = item.label;
-    slide.innerHTML = `<span style="font-size:2rem;line-height:1.1;letter-spacing:.02em;">${item.label.split(' ')[0] || 'Quarto'}</span>`;
+    slide.innerHTML = `<span style="font-size:2rem;line-height:1.1;letter-spacing:.02em;">${item.label.split(' ')[0] || 'Unidade'}</span>`;
     track.appendChild(slide);
 
     const dot = document.createElement('button');
@@ -968,25 +1054,31 @@ function updateCarouselPosition() {
 }
 
 function moveRoomCarousel(delta) {
-  const images = roomCarouselImages[document.getElementById('room-detail-title').textContent.trim()] || roomCarouselImages.default;
+  const title = document.getElementById('room-detail-title').textContent.trim();
+  const room = allRooms.find(r => r.name === title || (r.name || '').toLowerCase().includes(title.toLowerCase())) || allRooms.find(r => (r.type || '').toUpperCase() === title.toUpperCase()) || allRooms[0];
+  const images = roomCarouselImages[(room?.type || '').toUpperCase()] || roomCarouselImages.default;
   currentCarouselIndex = (currentCarouselIndex + delta + images.length) % images.length;
   updateCarouselPosition();
 }
 
-function openRoomDetails(card) {
-  const title = card.querySelector('.room-name')?.textContent?.trim() || '';
-  const desc = card.querySelector('.room-desc')?.textContent?.trim() || '';
-  const price = card.querySelector('.room-price')?.firstChild?.textContent?.trim() || '';
-  const amenities = Array.from(card.querySelectorAll('.room-amenities .amenity')).map(el => el.textContent.trim());
+function openRoomDetails(roomId) {
+  const room = allRooms.find(r => r.id === roomId);
+  if (!room) return;
+  const presentation = getRoomPresentation(room);
 
-  document.getElementById('room-detail-title').textContent = title;
-  document.getElementById('room-detail-price').textContent = `${price} / noite`;
-  document.getElementById('room-detail-desc').textContent = desc;
-  renderRoomCarousel(title);
+  document.getElementById('room-detail-title').textContent = presentation.name;
+  document.getElementById('room-detail-price').textContent = `€${room.pricePerNight} / noite`;
+  document.getElementById('room-detail-desc').textContent = presentation.description;
+  document.getElementById('room-detail-specs').innerHTML = `
+    <div class="room-detail-spec"><strong>${presentation.sizeSqm ? `${presentation.sizeSqm} m²` : '—'}</strong><span>Tamanho</span></div>
+    <div class="room-detail-spec"><strong>${presentation.bedrooms ? `${presentation.bedrooms} quarto${presentation.bedrooms > 1 ? 's' : ''}` : '—'}</strong><span>Quartos</span></div>
+    <div class="room-detail-spec"><strong>${presentation.beds ? `${presentation.beds} cama${presentation.beds > 1 ? 's' : ''}` : '—'}</strong><span>Camas</span></div>
+  `;
+  renderRoomCarousel(room);
 
   const amenitiesWrap = document.getElementById('room-detail-amenities');
   amenitiesWrap.innerHTML = '';
-  amenities.forEach(item => {
+  presentation.amenities.forEach(item => {
     const span = document.createElement('span');
     span.className = 'amenity';
     span.textContent = item;
@@ -1025,8 +1117,8 @@ function openBooking() {
   document.getElementById('booking-modal').classList.add('open');
   updateSummary();
 }
-function openBookingForRoom(name) {
-  const room = allRooms.find(r => r.name === name);
+function openBookingForRoom(value) {
+  const room = allRooms.find(r => r.id === value || r.name === value || r.type === value);
   if (room) document.getElementById('f-room').value = room.id;
   openBooking();
 }
@@ -1260,8 +1352,8 @@ async function loadAdminReservations(statusFilter) {
     const data = await res.json();
     const tbody = document.getElementById('admin-reservations-body');
     if (!tbody) return;
-    const statusLabel = { PENDING: 'Pendente', CONFIRMED: 'Confirmada', CANCELLED: 'Cancelada', PAID: 'Paga', COMPLETED: 'Concluída' };
-    const statusClass = { PENDING: 'pending', CONFIRMED: 'confirmed', CANCELLED: 'cancelled', PAID: 'confirmed', COMPLETED: 'confirmed' };
+    const statusLabel = { PENDING: 'Pendente', CONFIRMED: 'Confirmada', DECLINED: 'Recusada', CANCELLED: 'Cancelada', PAID: 'Paga', COMPLETED: 'Concluída' };
+    const statusClass = { PENDING: 'pending', CONFIRMED: 'confirmed', DECLINED: 'declined', CANCELLED: 'cancelled', PAID: 'confirmed', COMPLETED: 'confirmed' };
     tbody.innerHTML = data.reservations.map(r => `
       <div class="admin-table-row">
         <div><div class="admin-guest-name">${r.guest.name}</div><div class="admin-guest-email">${r.guest.email}</div></div>
@@ -1269,9 +1361,10 @@ async function loadAdminReservations(statusFilter) {
         <div style="font-size:.85rem">${new Date(r.checkIn).toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}</div>
         <div style="font-size:.85rem">${new Date(r.checkOut).toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}</div>
         <div><span class="admin-status ${statusClass[r.status]||'pending'}">${statusLabel[r.status]||r.status}</span></div>
-        <div style="display:flex;gap:.4rem">
-          ${r.status==='PENDING'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CONFIRMED')">✓</button>`:''}
-          ${r.status!=='CANCELLED'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CANCELLED')">✕</button>`:''}
+        <div class="admin-actions">
+          ${r.status==='PENDING'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CONFIRMED')">✓ Aceitar</button>`:''}
+          ${r.status==='PENDING'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','DECLINED')">✕ Recusar</button>`:''}
+          ${r.status!=='CANCELLED' && r.status!=='DECLINED' && r.status!=='PENDING'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CANCELLED')">↺ Cancelar</button>`:''}
         </div>
       </div>
       <div style="grid-column:1/-1;padding:.4rem 0 .6rem;border-bottom:1px solid var(--warm);font-size:.75rem;color:var(--muted);display:flex;gap:1.5rem">
@@ -1296,7 +1389,8 @@ async function updateReservationStatus(id, status) {
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
       body: JSON.stringify({ status })
     });
-    showToast(`Reserva ${status === 'CONFIRMED' ? 'confirmada' : 'cancelada'}.`);
+    const statusText = status === 'CONFIRMED' ? 'confirmada' : status === 'DECLINED' ? 'recusada' : 'cancelada';
+    showToast(`Reserva ${statusText}.`);
     loadAdminReservations();
     loadAdminStats();
   } catch(err) { showToast('Erro ao atualizar reserva.'); }
@@ -1341,8 +1435,13 @@ function openEditRoom(id) {
   document.getElementById('edit-room-type').value = room.type;
   document.getElementById('edit-room-price').value = room.pricePerNight;
   document.getElementById('edit-room-capacity').value = room.capacity;
+  document.getElementById('edit-room-size').value = room.sizeSqm || '';
+  document.getElementById('edit-room-bedrooms').value = room.bedrooms || '';
+  document.getElementById('edit-room-beds').value = room.beds || '';
   document.getElementById('edit-room-desc').value = room.description;
   document.getElementById('edit-room-amenities').value = (room.amenities || []).join(', ');
+  document.getElementById('edit-room-booking-ical').value = room.bookingIcalUrl || '';
+  document.getElementById('edit-room-airbnb-ical').value = room.airbnbIcalUrl || '';
   document.getElementById('edit-room-active').value = String(room.isActive);
   document.getElementById('edit-room-modal').style.display = 'flex';
 }
@@ -1358,8 +1457,13 @@ async function saveRoom() {
     type: document.getElementById('edit-room-type').value,
     pricePerNight: parseFloat(document.getElementById('edit-room-price').value),
     capacity: parseInt(document.getElementById('edit-room-capacity').value),
+    sizeSqm: document.getElementById('edit-room-size').value ? parseFloat(document.getElementById('edit-room-size').value) : null,
+    bedrooms: document.getElementById('edit-room-bedrooms').value ? parseInt(document.getElementById('edit-room-bedrooms').value) : null,
+    beds: document.getElementById('edit-room-beds').value ? parseInt(document.getElementById('edit-room-beds').value) : null,
     description: document.getElementById('edit-room-desc').value,
     amenities: document.getElementById('edit-room-amenities').value.split(',').map(s => s.trim()).filter(Boolean),
+    bookingIcalUrl: document.getElementById('edit-room-booking-ical').value.trim() || null,
+    airbnbIcalUrl: document.getElementById('edit-room-airbnb-ical').value.trim() || null,
     isActive: document.getElementById('edit-room-active').value === 'true',
   };
   try {
