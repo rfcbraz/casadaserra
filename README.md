@@ -129,6 +129,17 @@ curl -X POST http://localhost:3001/api/admin/login \
 
 ---
 
+## Publicação no GitHub Pages
+
+Este repositório já inclui um workflow em [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml) para publicar o site estático em GitHub Pages sempre que houver push para `main`.
+
+Depois do push, ativa o GitHub Pages no GitHub:
+1. Vai a `Settings` → `Pages`.
+2. Em `Build and deployment`, escolhe `GitHub Actions`.
+3. O site ficará disponível em `https://<utilizador>.github.io/<repositório>/` após a primeira execução do workflow.
+
+---
+
 ## Deploy no Railway (recomendado)
 
 1. Cria conta em [railway.app](https://railway.app)
