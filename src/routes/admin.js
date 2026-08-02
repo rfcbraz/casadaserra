@@ -20,6 +20,10 @@ router.post('/login', async (req, res, next) => {
     const valid = await bcrypt.compare(password, admin.password);
     if (!valid) return res.status(401).json({ error: 'Credenciais inválidas.' });
 
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ error: 'JWT_SECRET não está configurado no servidor.' });
+    }
+
     const token = jwt.sign(
       { id: admin.id, email: admin.email, name: admin.name },
       process.env.JWT_SECRET,
@@ -27,7 +31,13 @@ router.post('/login', async (req, res, next) => {
     );
 
     res.json({ token, admin: { id: admin.id, email: admin.email, name: admin.name } });
-  } catch (err) { next(err); }
+  } catch (err) {
+    console.error('Error in admin login:', err);
+    if (err && err.name === 'JsonWebTokenError') {
+      return res.status(500).json({ error: 'Erro ao gerar token JWT. Verifique a configuração do servidor.' });
+    }
+    next(err);
+  }
 });
 
 // GET /api/admin/me — verificar token
