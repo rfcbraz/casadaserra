@@ -39,7 +39,7 @@ router.post('/', async (req, res, next) => {
     const conflict = await prisma.reservation.findFirst({
       where: {
         roomId,
-        status: { in: ['PENDING', 'CONFIRMED', 'PAID'] },
+        status: { in: ['CONFIRMED', 'PAID'] },
         AND: [
           { checkIn: { lt: coDate } },
           { checkOut: { gt: ciDate } },
@@ -156,22 +156,51 @@ router.get('/', requireAuth, async (req, res, next) => {
 router.patch('/:id/status', requireAuth, async (req, res, next) => {
   try {
     const { status, notes } = req.body;
-    const validStatuses = ['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED', 'PAID'];
+    const validStatuses = ['PENDING', 'CONFIRMED', 'DECLINED', 'CANCELLED', 'COMPLETED', 'PAID'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: `Estado inválido. Use: ${validStatuses.join(', ')}` });
     }
-
+ 
     const reservation = await prisma.reservation.update({
       where: { id: req.params.id },
       data: { status, notes: notes || undefined },
       include: { room: true, guest: true },
     });
-
-    // Notificar hóspede
-    if (['CONFIRMED', 'CANCELLED', 'PAID'].includes(status)) {
-      sendReservationStatusUpdate(reservation, status)
-        .catch(err => console.error('Erro a enviar email:', err));
+ 
+    const emailPromises = [];
+    if (['CONFIRMED', 'CANCELLED', 'PAID', 'DECLINED'].includes(status)) {
+      emailPromises.push(sendReservationStatusUpdate(reservation, status));
     }
+ 
+    // When a pedido é aceite, recusamos automaticamente outros pendentes sobrepostos.
+    if (['CONFIRMED', 'PAID'].includes(status)) {
+      const pendingConflicts = await prisma.reservation.findMany({
+        where: {
+          id: { not: reservation.id },
+          roomId: reservation.roomId,
+          status: 'PENDING',
+          AND: [
+            { checkIn: { lt: reservation.checkOut } },
+            { checkOut: { gt: reservation.checkIn } },
+          ],
+        },
+        include: { room: true, guest: true },
+      });
+ 
+      if (pendingConflicts.length) {
+        await prisma.reservation.updateMany({
+          where: { id: { in: pendingConflicts.map(r => r.id) } },
+          data: { status: 'DECLINED' },
+        });
+ 
+        pendingConflicts.forEach(conflict => {
+          emailPromises.push(sendReservationStatusUpdate(conflict, 'DECLINED'));
+        });
+      }
+    }
+ 
+    Promise.all(emailPromises)
+      .catch(err => console.error('Erro a enviar email:', err));
 
     res.json(reservation);
   } catch (err) { next(err); }

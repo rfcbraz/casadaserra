@@ -17,8 +17,13 @@ async function main() {
       "description" TEXT NOT NULL DEFAULT '',
       "pricePerNight" DOUBLE PRECISION NOT NULL,
       "capacity" INTEGER NOT NULL,
+      "sizeSqm" DOUBLE PRECISION,
+      "bedrooms" INTEGER,
+      "beds" INTEGER,
       "amenities" TEXT[] DEFAULT '{}',
       "images" TEXT[] DEFAULT '{}',
+      "bookingIcalUrl" TEXT,
+      "airbnbIcalUrl" TEXT,
       "isActive" BOOLEAN NOT NULL DEFAULT true,
       "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
       "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
@@ -37,7 +42,7 @@ async function main() {
 
   await prisma.$executeRawUnsafe(`
     DO $$ BEGIN
-      CREATE TYPE "ReservationStatus" AS ENUM ('PENDING','CONFIRMED','CANCELLED','COMPLETED','PAID');
+      CREATE TYPE "ReservationStatus" AS ENUM ('PENDING','CONFIRMED','DECLINED','CANCELLED','COMPLETED','PAID');
     EXCEPTION WHEN duplicate_object THEN null;
     END $$;
   `);
@@ -64,10 +69,19 @@ async function main() {
   `);
 
   await prisma.$executeRawUnsafe(`
+    DO $$ BEGIN
+      CREATE TYPE IF NOT EXISTS "BlockedDateSource" AS ENUM ('MANUAL', 'BOOKING_COM', 'AIRBNB');
+    EXCEPTION WHEN duplicate_object THEN null;
+    END $$;
+  `);
+
+  await prisma.$executeRawUnsafe(`
     CREATE TABLE IF NOT EXISTS "BlockedDate" (
       "id" TEXT NOT NULL PRIMARY KEY,
       "date" TIMESTAMP NOT NULL,
       "reason" TEXT,
+      "source" "BlockedDateSource" NOT NULL DEFAULT 'MANUAL',
+      "externalUid" TEXT,
       "roomId" TEXT NOT NULL REFERENCES "Room"("id"),
       "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
       UNIQUE("roomId", "date")
@@ -113,8 +127,8 @@ async function main() {
   for (const r of rooms) {
     const amenitiesLiteral = `'{${r.amenities.map(a => `"${a}"`).join(',')}}'`;
     await prisma.$executeRawUnsafe(`
-      INSERT INTO "Room" ("id", "name", "type", "description", "pricePerNight", "capacity", "amenities", "images")
-      VALUES ('${uuidv4()}', '${r.name.replace(/'/g, "''")}', '${r.type}', '${r.description.replace(/'/g, "''")}', ${r.price}, ${r.capacity}, ${amenitiesLiteral}, '{}')
+      INSERT INTO "Room" ("id", "name", "type", "description", "pricePerNight", "capacity", "sizeSqm", "bedrooms", "beds", "amenities", "images", "bookingIcalUrl", "airbnbIcalUrl")
+      VALUES ('${uuidv4()}', '${r.name.replace(/'/g, "''")}', '${r.type}', '${r.description.replace(/'/g, "''")}', ${r.price}, ${r.capacity}, ${r.sizeSqm || 'NULL'}, ${r.bedrooms || 'NULL'}, ${r.beds || 'NULL'}, ${amenitiesLiteral}, '{}', ${r.bookingIcalUrl ? `'${r.bookingIcalUrl.replace(/'/g, "''")}'` : 'NULL'}, ${r.airbnbIcalUrl ? `'${r.airbnbIcalUrl.replace(/'/g, "''")}'` : 'NULL'})
       ON CONFLICT ("name") DO NOTHING;
     `);
     console.log(`✓ ${r.name}`);
