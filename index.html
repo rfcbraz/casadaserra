@@ -103,8 +103,8 @@ h2 em{font-style:italic;color:var(--accent)}
 .info-card h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--dark);margin-bottom:.75rem}
 .info-card p,.info-card li{color:var(--muted);line-height:1.8;font-size:.92rem}
 .info-card ul{margin:.25rem 0 0 1rem}
-.room-detail-specs{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1rem 0 1.2rem}
-.room-detail-spec{background:var(--cream);border:1px solid var(--warm);border-radius:2px;padding:.8rem;text-align:center}
+.room-detail-specs{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.65rem 0}
+.room-detail-spec{background:var(--cream);border:1px solid var(--warm);border-radius:2px;padding:.5rem;text-align:center}
 .room-detail-spec strong{display:block;font-size:1rem;color:var(--dark)}
 .room-detail-spec span{display:block;font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem}
 .btn-book{background:var(--dark);color:#fff;border:none;padding:.55rem 1.2rem;font-family:'Jost',sans-serif;font-size:.75rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:background .2s}
@@ -164,12 +164,12 @@ h2 em{font-style:italic;color:var(--accent)}
 .modal-backdrop{position:absolute;inset:0;background:rgba(42,33,24,.7);backdrop-filter:blur(4px)}
 .modal-content{position:relative;background:var(--white);width:90%;max-width:560px;border-radius:var(--radius);padding:2.5rem;max-height:90vh;overflow-y:auto}
 .booking-modal-content{width:90%;max-width:560px}
+.room-detail-content{width:90%;max-width:560px;padding:clamp(.85rem,2vh,1.25rem)}
 .modal-close-btn{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted);line-height:1}
 .modal-close-btn:hover{color:var(--dark)}
 .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:.3rem}
 .modal-sub{font-size:.82rem;color:var(--muted);margin-bottom:2rem}
-.room-detail-content{width:min(94vw,1000px);max-width:1000px;padding:2rem 2rem 2.2rem}
-.room-detail-carousel{position:relative;overflow:hidden;border-radius:var(--radius);margin:0 auto 1.25rem;width:min(100%,80vw,calc(60vh * 4 / 3));aspect-ratio:4/3;min-height:0}
+.room-detail-carousel{position:relative;overflow:hidden;border-radius:var(--radius);margin:0 auto .5rem;width:min(100%,80vw,calc(42vh * 4 / 3));aspect-ratio:4/3;min-height:0}
 .room-detail-carousel-track{display:flex;height:100%;transition:transform .35s ease}
 .room-detail-carousel-slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:flex-start;padding:1.5rem 4rem;min-height:0;position:relative;color:#fff;box-shadow:inset 0 -40px 60px rgba(0,0,0,.15)}
 .room-detail-carousel-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -178,22 +178,23 @@ h2 em{font-style:italic;color:var(--accent)}
 .room-detail-carousel-slide:nth-child(3n+2){background:linear-gradient(135deg,#5f472a,#c79955)}
 .room-detail-carousel-slide:nth-child(3n){background:linear-gradient(135deg,#3f3d34,#9d7f57)}
 .room-detail-carousel-copy{max-width:100%;position:relative;z-index:1}
-.room-detail-carousel-slide.has-image .room-detail-carousel-copy{position:absolute;left:50%;bottom:.75rem;transform:translateX(-50%);width:fit-content;max-width:calc(100% - 2rem);padding:.45rem .7rem;border-radius:4px;background:rgba(0,0,0,.48)}
+.room-detail-carousel-slide.has-image .room-detail-carousel-copy{position:absolute;left:50%;bottom:.75rem;transform:translateX(-50%);width:calc(100% - 2rem);max-width:32rem;padding:.55rem .7rem;border-radius:4px;background:rgba(0,0,0,.58);text-align:center}
 .room-detail-carousel-slide.has-image .room-detail-carousel-copy h4{margin:0}
-.room-detail-carousel-slide.has-image .room-detail-carousel-copy p{display:none}
+.room-detail-carousel-slide.has-image .room-detail-carousel-copy p{display:block;margin-top:.2rem;font-size:.75rem;line-height:1.35}
 .room-detail-carousel-copy h4{margin:0 0 .65rem;font-size:1.05rem;font-weight:600;color:#fff}
 .room-detail-carousel-copy p{margin:0;font-size:.82rem;line-height:1.55;color:rgba(255,255,255,.92);white-space:pre-line}
 .room-detail-carousel-control{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.9);color:var(--dark);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(0,0,0,.12)}
 .room-detail-carousel-control:hover{background:#fff}
 .room-detail-carousel-control.prev{left:1rem}
 .room-detail-carousel-control.next{right:1rem}
-.room-detail-carousel-dots{display:flex;gap:.5rem;justify-content:center;margin-top:1rem}
+.room-detail-carousel-dots{display:flex;gap:.5rem;justify-content:center;margin-top:.5rem}
 .room-detail-carousel-dot{width:10px;height:10px;border-radius:50%;background:rgba(42,33,24,.2);cursor:pointer;transition:background .2s}
 .room-detail-carousel-dot.active{background:var(--accent)}
-.room-detail-price{font-size:1.05rem;font-weight:600;color:var(--accent);margin-top:.35rem}
-.room-detail-amenities{display:flex;flex-wrap:wrap;gap:.55rem;margin:1rem 0 1.3rem}
-.room-detail-amenities .amenity{background:var(--cream);color:var(--earth);border:1px solid var(--warm);padding:.4rem .7rem;border-radius:999px;font-size:.78rem}
-.room-detail-footer{display:flex;justify-content:flex-end;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
+.room-detail-price{font-size:1.05rem;font-weight:600;color:var(--accent);margin-top:.2rem}
+.room-detail-content .modal-sub{font-size:.78rem;line-height:1.45;margin:.45rem 0 .65rem}
+.room-detail-amenities{display:flex;flex-wrap:wrap;gap:.35rem;margin:.65rem 0}
+.room-detail-amenities .amenity{background:var(--cream);color:var(--earth);border:1px solid var(--warm);padding:.25rem .5rem;border-radius:999px;font-size:.68rem}
+.room-detail-footer{position:sticky;bottom:-.85rem;z-index:2;display:flex;justify-content:flex-end;gap:.75rem;flex-wrap:wrap;margin:.65rem 0 0;padding:.65rem 0 .2rem;background:var(--white);border-top:1px solid var(--warm)}
 .btn-secondary{background:none;border:1px solid var(--warm);color:var(--muted);padding:.6rem 1rem;font-family:'Jost',sans-serif;font-size:.75rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px}
 .btn-secondary:hover{background:var(--cream);color:var(--dark)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -319,7 +320,8 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .avail-room .avail-price{text-align:left}
   .avail-price{font-size:1.05rem}
   .modal-content{width:min(95%,560px);padding:2rem}
-  .room-detail-content{width:min(95%,900px);padding:1.5rem 1.5rem 1.8rem}
+  .booking-modal-content{width:min(95%,560px);padding:2rem}
+  .room-detail-content{width:min(95%,560px);padding:clamp(.85rem,2vh,1.25rem)}
   .room-detail-carousel-control{width:34px;height:34px}
   .form-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr;gap:1.5rem}
@@ -341,7 +343,9 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 }
 
 @media (min-width:900px) and (orientation:landscape) {
-  .booking-modal-content{width:min(94vw,1100px);max-width:1100px;padding:2rem;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,.8fr);column-gap:2rem;align-content:start}
+  .booking-modal-content,.room-detail-content{width:min(94vw,1100px);max-width:1100px}
+  .booking-modal-content{padding:2rem;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,.8fr);column-gap:2rem;align-content:start}
+  .room-detail-content{padding:clamp(1rem,2vh,1.5rem)}
   .booking-modal-content h3,.booking-modal-content .modal-sub{grid-column:1/-1}
   .booking-modal-content .form-grid{grid-column:1;grid-row:3 / span 2;align-content:start}
   .booking-modal-content .form-summary{grid-column:2;grid-row:3;margin:0 0 1rem;align-self:start}
@@ -1170,14 +1174,7 @@ const roomCarouselImages = {
   T3: [
     { src: 'assets/images/t3-slide-1.jpg', alt: 'Quarto de casal do T3 com televisão e ar condicionado', title: 'Quarto de casal', text: 'Quarto confortável com cama de casal, televisão e ar condicionado.' },
     { src: 'assets/images/t3-slide-2.jpg', alt: 'Quarto de casal do T3 com vista para a albufeira', title: 'Quarto com vista', text: 'Quarto de casal com acesso à varanda e vista para a albufeira.' },
-    { src: 'assets/images/t3-slide-3.jpg', alt: 'Cozinha equipada do T3', title: 'Cozinha equipada', text: 'Cozinha equipada integrada no alojamento.' },
-    { title: 'Ficha técnica', text: 'Casa do Ferreiro T3 · Apartamento / casa de férias\nLicença AL: 167437/AL · 125 m² · Até 9 hóspedes\nClassificação: 9,6/10 · Localização: 10/10' },
-    { title: 'Localização & envolvente', text: 'R. Ferreiro 3, 5470-504 Venda Nova, Montalegre, Portugal\nEm frente à praia/albufeira, com área de praia privada e vistas sobre o lago e as montanhas, num ambiente tranquilo.' },
-    { title: 'Pontos de interesse', text: 'Parque Nacional da Peneda-Gerês: 0 km\nParque de Merendas de Moinhos de Rei: 15 km · Barragem da Paradela: 16 km\nBarragem da Caniçada: 29 km · Santuário de São Bento da Porta Aberta: 31 km\nAeroporto Francisco Sá Carneiro: 117 km' },
-    { title: 'Quartos & casas de banho', text: '3 quartos, cada um com uma cama de casal grande; sofá-cama na sala (4 camas no total).\n3 casas de banho completas com bidé e chuveiro. Toalhas e roupa de cama incluídas.' },
-    { title: 'Sala & cozinha', text: 'Sala de estar espaçosa com sofá-cama e ar condicionado.\nCozinha totalmente equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios.' },
-    { title: 'Exterior & comodidades', text: 'Varanda e terraço mobilados, com vistas para o lago, montanhas, jardim e cidade. Acesso ao jardim e à área de praia privada.\nEstacionamento privado gratuito, Wi-Fi de alta velocidade, quartos familiares e para não fumadores, ar condicionado e condições de acessibilidade especial.' },
-    { title: 'Regras & horários', text: `Check-in: 15:00–18:00; informe a hora de chegada com antecedência. Check-out: 08:00–11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas.\nCrianças bem-vindas; hóspedes com 18 ou mais anos pagam tarifa de adulto. Berço gratuito dos 0 aos 2 anos, mediante pedido.\nNão há camas extra. Animais, fumo no interior, festas e eventos não são permitidos.` }
+    { src: 'assets/images/t3-slide-3.jpg', alt: 'Cozinha equipada do T3', title: 'Cozinha equipada', text: 'Cozinha equipada integrada no alojamento.' }
   ],
   default: [
     { label: 'Espaço acolhedor' },
