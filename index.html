@@ -1578,12 +1578,18 @@ async function loadAdminStats() {
 
 async function loadAdminReservations(statusFilter) {
   if (!adminToken) return;
+  const tbody = document.getElementById('admin-reservations-body');
+  if (!tbody) return;
   try {
     const url = statusFilter ? `${API}/reservations?status=${statusFilter}` : `${API}/reservations`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${adminToken}` } });
-    const data = await res.json();
-    const tbody = document.getElementById('admin-reservations-body');
-    if (!tbody) return;
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || `Erro ao carregar reservas (HTTP ${res.status}).`);
+    }
+    if (!Array.isArray(data.reservations)) {
+      throw new Error('Resposta inválida ao carregar reservas.');
+    }
     const statusLabel = { PENDING: 'Pendente', AWAITING_PAYMENT: 'Aguardar pagamento', CONFIRMED: 'Confirmada', DECLINED: 'Recusada', CANCELLED: 'Cancelada', PAID: 'Paga', COMPLETED: 'Concluída' };
     const statusClass = { PENDING: 'pending', AWAITING_PAYMENT: 'pending', CONFIRMED: 'confirmed', DECLINED: 'declined', CANCELLED: 'cancelled', PAID: 'confirmed', COMPLETED: 'confirmed' };
     tbody.innerHTML = data.reservations.map(r => `
@@ -1603,7 +1609,13 @@ async function loadAdminReservations(statusFilter) {
         <span>💰 Total: <strong style="color:var(--dark)">€${r.totalPrice?.toFixed(2)}</strong></span>
         ${r.specialRequests ? `<span>📝 Pedidos: <strong style="color:var(--dark)">${r.specialRequests}</strong></span>` : ''}
       </div>`).join('');
-  } catch(err) { console.error('Erro reservas:', err); }
+  } catch(err) {
+    console.error('Erro reservas:', err);
+    const message = document.createElement('div');
+    message.style.cssText = 'padding:2rem;color:#dc2626;font-size:.85rem';
+    message.textContent = err.message || 'Não foi possível carregar as reservas.';
+    tbody.replaceChildren(message);
+  }
 }
 
 function filterReservations(status, el) {

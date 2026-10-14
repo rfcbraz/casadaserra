@@ -157,6 +157,8 @@ Depois do push, ativa o GitHub Pages no GitHub:
    - O `DATABASE_URL` é gerado automaticamente pelo Railway
 5. Railway faz deploy automático em cada `git push`
 
+O comando `npm start` executa `setup-db.js`, que mantém os campos de pagamento e o estado `AWAITING_PAYMENT` da tabela de reservas compatíveis com a versão atual. Continua a aplicar `npm run db:migrate` no deploy para executar as restantes migrações.
+
 ### Variáveis obrigatórias no Railway
 ```
 DATABASE_URL        → gerado automaticamente

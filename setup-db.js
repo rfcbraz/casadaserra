@@ -69,8 +69,29 @@ async function main() {
   `);
 
   await prisma.$executeRawUnsafe(`
+    ALTER TYPE "ReservationStatus" ADD VALUE IF NOT EXISTS 'AWAITING_PAYMENT';
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Reservation"
+      ADD COLUMN IF NOT EXISTS "stripeCheckoutSessionId" TEXT,
+      ADD COLUMN IF NOT EXISTS "stripeRefundId" TEXT,
+      ADD COLUMN IF NOT EXISTS "paymentExpiresAt" TIMESTAMP;
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    CREATE UNIQUE INDEX IF NOT EXISTS "Reservation_stripeCheckoutSessionId_key"
+      ON "Reservation"("stripeCheckoutSessionId");
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    CREATE UNIQUE INDEX IF NOT EXISTS "Reservation_stripeRefundId_key"
+      ON "Reservation"("stripeRefundId");
+  `);
+
+  await prisma.$executeRawUnsafe(`
     DO $$ BEGIN
-      CREATE TYPE IF NOT EXISTS "BlockedDateSource" AS ENUM ('MANUAL', 'BOOKING_COM', 'AIRBNB');
+      CREATE TYPE "BlockedDateSource" AS ENUM ('MANUAL', 'BOOKING_COM', 'AIRBNB');
     EXCEPTION WHEN duplicate_object THEN null;
     END $$;
   `);
