@@ -1438,13 +1438,38 @@ async function confirmBooking() {
 }
 
 // ── Admin panel ───────────────────────────────────────────
-let adminToken = null;
+const ADMIN_TOKEN_KEY = 'casadaserra-admin-token';
+let adminToken = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+
+function showAdminPanel() {
+  document.getElementById('admin-panel').classList.add('open');
+  loadAdminStats();
+  loadAdminReservations();
+}
+
+async function restoreAdminSession() {
+  if (!adminToken) return;
+  showAdminPanel();
+
+  try {
+    const res = await fetch(`${API}/admin/me`, {
+      headers: { Authorization: `Bearer ${adminToken}` }
+    });
+    if (res.status === 401) {
+      adminToken = null;
+      sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+      closeAdmin();
+    } else if (!res.ok) {
+      throw new Error(`Erro ao validar sessão admin (HTTP ${res.status}).`);
+    }
+  } catch(err) {
+    console.error('Erro ao validar sessão admin:', err);
+  }
+}
 
 function openAdmin() {
   if (adminToken) {
-    document.getElementById('admin-panel').classList.add('open');
-    loadAdminStats();
-    loadAdminReservations();
+    showAdminPanel();
   } else {
     showAdminLogin();
   }
@@ -1508,10 +1533,9 @@ async function doAdminLogin() {
     const data = await res.json();
     if (res.ok) {
       adminToken = data.token;
+      sessionStorage.setItem(ADMIN_TOKEN_KEY, adminToken);
       document.getElementById('admin-login-modal').remove();
-      document.getElementById('admin-panel').classList.add('open');
-      loadAdminStats();
-      loadAdminReservations();
+      showAdminPanel();
     } else {
       errEl.textContent = data.error || 'Credenciais inválidas.';
       errEl.style.display = 'block';
@@ -1949,6 +1973,7 @@ if (paymentResult === 'success') {
 if (paymentResult) history.replaceState(null, '', window.location.pathname + window.location.hash);
 
 loadRooms();
+restoreAdminSession();
 </script>
 </body>
 </html>
