@@ -43,6 +43,7 @@ nav.scrolled .nav-toggle{border-color:rgba(42,33,24,.2);color:var(--dark)}
 .hero-eyebrow::before{content:'';display:block;width:40px;height:1px;background:var(--accent2)}
 .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,7vw,6rem);font-weight:300;line-height:1.05;color:var(--white);margin-bottom:1.5rem;letter-spacing:-.01em}
 .hero h1 em{font-style:italic;color:var(--accent2)}
+.hero-title-emphasis-char{display:inline-block}
 .hero-sub{font-size:1rem;color:rgba(255,255,255,.7);line-height:1.8;max-width:480px;margin-bottom:2.5rem;font-weight:300}
 .hero-actions{display:flex;gap:1rem;flex-wrap:wrap}
 .btn-hero{background:var(--accent);color:#fff;border:none;padding:1rem 2.5rem;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s}
@@ -72,20 +73,20 @@ h2 em{font-style:italic;color:var(--accent)}
 .rooms-section{padding:6rem 0;background:var(--white)}
 .rooms-section > div{max-width:1200px;margin:0 auto;padding:0 3rem}
 .rooms-section .section-eyebrow,.rooms-section h2{text-align:center;justify-content:center}
-.rooms-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem;margin:3rem auto 0;max-width:1000px}
-.room-card{background:var(--cream);border:1px solid var(--warm);border-radius:var(--radius);overflow:hidden;transition:transform .3s,box-shadow .3s;cursor:pointer;display:flex;flex-direction:column}
+.rooms-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:1.5rem;margin:3rem auto 0;max-width:1000px}
+.room-card{height:100%;background:var(--cream);border:1px solid var(--warm);border-radius:var(--radius);overflow:hidden;transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column}
 .room-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(42,33,24,.12)}
-.room-visual{aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;overflow:hidden}
-.room-visual-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#211d19}
+.room-visual{aspect-ratio:4/3;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;overflow:hidden;cursor:zoom-in}
+.room-visual-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .room-visual.deluxe{background:linear-gradient(135deg,#3d3020,#6b4f35)}
 .room-visual.superior{background:linear-gradient(135deg,#2a3d30,#4f6b55)}
 .room-visual.suite{background:linear-gradient(135deg,#3d2a20,#8b5a35)}
 .room-visual.twin{background:linear-gradient(135deg,#2a2d3d,#354f6b)}
 .room-visual-badge{position:absolute;top:1rem;right:1rem;background:var(--accent);color:#fff;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .7rem;border-radius:2px}
-.room-body{padding:1.5rem;display:flex;flex:1;flex-direction:column}
+.room-body{width:100%;padding:1.5rem;display:flex;flex:1;flex-direction:column}
 .room-name{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;margin-bottom:.3rem}
-.room-desc{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1rem}
-.room-amenities{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.room-desc{display:-webkit-box;height:5.2rem;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:4;font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1rem}
+.room-amenities{display:flex;height:4.5rem;flex-wrap:wrap;align-content:flex-start;gap:.4rem;overflow:hidden;margin-bottom:1rem}
 .amenity{font-size:.7rem;background:var(--warm);color:var(--earth);padding:.2rem .6rem;border-radius:2px;font-weight:500}
 .room-footer{display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--warm);margin-top:auto}
 .room-price{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--accent)}
@@ -103,10 +104,6 @@ h2 em{font-style:italic;color:var(--accent)}
 .info-card h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--dark);margin-bottom:.75rem}
 .info-card p,.info-card li{color:var(--muted);line-height:1.8;font-size:.92rem}
 .info-card ul{margin:.25rem 0 0 1rem}
-.room-detail-specs{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.65rem 0}
-.room-detail-spec{background:var(--cream);border:1px solid var(--warm);border-radius:2px;padding:.5rem;text-align:center}
-.room-detail-spec strong{display:block;font-size:1rem;color:var(--dark)}
-.room-detail-spec span{display:block;font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem}
 .btn-book{background:var(--dark);color:#fff;border:none;padding:.55rem 1.2rem;font-family:'Jost',sans-serif;font-size:.75rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:background .2s}
 .btn-book:hover{background:var(--accent)}
 
@@ -164,25 +161,22 @@ h2 em{font-style:italic;color:var(--accent)}
 .modal-backdrop{position:absolute;inset:0;background:rgba(42,33,24,.7);backdrop-filter:blur(4px)}
 .modal-content{position:relative;background:var(--white);width:90%;max-width:560px;border-radius:var(--radius);padding:2.5rem;max-height:90vh;overflow-y:auto}
 .booking-modal-content{width:90%;max-width:560px}
-.room-detail-content{width:90%;max-width:560px;padding:clamp(.85rem,2vh,1.25rem)}
+.info-modal-content{width:min(90%,560px);padding:2.5rem}
+.info-modal-content h3{padding-right:2rem}
+.info-modal-body{color:var(--muted);font-size:.92rem;line-height:1.8}
+.info-modal-body p{margin-bottom:.85rem}
+.info-modal-body p:last-child{margin-bottom:0}
+.info-modal-body ul{padding-left:1.25rem}
+.info-modal-body li+li{margin-top:.4rem}
+.room-detail-content{width:min(94vw,calc(78vh * 4 / 3),1200px);max-width:1200px;padding:clamp(.5rem,1vw,1rem);max-height:94vh;overflow:hidden}
 .modal-close-btn{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted);line-height:1}
 .modal-close-btn:hover{color:var(--dark)}
 .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:.3rem}
 .modal-sub{font-size:.82rem;color:var(--muted);margin-bottom:2rem}
-.room-detail-carousel{position:relative;overflow:hidden;border-radius:var(--radius);margin:0 auto .5rem;width:min(100%,80vw,calc(42vh * 4 / 3));aspect-ratio:4/3;min-height:0}
+.room-detail-carousel{position:relative;overflow:hidden;border-radius:var(--radius);margin:0 auto;width:100%;aspect-ratio:4/3;min-height:0}
 .room-detail-carousel-track{display:flex;height:100%;transition:transform .35s ease}
-.room-detail-carousel-slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:flex-start;padding:1.5rem 4rem;min-height:0;position:relative;color:#fff;box-shadow:inset 0 -40px 60px rgba(0,0,0,.15)}
+.room-detail-carousel-slide{min-width:100%;height:100%;position:relative}
 .room-detail-carousel-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.room-detail-carousel-slide.has-image::after{content:"";position:absolute;inset:70% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.38));pointer-events:none}
-.room-detail-carousel-slide:nth-child(3n+1){background:linear-gradient(135deg,#3d2a20,#8b5e2f)}
-.room-detail-carousel-slide:nth-child(3n+2){background:linear-gradient(135deg,#5f472a,#c79955)}
-.room-detail-carousel-slide:nth-child(3n){background:linear-gradient(135deg,#3f3d34,#9d7f57)}
-.room-detail-carousel-copy{max-width:100%;position:relative;z-index:1}
-.room-detail-carousel-slide.has-image .room-detail-carousel-copy{position:absolute;left:50%;bottom:.75rem;transform:translateX(-50%);width:calc(100% - 2rem);max-width:32rem;padding:.55rem .7rem;border-radius:4px;background:rgba(0,0,0,.58);text-align:center}
-.room-detail-carousel-slide.has-image .room-detail-carousel-copy h4{margin:0}
-.room-detail-carousel-slide.has-image .room-detail-carousel-copy p{display:block;margin-top:.2rem;font-size:.75rem;line-height:1.35}
-.room-detail-carousel-copy h4{margin:0 0 .65rem;font-size:1.05rem;font-weight:600;color:#fff}
-.room-detail-carousel-copy p{margin:0;font-size:.82rem;line-height:1.55;color:rgba(255,255,255,.92);white-space:pre-line}
 .room-detail-carousel-control{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.9);color:var(--dark);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(0,0,0,.12)}
 .room-detail-carousel-control:hover{background:#fff}
 .room-detail-carousel-control.prev{left:1rem}
@@ -190,11 +184,6 @@ h2 em{font-style:italic;color:var(--accent)}
 .room-detail-carousel-dots{display:flex;gap:.5rem;justify-content:center;margin-top:.5rem}
 .room-detail-carousel-dot{width:10px;height:10px;border-radius:50%;background:rgba(42,33,24,.2);cursor:pointer;transition:background .2s}
 .room-detail-carousel-dot.active{background:var(--accent)}
-.room-detail-price{font-size:1.05rem;font-weight:600;color:var(--accent);margin-top:.2rem}
-.room-detail-content .modal-sub{font-size:.78rem;line-height:1.45;margin:.45rem 0 .65rem}
-.room-detail-amenities{display:flex;flex-wrap:wrap;gap:.35rem;margin:.65rem 0}
-.room-detail-amenities .amenity{background:var(--cream);color:var(--earth);border:1px solid var(--warm);padding:.25rem .5rem;border-radius:999px;font-size:.68rem}
-.room-detail-footer{position:sticky;bottom:-.85rem;z-index:2;display:flex;justify-content:flex-end;gap:.75rem;flex-wrap:wrap;margin:.65rem 0 0;padding:.65rem 0 .2rem;background:var(--white);border-top:1px solid var(--warm)}
 .btn-secondary{background:none;border:1px solid var(--warm);color:var(--muted);padding:.6rem 1rem;font-family:'Jost',sans-serif;font-size:.75rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px}
 .btn-secondary:hover{background:var(--cream);color:var(--dark)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -254,10 +243,15 @@ h2 em{font-style:italic;color:var(--accent)}
 
 .toast{position:fixed;bottom:2rem;right:2rem;background:var(--dark);color:#fff;padding:1rem 1.5rem;border-radius:var(--radius);font-size:.85rem;z-index:999;transform:translateY(100px);opacity:0;transition:all .3s;border-left:3px solid var(--accent)}
 .toast.show{transform:translateY(0);opacity:1}
+.back-to-top{position:fixed;right:1.5rem;bottom:1.5rem;z-index:450;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:var(--accent);color:#fff;font-size:1.5rem;line-height:1;cursor:pointer;box-shadow:0 4px 16px rgba(42,33,24,.25);opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .2s,visibility .2s,transform .2s,background .2s}
+.back-to-top:hover{background:var(--dark)}
+.back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+@media (max-width:540px){.back-to-top{right:1rem;bottom:1rem;width:44px;height:44px}}
 
 footer{background:var(--dark);padding:4rem 3rem 2rem}
 .footer-inner{max-width:1200px;margin:0 auto}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.footer-main{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:3rem;align-items:start;margin-bottom:3rem}
+.footer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem}
 .footer-brand{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--white);margin-bottom:.75rem}
 .footer-tagline{font-size:.82rem;color:var(--stone);line-height:1.7;font-weight:300}
 .footer-col h4{font-size:.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--stone);margin-bottom:1rem}
@@ -265,6 +259,11 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 .footer-col ul li{margin-bottom:.5rem}
 .footer-col ul li a{color:rgba(255,255,255,.4);text-decoration:none;font-size:.82rem;transition:color .2s}
 .footer-col ul li a:hover{color:var(--accent2)}
+.footer-location{min-width:0}
+.footer-location h4{font-size:.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--stone);margin-bottom:1rem}
+.footer-map{display:block;width:100%;height:clamp(220px,28vw,320px);border:0;border-radius:var(--radius)}
+.footer-map-link{display:inline-block;margin-top:.75rem;color:var(--accent2);font-size:.82rem;text-decoration:none}
+.footer-map-link:hover{text-decoration:underline}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center}
 .footer-copy{font-size:.75rem;color:rgba(255,255,255,.3)}
 .admin-link{font-size:.72rem;color:rgba(255,255,255,.2);cursor:pointer;transition:color .2s;background:none;border:none;font-family:'Jost',sans-serif}
@@ -281,10 +280,12 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   section{padding:5rem 1.5rem}
   .rooms-section > div{padding:0 1.5rem}
   .rooms-grid{grid-template-columns:repeat(2,1fr)}
+  .room-visual{aspect-ratio:4/3}
   .about-grid{gap:3rem}
   .avail-section{padding:5rem 1.5rem}
   .avail-grid{grid-template-columns:1fr}
-  .footer-grid{grid-template-columns:1fr 1fr;gap:2rem}
+  .footer-main{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:2rem}
+  .footer-grid{gap:1.5rem}
 }
 
 @media (max-width:768px) {
@@ -310,6 +311,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .booking-submit{padding:1rem;white-space:normal}
   .rooms-grid{grid-template-columns:1fr}
   .room-card{min-width:0}
+  .room-visual{aspect-ratio:4/3}
   .info-grid{grid-template-columns:1fr}
   .about-grid{grid-template-columns:1fr;gap:2rem}
   .about-image{height:320px}
@@ -321,10 +323,11 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .avail-price{font-size:1.05rem}
   .modal-content{width:min(95%,560px);padding:2rem}
   .booking-modal-content{width:min(95%,560px);padding:2rem}
-  .room-detail-content{width:min(95%,560px);padding:clamp(.85rem,2vh,1.25rem)}
+  .room-detail-content{width:min(96vw,calc(78vh * 4 / 3));padding:.5rem}
   .room-detail-carousel-control{width:34px;height:34px}
   .form-grid{grid-template-columns:1fr}
-  .footer-grid{grid-template-columns:1fr;gap:1.5rem}
+  .footer-main{grid-template-columns:1fr;gap:2rem}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem}
 }
 
 @media (max-width:540px) {
@@ -333,19 +336,15 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .booking-bar{padding:1rem}
   .booking-field{padding:.9rem}
   .btn-hero,.btn-hero-outline{width:100%;text-align:center}
-  .room-detail-carousel-slide{padding:1.25rem 3.25rem}
-  .room-detail-carousel-slide.has-image .room-detail-carousel-copy{max-width:100%;padding:.65rem .75rem}
-  .room-detail-carousel-copy h4{font-size:.98rem}
-  .room-detail-carousel-copy p{font-size:.76rem}
   .room-detail-carousel-control.prev{left:.75rem}
   .room-detail-carousel-control.next{right:.75rem}
   .footer-bottom{flex-direction:column;align-items:flex-start;gap:.75rem}
 }
 
 @media (min-width:900px) and (orientation:landscape) {
-  .booking-modal-content,.room-detail-content{width:min(94vw,1100px);max-width:1100px}
+  .booking-modal-content{width:min(94vw,1100px);max-width:1100px}
   .booking-modal-content{padding:2rem;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,.8fr);column-gap:2rem;align-content:start}
-  .room-detail-content{padding:clamp(1rem,2vh,1.5rem)}
+  .room-detail-content{padding:.75rem}
   .booking-modal-content h3,.booking-modal-content .modal-sub{grid-column:1/-1}
   .booking-modal-content .form-grid{grid-column:1;grid-row:3 / span 2;align-content:start}
   .booking-modal-content .form-summary{grid-column:2;grid-row:3;margin:0 0 1rem;align-self:start}
@@ -375,7 +374,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-eyebrow">Turismo Rural · Barroso</div>
-    <h1>Refúgio de <em>tranquilidade</em><br>entre a albufeira e o Gerês</h1>
+    <h1>Refúgio de<br><em>tranquilidade</em><br>entre a albufeira e o Gerês</h1>
     <p class="hero-sub">A Casa do Ferreiro combina a tradição da região de Barroso com conforto contemporâneo, na proximidade da Albufeira de Venda Nova e da Serra do Gerês.</p>
     <div class="hero-actions">
       <button class="btn-hero" onclick="openBooking()">Reservar agora</button>
@@ -521,14 +520,21 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 
 <footer id="contact">
   <div class="footer-inner">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand">Casa do Ferreiro</div>
-        <p class="footer-tagline">Refúgio de tranquilidade entre a Albufeira de Venda Nova e a Serra do Gerês, com conforto, vistas e natureza envolvente.</p>
+    <div class="footer-main">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">Casa do Ferreiro</div>
+          <p class="footer-tagline">Refúgio de tranquilidade entre a Albufeira de Venda Nova e a Serra do Gerês, com conforto, vistas e natureza envolvente.</p>
+        </div>
+        <div class="footer-col"><h4>Alojamento</h4><ul><li><a href="#rooms">T2</a></li><li><a href="#rooms">T3</a></li></ul></div>
+        <div class="footer-col"><h4>Informações</h4><ul><li><a href="#info-modal" onclick="openInfoModal('checkin');return false">Check-in flexível</a></li><li><a href="#info-modal" onclick="openInfoModal('local');return false">Alojamento Local</a></li><li><a href="#info-modal" onclick="openInfoModal('policies');return false">Políticas</a></li></ul></div>
+        <div class="footer-col"><h4>Contacto</h4><ul><li><a href="#">📍 Rua do Ferreiro nº 3, 5470-504 Venda Nova, Montalegre, Portugal</a></li><li><a href="#">✉ reservas@casadoferreiro.pt</a></li><li><a href="#">📞 +351 938 750 239</a></li></ul></div>
       </div>
-      <div class="footer-col"><h4>Alojamento</h4><ul><li><a href="#rooms">T2</a></li><li><a href="#rooms">T3</a></li></ul></div>
-      <div class="footer-col"><h4>Informações</h4><ul><li><a href="#">Check-in flexível</a></li><li><a href="#">Alojamento Local</a></li><li><a href="#">Localização</a></li><li><a href="#">Políticas</a></li></ul></div>
-      <div class="footer-col"><h4>Contacto</h4><ul><li><a href="#">📍 Rua do Ferreiro nº 3, 5470-504 Venda Nova, Montalegre, Portugal</a></li><li><a href="#">✉ reservas@casadoferreiro.pt</a></li><li><a href="#">📞 +351 938 750 239</a></li></ul></div>
+      <div class="footer-location">
+        <h4>Localização</h4>
+        <iframe class="footer-map" title="Localização da Casa do Ferreiro no Google Maps" src="https://maps.google.com/maps?q=Rua%20do%20Ferreiro%203%2C%205470-504%20Venda%20Nova%2C%20Montalegre%2C%20Portugal&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        <a class="footer-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Rua%20do%20Ferreiro%203%2C%205470-504%20Venda%20Nova%2C%20Montalegre%2C%20Portugal" target="_blank" rel="noopener noreferrer">Abrir no Google Maps</a>
+      </div>
     </div>
     <div class="footer-bottom">
       <div class="footer-copy">© 2026 Casa do Ferreiro. Todos os direitos reservados.</div>
@@ -537,29 +543,26 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   </div>
 </footer>
 
+<div class="modal" id="info-modal">
+  <div class="modal-backdrop" onclick="closeInfoModal()"></div>
+  <div class="modal-content info-modal-content" role="dialog" aria-modal="true" aria-labelledby="info-modal-title">
+    <button class="modal-close-btn" type="button" aria-label="Fechar" onclick="closeInfoModal()">×</button>
+    <h3 id="info-modal-title"></h3>
+    <div class="info-modal-body" id="info-modal-body"></div>
+  </div>
+</div>
+
 <!-- ROOM DETAIL MODAL -->
 <div class="modal" id="room-detail-modal">
   <div class="modal-backdrop" onclick="closeRoomDetails()"></div>
-  <div class="modal-content room-detail-content">
+  <div class="modal-content room-detail-content" role="dialog" aria-modal="true" aria-label="Fotografias da acomodação">
     <button class="modal-close-btn" onclick="closeRoomDetails()">×</button>
-    <div class="room-detail-carousel" id="room-detail-carousel">
+    <div class="room-detail-carousel" id="room-detail-carousel" role="region" aria-label="Fotografias da acomodação">
       <div class="room-detail-carousel-track" id="room-detail-carousel-track"></div>
-      <button class="room-detail-carousel-control prev" onclick="moveRoomCarousel(-1)">‹</button>
-      <button class="room-detail-carousel-control next" onclick="moveRoomCarousel(1)">›</button>
+      <button class="room-detail-carousel-control prev" aria-label="Fotografia anterior" onclick="moveRoomCarousel(-1)">‹</button>
+      <button class="room-detail-carousel-control next" aria-label="Fotografia seguinte" onclick="moveRoomCarousel(1)">›</button>
     </div>
     <div class="room-detail-carousel-dots" id="room-detail-carousel-dots"></div>
-    <div class="room-detail-header">
-      <div class="section-eyebrow">Unidade</div>
-      <h3 id="room-detail-title"></h3>
-      <div class="room-detail-price" id="room-detail-price"></div>
-    </div>
-    <p class="modal-sub" id="room-detail-desc"></p>
-    <div class="room-detail-specs" id="room-detail-specs"></div>
-    <div class="room-detail-amenities" id="room-detail-amenities"></div>
-    <div class="room-detail-footer">
-      <button class="btn-book" onclick="handleRoomDetailBooking()">Reservar</button>
-      <button class="btn-secondary" onclick="closeRoomDetails()">Fechar</button>
-    </div>
   </div>
 </div>
 
@@ -745,10 +748,92 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 </div>
 
 <div class="toast" id="toast"></div>
+<button class="back-to-top" id="back-to-top" type="button" aria-label="Voltar ao topo" title="Voltar ao topo" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
 const MINIMUM_STAY_NIGHTS = 2;
-window.addEventListener('scroll',()=>document.getElementById('main-nav').classList.toggle('scrolled',scrollY>60));
+let heroTitleCharacters = [];
+let heroTitleAnimations = [];
+let brandTitleCharacters = [];
+let brandTitleAnimations = [];
+
+function animateBrandTitle() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return 0;
+  const title = document.querySelector('.nav-logo');
+  if (!title || typeof Element.prototype.animate !== 'function') return 0;
+  if (!brandTitleCharacters.length) {
+    const walker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+    textNodes.forEach(node => {
+      const fragment = document.createDocumentFragment();
+      Array.from(node.textContent).forEach(character => {
+        const span = document.createElement('span');
+        span.textContent = character;
+        fragment.appendChild(span);
+        brandTitleCharacters.push(span);
+      });
+      node.replaceWith(fragment);
+    });
+  }
+  brandTitleAnimations.forEach(animation => animation.cancel());
+  brandTitleAnimations = brandTitleCharacters.map((character, index) =>
+    character.animate(
+      [{ opacity: 0 }, { opacity: 1 }],
+      { duration: 100, delay: index * 55, fill: 'both', easing: 'ease-out' }
+    )
+  );
+  return Math.max(0, (brandTitleCharacters.length - 1) * 55 + 100);
+}
+
+function animateHeroTitle(startDelay = 0) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const title = document.querySelector('.hero h1');
+  if (!title || typeof Element.prototype.animate !== 'function') return;
+  if (!heroTitleCharacters.length) {
+    const walker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+    textNodes.forEach(node => {
+      const fragment = document.createDocumentFragment();
+      const isEmphasis = Boolean(node.parentElement.closest('em'));
+      Array.from(node.textContent).forEach(character => {
+        const span = document.createElement('span');
+        if (isEmphasis) span.className = 'hero-title-emphasis-char';
+        span.textContent = character;
+        fragment.appendChild(span);
+        heroTitleCharacters.push(span);
+      });
+      node.replaceWith(fragment);
+    });
+  }
+  heroTitleAnimations.forEach(animation => animation.cancel());
+  heroTitleAnimations = heroTitleCharacters.map((character, index) => {
+    const isEmphasis = character.classList.contains('hero-title-emphasis-char');
+    return character.animate(
+      isEmphasis
+        ? [{ opacity: 0, transform: 'scale(.75)' }, { opacity: 1, transform: 'scale(1.15)', offset: .72 }, { opacity: 1, transform: 'scale(1)' }]
+        : [{ opacity: 0 }, { opacity: 1 }],
+      { duration: isEmphasis ? 360 : 100, delay: startDelay + index * 55, fill: 'both', easing: 'ease-out' }
+    );
+  });
+}
+
+let hasLeftTop = false;
+function updateScrollControls() {
+  const isScrolled = window.scrollY > 60;
+  document.getElementById('main-nav').classList.toggle('scrolled', isScrolled);
+  document.getElementById('back-to-top').classList.toggle('visible', window.scrollY > 300);
+  if (isScrolled) {
+    hasLeftTop = true;
+  } else if (hasLeftTop) {
+    animateHeroTitle(animateBrandTitle());
+    hasLeftTop = false;
+  }
+}
+window.addEventListener('scroll', updateScrollControls, { passive: true });
+animateHeroTitle(animateBrandTitle());
+updateScrollControls();
 function toggleMobileMenu() {
   const navLinks = document.getElementById('main-nav-links');
   const toggle = document.querySelector('.nav-toggle');
@@ -965,9 +1050,9 @@ function renderRoomCards() {
     const presentation = getRoomPresentation(room);
     const amenities = presentation.amenities.slice(0, 6).map(item => `<span class="amenity">${item}</span>`).join('');
     return `
-      <div class="room-card" data-room-id="${room.id}" tabindex="0">
-        <div class="room-visual t${(room.type || '').toUpperCase().replace('T','')}">
-          ${presentation.coverImage ? `<img class="room-visual-photo" src="${presentation.coverImage}" alt="${presentation.coverAlt}" loading="lazy" decoding="async">` : `<span style="font-size:3.5rem;line-height:1">${presentation.emoji}</span>`}
+      <div class="room-card" data-room-id="${room.id}">
+        <div class="room-visual t${(room.type || '').toUpperCase().replace('T','')}" role="button" aria-label="Ver fotografias de ${presentation.name}" tabindex="0">
+          <img class="room-visual-photo" src="${presentation.coverImage}" alt="${presentation.coverAlt}" loading="lazy" decoding="async">
           <div class="room-visual-badge">${presentation.badge}</div>
         </div>
         <div class="room-body">
@@ -998,7 +1083,8 @@ function bindRoomCardEvents() {
     openRoomDetails(card.dataset.roomId);
   });
   grid.addEventListener('keydown', (event) => {
-    const card = event.target.closest('.room-card');
+    const photo = event.target.closest('.room-visual');
+    const card = photo?.closest('.room-card');
     if (!card) return;
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -1167,14 +1253,14 @@ async function openBookingFromBar() {
 // ── Modal de detalhes do quarto ─────────────────────────
 const roomCarouselImages = {
   T2: [
-    { src: 'assets/images/t2-slide-1.jpg', alt: 'Casa de banho do T2 com chuveiro envidraçado', title: 'Casa de banho', text: 'Casa de banho moderna com chuveiro.' },
-    { src: 'assets/images/t2-slide-2.jpg', alt: 'Quarto do T2 com cama de casal e berço', title: 'Quarto com berço', text: 'Quarto de casal preparado para receber famílias.' },
-    { src: 'assets/images/t2-slide-3.jpg', alt: 'Sala de estar do T2 com sofá e televisão', title: 'Sala de estar', text: 'Sala luminosa com sofá, televisão e zona de estar.' }
+    { src: 'assets/images/t2-slide-1.jpg', alt: 'Casa de banho do T2 com chuveiro envidraçado' },
+    { src: 'assets/images/t2-slide-2.jpg', alt: 'Quarto do T2 com cama de casal e berço' },
+    { src: 'assets/images/t2-slide-3.jpg', alt: 'Sala de estar do T2 com sofá e televisão' }
   ],
   T3: [
-    { src: 'assets/images/t3-slide-1.jpg', alt: 'Quarto de casal do T3 com televisão e ar condicionado', title: 'Quarto de casal', text: 'Quarto confortável com cama de casal, televisão e ar condicionado.' },
-    { src: 'assets/images/t3-slide-2.jpg', alt: 'Quarto de casal do T3 com vista para a albufeira', title: 'Quarto com vista', text: 'Quarto de casal com acesso à varanda e vista para a albufeira.' },
-    { src: 'assets/images/t3-slide-3.jpg', alt: 'Cozinha equipada do T3', title: 'Cozinha equipada', text: 'Cozinha equipada integrada no alojamento.' }
+    { src: 'assets/images/t3-slide-1.jpg', alt: 'Quarto de casal do T3 com televisão e ar condicionado' },
+    { src: 'assets/images/t3-slide-2.jpg', alt: 'Quarto de casal do T3 com vista para a albufeira' },
+    { src: 'assets/images/t3-slide-3.jpg', alt: 'Cozinha equipada do T3' }
   ],
   default: [
     { label: 'Espaço acolhedor' },
@@ -1183,11 +1269,13 @@ const roomCarouselImages = {
   ]
 };
 let currentCarouselIndex = 0;
+let currentCarouselRoomType = '';
 
 function renderRoomCarousel(room) {
   const track = document.getElementById('room-detail-carousel-track');
   const dots = document.getElementById('room-detail-carousel-dots');
-  const images = roomCarouselImages[(room?.type || '').toUpperCase()] || roomCarouselImages.default;
+  currentCarouselRoomType = (room?.type || '').toUpperCase();
+  const images = roomCarouselImages[currentCarouselRoomType] || roomCarouselImages.default;
   currentCarouselIndex = 0;
   track.innerHTML = '';
   dots.innerHTML = '';
@@ -1195,30 +1283,17 @@ function renderRoomCarousel(room) {
   images.forEach((item, index) => {
     const slide = document.createElement('div');
     slide.className = 'room-detail-carousel-slide';
-    if (item.src) {
-      const image = document.createElement('img');
-      image.src = item.src;
-      image.alt = item.alt || item.title || item.label || 'Fotografia do alojamento';
-      image.loading = 'lazy';
-      slide.classList.add('has-image');
-      slide.appendChild(image);
-    }
-    const copy = document.createElement('div');
-    copy.className = 'room-detail-carousel-copy';
-    const title = document.createElement('h4');
-    title.textContent = item.title || item.label || 'Unidade';
-    copy.appendChild(title);
-    if (item.text) {
-      const text = document.createElement('p');
-      text.textContent = item.text;
-      copy.appendChild(text);
-    }
-    slide.appendChild(copy);
+    const image = document.createElement('img');
+    image.src = item.src;
+    image.alt = item.alt || 'Fotografia do alojamento';
+    image.loading = index === 0 ? 'eager' : 'lazy';
+    slide.appendChild(image);
     track.appendChild(slide);
 
     const dot = document.createElement('button');
     dot.className = 'room-detail-carousel-dot';
     dot.type = 'button';
+    dot.setAttribute('aria-label', `Ver fotografia ${index + 1}`);
     dot.onclick = () => {
       currentCarouselIndex = index;
       updateCarouselPosition();
@@ -1238,9 +1313,7 @@ function updateCarouselPosition() {
 }
 
 function moveRoomCarousel(delta) {
-  const title = document.getElementById('room-detail-title').textContent.trim();
-  const room = allRooms.find(r => r.name === title || (r.name || '').toLowerCase().includes(title.toLowerCase())) || allRooms.find(r => (r.type || '').toUpperCase() === title.toUpperCase()) || allRooms[0];
-  const images = roomCarouselImages[(room?.type || '').toUpperCase()] || roomCarouselImages.default;
+  const images = roomCarouselImages[currentCarouselRoomType] || roomCarouselImages.default;
   currentCarouselIndex = (currentCarouselIndex + delta + images.length) % images.length;
   updateCarouselPosition();
 }
@@ -1248,38 +1321,40 @@ function moveRoomCarousel(delta) {
 function openRoomDetails(roomId) {
   const room = allRooms.find(r => r.id === roomId);
   if (!room) return;
-  const presentation = getRoomPresentation(room);
-
-  document.getElementById('room-detail-title').textContent = presentation.name;
-  document.getElementById('room-detail-price').textContent = `€${room.pricePerNight} / noite`;
-  document.getElementById('room-detail-desc').textContent = presentation.description;
-  document.getElementById('room-detail-specs').innerHTML = `
-    <div class="room-detail-spec"><strong>${presentation.sizeSqm ? `${presentation.sizeSqm} m²` : '—'}</strong><span>Tamanho</span></div>
-    <div class="room-detail-spec"><strong>${presentation.bedrooms ? `${presentation.bedrooms} quarto${presentation.bedrooms > 1 ? 's' : ''}` : '—'}</strong><span>Quartos</span></div>
-    <div class="room-detail-spec"><strong>${presentation.beds ? `${presentation.beds} cama${presentation.beds > 1 ? 's' : ''}` : '—'}</strong><span>Camas</span></div>
-  `;
   renderRoomCarousel(room);
-
-  const amenitiesWrap = document.getElementById('room-detail-amenities');
-  amenitiesWrap.innerHTML = '';
-  presentation.amenities.forEach(item => {
-    const span = document.createElement('span');
-    span.className = 'amenity';
-    span.textContent = item;
-    amenitiesWrap.appendChild(span);
-  });
 
   document.getElementById('room-detail-modal').classList.add('open');
 }
 
-function closeRoomDetails() {
-  document.getElementById('room-detail-modal').classList.remove('open');
+const footerInfo = {
+  checkin: {
+    title: 'Check-in flexível',
+    content: '<p>O check-in é combinado com o anfitrião. A hora de chegada deve ser comunicada com antecedência.</p><ul><li>T2: das 16:00 às 18:00.</li><li>T3: das 15:00 às 18:00.</li></ul><p>Se precisar de outro horário, contacte-nos antes da chegada para confirmar a possibilidade.</p>'
+  },
+  local: {
+    title: 'Alojamento Local',
+    content: '<p>A Casa do Ferreiro T2 está registada como Alojamento Local, com a licença <strong>167437/AL</strong>.</p><p>O alojamento inclui as unidades T2 e T3, situadas em Venda Nova, Montalegre.</p>'
+  },
+  policies: {
+    title: 'Políticas',
+    content: '<ul><li>Check-out: das 08:00 às 11:00.</li><li>Estadia mínima: 2 noites consecutivas.</li><li>Crianças são bem-vindas; berço gratuito para crianças dos 0 aos 2 anos, mediante pedido.</li><li>Não estão disponíveis camas extra.</li><li>Não é permitido fumar no interior nem realizar festas ou eventos.</li><li>Não são admitidos animais de estimação.</li></ul>'
+  }
+};
+
+function openInfoModal(infoKey) {
+  const info = footerInfo[infoKey];
+  if (!info) return;
+  document.getElementById('info-modal-title').textContent = info.title;
+  document.getElementById('info-modal-body').innerHTML = info.content;
+  document.getElementById('info-modal').classList.add('open');
 }
 
-function handleRoomDetailBooking() {
-  const title = document.getElementById('room-detail-title').textContent.trim();
-  closeRoomDetails();
-  openBookingForRoom(title);
+function closeInfoModal() {
+  document.getElementById('info-modal').classList.remove('open');
+}
+
+function closeRoomDetails() {
+  document.getElementById('room-detail-modal').classList.remove('open');
 }
 
 document.querySelectorAll('.room-card').forEach(card => {
