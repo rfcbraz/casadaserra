@@ -1,8 +1,8 @@
 // src/routes/webhooks.js
 const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const prisma = require('../lib/prisma');
-const { sendReservationStatusUpdate } = require('../services/email');
+const { sendReservationStatusUpdate, sendAdminNotification } = require('../services/email');
+const { getStripeClient, refundPaymentIntent } = require('../services/stripe');
 const router = express.Router();
 
 // O body tem de chegar em raw para validar a assinatura do Stripe
@@ -11,6 +11,10 @@ router.post('/stripe', express.raw({ type: 'application/json' }), async (req, re
   let event;
 
   try {
+    if (!process.env.STRIPE_WEBHOOK_SECRET) {
+      return res.status(500).json({ error: 'Webhook do Stripe não configurado.' });
+    }
+    const stripe = getStripeClient();
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
     console.error('Webhook error:', err.message);
@@ -23,18 +27,65 @@ router.post('/stripe', express.raw({ type: 'application/json' }), async (req, re
 
     if (reservationId) {
       try {
-        const reservation = await prisma.reservation.update({
-          where: { id: reservationId },
+        const updated = await prisma.reservation.updateMany({
+          where: { id: reservationId, status: { notIn: ['PAID', 'CANCELLED', 'DECLINED'] } },
           data: {
             status: 'PAID',
             stripePaymentId: paymentIntent.id,
             paidAt: new Date(),
           },
-          include: { room: true, guest: true },
         });
-        await sendReservationStatusUpdate(reservation, 'PAID');
+        if (updated.count) {
+          const reservation = await prisma.reservation.findUnique({
+            where: { id: reservationId },
+            include: { room: true, guest: true },
+          });
+          Promise.all([
+            sendReservationStatusUpdate(reservation, 'PAID'),
+            sendAdminNotification(reservation),
+          ]).catch(err => console.error('Erro ao enviar emails após pagamento:', err));
+        } else {
+          const reservation = await prisma.reservation.findUnique({ where: { id: reservationId } });
+          if (reservation && ['CANCELLED', 'DECLINED'].includes(reservation.status)) {
+            const refund = await refundPaymentIntent(paymentIntent.id, reservation.id);
+            await prisma.reservation.update({
+              where: { id: reservation.id },
+              data: {
+                stripePaymentId: paymentIntent.id,
+                stripeRefundId: refund.id,
+                paidAt: new Date(),
+              },
+            });
+            if (!reservation.stripeRefundId) {
+              const refundedReservation = await prisma.reservation.findUnique({
+                where: { id: reservationId },
+                include: { room: true, guest: true },
+              });
+              sendReservationStatusUpdate(refundedReservation, 'CANCELLED')
+                .catch(err => console.error('Erro ao notificar reembolso:', err));
+            }
+          }
+        }
       } catch (err) {
         console.error('Erro ao atualizar reserva após pagamento:', err);
+        return res.status(500).json({ error: 'Não foi possível atualizar a reserva.' });
+      }
+    }
+  } else if (event.type === 'checkout.session.expired') {
+    const session = event.data.object;
+    const reservationId = session.metadata.reservationId;
+    if (reservationId) {
+      try {
+        await prisma.reservation.updateMany({
+          where: {
+            id: reservationId,
+            status: { in: ['PENDING', 'AWAITING_PAYMENT'] },
+          },
+          data: { status: 'CANCELLED', paymentExpiresAt: null },
+        });
+      } catch (err) {
+        console.error('Erro ao libertar reserva após expiração do Checkout:', err);
+        return res.status(500).json({ error: 'Não foi possível atualizar a reserva.' });
       }
     }
   }

@@ -51,6 +51,9 @@ model Reservation {
   breakfast       Boolean           @default(true)
   specialRequests String?
   stripePaymentId String?
+  stripeCheckoutSessionId String?   @unique
+  stripeRefundId  String?           @unique
+  paymentExpiresAt DateTime?
   paidAt          DateTime?
   notes           String? // notas internas do dono
   createdAt       DateTime          @default(now())
@@ -93,6 +96,7 @@ model Admin {
 
 enum ReservationStatus {
   PENDING
+  AWAITING_PAYMENT
   CONFIRMED
   DECLINED
   CANCELLED

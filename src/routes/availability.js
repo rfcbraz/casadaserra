@@ -2,6 +2,7 @@
 const express = require('express');
 const prisma = require('../lib/prisma');
 const { requireAuth } = require('../middleware/auth');
+const { MINIMUM_STAY_NIGHTS } = require('../lib/reservationRules');
 const router = express.Router();
 
 // GET /api/availability?checkIn=YYYY-MM-DD&checkOut=YYYY-MM-DD
@@ -20,10 +21,21 @@ router.get('/', async (req, res, next) => {
       return res.status(400).json({ error: 'Datas inválidas.' });
     }
 
+    const nights = Math.round((coDate - ciDate) / (1000 * 60 * 60 * 24));
+    if (nights < MINIMUM_STAY_NIGHTS) {
+      return res.status(400).json({
+        error: `A estadia mínima é de ${MINIMUM_STAY_NIGHTS} noites consecutivas.`,
+        minimumStayNights: MINIMUM_STAY_NIGHTS,
+      });
+    }
+
     // Quartos com reservas que se sobrepõem ao período pedido
     const bookedRoomIds = await prisma.reservation.findMany({
       where: {
-        status: { in: ['CONFIRMED', 'PAID'] },
+        OR: [
+          { status: { in: ['CONFIRMED', 'PAID'] } },
+          { status: { in: ['AWAITING_PAYMENT', 'PENDING'] }, paymentExpiresAt: { gt: new Date() } },
+        ],
         AND: [
           { checkIn: { lt: coDate } },
           { checkOut: { gt: ciDate } },
@@ -53,12 +65,11 @@ router.get('/', async (req, res, next) => {
       orderBy: { pricePerNight: 'asc' },
     });
 
-    const nights = Math.round((coDate - ciDate) / (1000 * 60 * 60 * 24));
-
     res.json({
       checkIn,
       checkOut,
       nights,
+      minimumStayNights: MINIMUM_STAY_NIGHTS,
       availableRooms: rooms.map(r => ({
         ...r,
         totalPrice: r.pricePerNight * nights,
@@ -81,7 +92,10 @@ router.get('/room/:roomId', async (req, res, next) => {
     const reservations = await prisma.reservation.findMany({
       where: {
         roomId,
-        status: { in: ['CONFIRMED', 'PAID'] },
+        OR: [
+          { status: { in: ['CONFIRMED', 'PAID'] } },
+          { status: { in: ['AWAITING_PAYMENT', 'PENDING'] }, paymentExpiresAt: { gt: new Date() } },
+        ],
         AND: [
           { checkIn: { lt: endOfMonth } },
           { checkOut: { gt: startOfMonth } },

@@ -276,7 +276,7 @@ function buildRoomCalendar(room, reservations, blockedDates) {
   reservations.forEach(reservation => {
     events.push({
       uid: `reservation-${reservation.id}`,
-      summary: `Reserva confirmada — ${room.name}`,
+      summary: `${reservation.status === 'AWAITING_PAYMENT' ? 'Reserva a aguardar pagamento' : 'Reserva confirmada'} — ${room.name}`,
       description: `Hóspede: ${reservation.guest.name}\\nEmail: ${reservation.guest.email}\\nCheck-in: ${reservation.checkIn.toISOString().slice(0, 10)}\\nCheck-out: ${reservation.checkOut.toISOString().slice(0, 10)}`,
       startDate: normalizeDay(reservation.checkIn),
       endDate: normalizeDay(reservation.checkOut),

@@ -12,7 +12,10 @@ router.get('/:roomId.ics', async (req, res, next) => {
     const reservations = await prisma.reservation.findMany({
       where: {
         roomId: room.id,
-        status: { in: ['CONFIRMED', 'PAID'] },
+        OR: [
+          { status: { in: ['CONFIRMED', 'PAID'] } },
+          { status: { in: ['AWAITING_PAYMENT', 'PENDING'] }, paymentExpiresAt: { gt: new Date() } },
+        ],
       },
       include: { guest: true },
       orderBy: { checkIn: 'asc' },

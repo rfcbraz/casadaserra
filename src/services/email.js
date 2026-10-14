@@ -49,11 +49,11 @@ async function sendReservationConfirmation(reservation) {
   const html = baseTemplate(`
     <div class="header">
       <h1>Casa da Serra</h1>
-      <p>Confirmação de Reserva</p>
+      <p>Pedido de Reserva Recebido</p>
     </div>
     <div class="body">
       <p>Caro/a <strong>${guest.name}</strong>,</p>
-      <p>A sua reserva foi recebida com sucesso! Iremos confirmá-la em breve.</p>
+      <p>O seu pedido foi recebido e será analisado pelo proprietário. Se for aprovado, receberá um link para pagar e confirmar a reserva.</p>
       <div class="box">
         <div class="box-row"><span class="box-label">Referência</span><span class="box-value">#${reservation.id.slice(0,8).toUpperCase()}</span></div>
         <div class="box-row"><span class="box-label">Quarto</span><span class="box-value">${room.name}</span></div>
@@ -63,7 +63,7 @@ async function sendReservationConfirmation(reservation) {
         <div class="box-row"><span class="box-label">Hóspedes</span><span class="box-value">${reservation.guests}</span></div>
         <div class="box-row"><span class="box-label">Total</span><span class="box-value">€${reservation.totalPrice.toFixed(2)}</span></div>
       </div>
-      <p>Entraremos em contacto para confirmar a disponibilidade e processar o pagamento.</p>
+      <p>O envio deste pedido ainda não confirma a reserva.</p>
       <p>Para qualquer dúvida, contacte-nos:</p>
       <p>📞 +351 960 000 000 &nbsp;|&nbsp; ✉ reservas@casadaserra.pt</p>
     </div>
@@ -76,17 +76,51 @@ async function sendReservationConfirmation(reservation) {
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: guest.email,
-    subject: `Reserva recebida — Casa da Serra #${reservation.id.slice(0,8).toUpperCase()}`,
+    subject: `Pedido de reserva recebido — Casa da Serra #${reservation.id.slice(0,8).toUpperCase()}`,
+    html,
+  });
+}
+
+async function sendReservationPaymentLink(reservation, checkoutUrl) {
+  const { guest, room } = reservation;
+  const html = baseTemplate(`
+    <div class="header">
+      <h1>Casa da Serra</h1>
+      <p>Reserva aprovada</p>
+    </div>
+    <div class="body">
+      <p>Caro/a <strong>${guest.name}</strong>,</p>
+      <p>O proprietário aprovou o seu pedido. Conclua o pagamento para confirmar definitivamente a reserva.</p>
+      <div class="box">
+        <div class="box-row"><span class="box-label">Referência</span><span class="box-value">#${reservation.id.slice(0,8).toUpperCase()}</span></div>
+        <div class="box-row"><span class="box-label">Unidade</span><span class="box-value">${room.name}</span></div>
+        <div class="box-row"><span class="box-label">Check-in</span><span class="box-value">${formatDate(reservation.checkIn)}</span></div>
+        <div class="box-row"><span class="box-label">Check-out</span><span class="box-value">${formatDate(reservation.checkOut)}</span></div>
+        <div class="box-row"><span class="box-label">Total</span><span class="box-value">€${reservation.totalPrice.toFixed(2)}</span></div>
+      </div>
+      <p><a href="${checkoutUrl}" class="btn">Pagar e confirmar reserva</a></p>
+      <p>Este link é válido durante 35 minutos.</p>
+    </div>
+    <div class="footer"><p>Casa da Serra · Serra da Estrela, Portugal</p></div>
+  `);
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: guest.email,
+    subject: `Pedido aprovado: conclua o pagamento — Casa da Serra #${reservation.id.slice(0,8).toUpperCase()}`,
     html,
   });
 }
 
 async function sendReservationStatusUpdate(reservation, newStatus) {
   const { guest, room } = reservation;
+  const cancellationMessage = reservation.stripeRefundId
+    ? 'A sua reserva foi cancelada e foi solicitado o reembolso integral do pagamento. O prazo para o valor ficar disponível depende do banco emissor.'
+    : 'A sua reserva foi cancelada. Lamentamos qualquer inconveniente.';
   const statusMessages = {
     CONFIRMED: { label: 'Confirmada ✓', msg: 'A sua reserva foi confirmada! Estamos ansiosos por recebê-lo/a.' },
     DECLINED:  { label: 'Recusada',      msg: 'Lamentamos informar que não foi possível confirmar a sua reserva para as datas solicitadas.' },
-    CANCELLED: { label: 'Cancelada',     msg: 'A sua reserva foi cancelada. Lamentamos qualquer inconveniente.' },
+    CANCELLED: { label: 'Cancelada',     msg: cancellationMessage },
     PAID:      { label: 'Paga ✓',        msg: 'O pagamento foi processado com sucesso. Tudo pronto!' },
   };
   const info = statusMessages[newStatus] || { label: newStatus, msg: '' };
@@ -129,7 +163,7 @@ async function sendAdminNotification(reservation) {
       <p>Nova Reserva Recebida</p>
     </div>
     <div class="body">
-      <p>Foi recebida uma nova reserva que necessita de confirmação.</p>
+      <p>Foi recebido um novo pedido de reserva que aguarda aprovação.</p>
       <div class="box">
         <div class="box-row"><span class="box-label">Referência</span><span class="box-value">#${reservation.id.slice(0,8).toUpperCase()}</span></div>
         <div class="box-row"><span class="box-label">Hóspede</span><span class="box-value">${guest.name}</span></div>
@@ -150,13 +184,14 @@ async function sendAdminNotification(reservation) {
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: process.env.ADMIN_EMAIL,
-    subject: `🔔 Nova reserva: ${guest.name} — ${room.name}`,
+    subject: `Novo pedido de reserva: ${guest.name} — ${room.name}`,
     html,
   });
 }
 
 module.exports = {
   sendReservationConfirmation,
+  sendReservationPaymentLink,
   sendReservationStatusUpdate,
   sendAdminNotification,
 };

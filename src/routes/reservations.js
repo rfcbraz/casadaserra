@@ -1,8 +1,10 @@
 // src/routes/reservations.js
 const express = require('express');
 const prisma = require('../lib/prisma');
+const { MINIMUM_STAY_NIGHTS } = require('../lib/reservationRules');
 const { requireAuth } = require('../middleware/auth');
-const { sendReservationConfirmation, sendReservationStatusUpdate, sendAdminNotification } = require('../services/email');
+const { sendReservationConfirmation, sendReservationPaymentLink, sendReservationStatusUpdate, sendAdminNotification } = require('../services/email');
+const { getStripeClient, refundPaymentIntent } = require('../services/stripe');
 const router = express.Router();
 
 // POST /api/reservations — criar reserva (público)
@@ -26,8 +28,11 @@ router.post('/', async (req, res, next) => {
       return res.status(400).json({ error: 'Datas inválidas.' });
     }
     const nights = Math.round((coDate - ciDate) / (1000 * 60 * 60 * 24));
-    if (nights < 2) {
-      return res.status(400).json({ error: 'A estadia mínima é de 2 noites.' });
+    if (nights < MINIMUM_STAY_NIGHTS) {
+      return res.status(400).json({
+        error: `A estadia mínima é de ${MINIMUM_STAY_NIGHTS} noites consecutivas.`,
+        minimumStayNights: MINIMUM_STAY_NIGHTS,
+      });
     }
 
     // Permite check-in hoje — compara só a data, não a hora
@@ -46,67 +51,65 @@ router.post('/', async (req, res, next) => {
       return res.status(400).json({ error: `Esta unidade permite até ${room.capacity} hóspedes.` });
     }
 
-    // Verificar disponibilidade
-    const conflict = await prisma.reservation.findFirst({
-      where: {
-        roomId,
-        status: { in: ['CONFIRMED', 'PAID'] },
-        AND: [
-          { checkIn: { lt: coDate } },
-          { checkOut: { gt: ciDate } },
-        ],
-      },
-    });
-
-    if (conflict) {
-      return res.status(409).json({ error: 'O quarto não está disponível para as datas selecionadas.' });
-    }
-
-    // Verificar datas bloqueadas
-    const blockedConflict = await prisma.blockedDate.findFirst({
-      where: {
-        roomId,
-        date: { gte: ciDate, lt: coDate },
-      },
-    });
-
-    if (blockedConflict) {
-      return res.status(409).json({ error: 'O quarto está bloqueado para parte das datas selecionadas.' });
-    }
-
     const totalPrice = room.pricePerNight * nights;
+    const reservation = await prisma.$transaction(async transaction => {
+      const conflict = await transaction.reservation.findFirst({
+        where: {
+          roomId,
+          OR: [
+            { status: { in: ['CONFIRMED', 'PAID'] } },
+            { status: { in: ['AWAITING_PAYMENT', 'PENDING'] }, paymentExpiresAt: { gt: new Date() } },
+          ],
+          AND: [
+            { checkIn: { lt: coDate } },
+            { checkOut: { gt: ciDate } },
+          ],
+        },
+      });
+      if (conflict) {
+        const error = new Error('O quarto não está disponível para as datas selecionadas.');
+        error.status = 409;
+        throw error;
+      }
 
-    // Criar ou encontrar hóspede
-    const guest = await prisma.guest.upsert({
-      where: { email },
-      update: { name, phone: phone || undefined },
-      create: { name, email, phone: phone || null },
-    });
+      const blockedConflict = await transaction.blockedDate.findFirst({
+        where: { roomId, date: { gte: ciDate, lt: coDate } },
+      });
+      if (blockedConflict) {
+        const error = new Error('O quarto está bloqueado para parte das datas selecionadas.');
+        error.status = 409;
+        throw error;
+      }
 
-    // Criar reserva
-    const reservation = await prisma.reservation.create({
-      data: {
-        checkIn: ciDate,
-        checkOut: coDate,
-        nights,
-        guests: guestCount,
-        totalPrice,
-        breakfast: false,
-        specialRequests: specialRequests || null,
-        roomId,
-        guestId: guest.id,
-      },
-      include: { room: true, guest: true },
-    });
+      const guest = await transaction.guest.upsert({
+        where: { email },
+        update: { name, phone: phone || undefined },
+        create: { name, email, phone: phone || null },
+      });
 
-    // Enviar emails (não bloqueia a resposta)
+      return transaction.reservation.create({
+        data: {
+          checkIn: ciDate,
+          checkOut: coDate,
+          nights,
+          guests: guestCount,
+          totalPrice,
+          breakfast: false,
+          specialRequests: specialRequests || null,
+          roomId,
+          guestId: guest.id,
+        },
+        include: { room: true, guest: true },
+      });
+    }, { isolationLevel: 'Serializable' });
+
     Promise.all([
       sendReservationConfirmation(reservation),
       sendAdminNotification(reservation),
-    ]).catch(err => console.error('Erro a enviar email:', err));
+    ]).catch(error => console.error('Erro ao enviar emails de reserva:', error));
 
     res.status(201).json({
-      message: 'Reserva criada com sucesso! Verifique o seu email.',
+      message: 'Pedido recebido. O pagamento será solicitado se o proprietário aprovar a reserva.',
       reservation: {
         id: reservation.id,
         ref: reservation.id.slice(0, 8).toUpperCase(),
@@ -118,6 +121,31 @@ router.post('/', async (req, res, next) => {
         status: reservation.status,
       },
     });
+  } catch (err) {
+    if (err.code === 'P2034') {
+      return res.status(409).json({ error: 'A disponibilidade mudou. Atualize as datas e tente novamente.' });
+    }
+    next(err);
+  }
+});
+
+// POST /api/reservations/:id/cancel-checkout — libertar uma sessão Stripe cancelada
+router.post('/:id/cancel-checkout', async (req, res, next) => {
+  try {
+    const reservation = await prisma.reservation.findUnique({ where: { id: req.params.id } });
+    if (!reservation || !['PENDING', 'AWAITING_PAYMENT'].includes(reservation.status)) {
+      return res.status(404).json({ error: 'Pagamento pendente não encontrado.' });
+    }
+
+    if (reservation.stripeCheckoutSessionId) {
+      const stripe = getStripeClient();
+      await stripe.checkout.sessions.expire(reservation.stripeCheckoutSessionId);
+    }
+    await prisma.reservation.updateMany({
+      where: { id: reservation.id, status: { in: ['PENDING', 'AWAITING_PAYMENT'] } },
+      data: { status: 'CANCELLED', paymentExpiresAt: null },
+    });
+    res.json({ message: 'Sessão de pagamento cancelada.' });
   } catch (err) { next(err); }
 });
 
@@ -161,6 +189,129 @@ router.get('/', requireAuth, async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+async function approveReservationForPayment(reservation) {
+  if (!process.env.FRONTEND_URL) {
+    const error = new Error('FRONTEND_URL não está configurado no servidor.');
+    error.status = 503;
+    throw error;
+  }
+
+  const stripe = getStripeClient();
+  const paymentExpiresAt = new Date(Date.now() + 35 * 60 * 1000);
+  const frontendUrl = process.env.FRONTEND_URL.replace(/\/$/, '');
+
+  if (reservation.stripeCheckoutSessionId) {
+    const previousSession = await stripe.checkout.sessions.retrieve(reservation.stripeCheckoutSessionId);
+    if (previousSession.status === 'complete') {
+      const error = new Error('O pagamento desta reserva está a ser confirmado. Atualize a lista de reservas.');
+      error.status = 409;
+      throw error;
+    }
+    if (previousSession.status === 'open') {
+      await stripe.checkout.sessions.expire(previousSession.id);
+    }
+  }
+
+  const checkoutSession = await stripe.checkout.sessions.create({
+    mode: 'payment',
+    payment_method_types: ['card'],
+    customer_email: reservation.guest.email,
+    client_reference_id: reservation.id,
+    expires_at: Math.floor(paymentExpiresAt.getTime() / 1000),
+    line_items: [{
+      price_data: {
+        currency: 'eur',
+        product_data: {
+          name: `Reserva ${reservation.room.name} - ${reservation.nights} noites`,
+          description: `${reservation.checkIn.toISOString().slice(0, 10)} a ${reservation.checkOut.toISOString().slice(0, 10)}`,
+        },
+        unit_amount: Math.round(reservation.totalPrice * 100),
+      },
+      quantity: 1,
+    }],
+    metadata: { reservationId: reservation.id },
+    payment_intent_data: { metadata: { reservationId: reservation.id } },
+    success_url: `${frontendUrl}/?payment=success&reservation=${reservation.id}`,
+    cancel_url: `${frontendUrl}/?payment=cancelled&reservation=${reservation.id}`,
+  });
+
+  try {
+    const approval = await prisma.$transaction(async transaction => {
+      const current = await transaction.reservation.findUnique({ where: { id: reservation.id } });
+      if (!current || current.status !== 'PENDING') {
+        const error = new Error('Este pedido já não está pendente. Atualize a lista de reservas.');
+        error.status = 409;
+        throw error;
+      }
+
+      const conflict = await transaction.reservation.findFirst({
+        where: {
+          id: { not: reservation.id },
+          roomId: reservation.roomId,
+          OR: [
+            { status: { in: ['CONFIRMED', 'PAID'] } },
+            { status: { in: ['AWAITING_PAYMENT', 'PENDING'] }, paymentExpiresAt: { gt: new Date() } },
+          ],
+          checkIn: { lt: reservation.checkOut },
+          checkOut: { gt: reservation.checkIn },
+        },
+      });
+      if (conflict) {
+        const error = new Error('A unidade deixou de estar disponível para estas datas.');
+        error.status = 409;
+        throw error;
+      }
+
+      const blockedConflict = await transaction.blockedDate.findFirst({
+        where: {
+          roomId: reservation.roomId,
+          date: { gte: reservation.checkIn, lt: reservation.checkOut },
+        },
+      });
+      if (blockedConflict) {
+        const error = new Error('A unidade foi bloqueada para parte destas datas.');
+        error.status = 409;
+        throw error;
+      }
+
+      const pendingConflicts = await transaction.reservation.findMany({
+        where: {
+          id: { not: reservation.id },
+          roomId: reservation.roomId,
+          status: 'PENDING',
+          checkIn: { lt: reservation.checkOut },
+          checkOut: { gt: reservation.checkIn },
+        },
+        include: { room: true, guest: true },
+      });
+      if (pendingConflicts.length) {
+        await transaction.reservation.updateMany({
+          where: { id: { in: pendingConflicts.map(item => item.id) } },
+          data: { status: 'DECLINED' },
+        });
+      }
+
+      const approvedReservation = await transaction.reservation.update({
+        where: { id: reservation.id },
+        data: {
+          status: 'AWAITING_PAYMENT',
+          stripeCheckoutSessionId: checkoutSession.id,
+          paymentExpiresAt,
+        },
+        include: { room: true, guest: true },
+      });
+
+      return { reservation: approvedReservation, declinedReservations: pendingConflicts };
+    }, { isolationLevel: 'Serializable' });
+
+    return { ...approval, checkoutUrl: checkoutSession.url };
+  } catch (error) {
+    await stripe.checkout.sessions.expire(checkoutSession.id)
+      .catch(expireError => console.error('Erro ao expirar Checkout sem aprovação:', expireError.message));
+    throw error;
+  }
+}
+
 // PATCH /api/reservations/:id/status — atualizar estado (admin)
 router.patch('/:id/status', requireAuth, async (req, res, next) => {
   try {
@@ -169,43 +320,71 @@ router.patch('/:id/status', requireAuth, async (req, res, next) => {
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: `Estado inválido. Use: ${validStatuses.join(', ')}` });
     }
+
+    const currentReservation = await prisma.reservation.findUnique({
+      where: { id: req.params.id },
+      include: { room: true, guest: true },
+    });
+    if (!currentReservation) return res.status(404).json({ error: 'Reserva não encontrada.' });
+    if (status === 'PAID') {
+      return res.status(400).json({ error: 'O estado de pagamento é atualizado automaticamente pelo Stripe.' });
+    }
+    if (status === 'CONFIRMED') {
+      if (currentReservation.status !== 'PENDING') {
+        return res.status(409).json({ error: 'Só é possível aprovar pedidos pendentes.' });
+      }
+      const nights = Math.round((currentReservation.checkOut - currentReservation.checkIn) / (1000 * 60 * 60 * 24));
+      if (nights < MINIMUM_STAY_NIGHTS) {
+        return res.status(409).json({ error: `A estadia mínima é de ${MINIMUM_STAY_NIGHTS} noites consecutivas.` });
+      }
+
+      try {
+        const approval = await approveReservationForPayment(currentReservation);
+        const emailPromises = [sendReservationPaymentLink(approval.reservation, approval.checkoutUrl)];
+        approval.declinedReservations.forEach(conflict => {
+          emailPromises.push(sendReservationStatusUpdate(conflict, 'DECLINED'));
+        });
+        Promise.all(emailPromises).catch(error => console.error('Erro ao enviar emails após aprovação:', error));
+        return res.json({
+          message: 'Pedido aprovado. O link de pagamento foi enviado ao hóspede.',
+          reservation: approval.reservation,
+        });
+      } catch (error) {
+        if (error.code === 'P2034') {
+          return res.status(409).json({ error: 'A disponibilidade mudou. Atualize as reservas e tente novamente.' });
+        }
+        if (error.status) return res.status(error.status).json({ error: error.message });
+        return next(error);
+      }
+    }
+    if (status === 'DECLINED' && currentReservation.status === 'PAID') {
+      return res.status(409).json({ error: 'Uma reserva paga não pode ser recusada.' });
+    }
+
+    if (['CANCELLED', 'DECLINED'].includes(status) && ['PENDING', 'AWAITING_PAYMENT'].includes(currentReservation.status) && currentReservation.stripeCheckoutSessionId) {
+      try {
+        const stripe = getStripeClient();
+        await stripe.checkout.sessions.expire(currentReservation.stripeCheckoutSessionId);
+      } catch (error) {
+        console.error('Erro ao expirar Checkout antes de atualizar a reserva:', error.message);
+      }
+    }
+
+    let stripeRefundId;
+    if (status === 'CANCELLED' && currentReservation.status === 'PAID') {
+      const refund = await refundPaymentIntent(currentReservation.stripePaymentId, currentReservation.id);
+      stripeRefundId = refund.id;
+    }
  
     const reservation = await prisma.reservation.update({
       where: { id: req.params.id },
-      data: { status, notes: notes || undefined },
+      data: { status, notes: notes || undefined, stripeRefundId },
       include: { room: true, guest: true },
     });
  
     const emailPromises = [];
     if (['CONFIRMED', 'CANCELLED', 'PAID', 'DECLINED'].includes(status)) {
       emailPromises.push(sendReservationStatusUpdate(reservation, status));
-    }
- 
-    // When a pedido é aceite, recusamos automaticamente outros pendentes sobrepostos.
-    if (['CONFIRMED', 'PAID'].includes(status)) {
-      const pendingConflicts = await prisma.reservation.findMany({
-        where: {
-          id: { not: reservation.id },
-          roomId: reservation.roomId,
-          status: 'PENDING',
-          AND: [
-            { checkIn: { lt: reservation.checkOut } },
-            { checkOut: { gt: reservation.checkIn } },
-          ],
-        },
-        include: { room: true, guest: true },
-      });
- 
-      if (pendingConflicts.length) {
-        await prisma.reservation.updateMany({
-          where: { id: { in: pendingConflicts.map(r => r.id) } },
-          data: { status: 'DECLINED' },
-        });
- 
-        pendingConflicts.forEach(conflict => {
-          emailPromises.push(sendReservationStatusUpdate(conflict, 'DECLINED'));
-        });
-      }
     }
  
     Promise.all(emailPromises)
@@ -218,9 +397,22 @@ router.patch('/:id/status', requireAuth, async (req, res, next) => {
 // DELETE /api/reservations/:id — cancelar reserva (admin)
 router.delete('/:id', requireAuth, async (req, res, next) => {
   try {
+    const currentReservation = await prisma.reservation.findUnique({ where: { id: req.params.id } });
+    if (!currentReservation) return res.status(404).json({ error: 'Reserva não encontrada.' });
+    if (['PENDING', 'AWAITING_PAYMENT'].includes(currentReservation.status) && currentReservation.stripeCheckoutSessionId) {
+      const stripe = getStripeClient();
+      await stripe.checkout.sessions.expire(currentReservation.stripeCheckoutSessionId);
+    }
+
+    let stripeRefundId;
+    if (currentReservation.status === 'PAID') {
+      const refund = await refundPaymentIntent(currentReservation.stripePaymentId, currentReservation.id);
+      stripeRefundId = refund.id;
+    }
+
     const reservation = await prisma.reservation.update({
       where: { id: req.params.id },
-      data: { status: 'CANCELLED' },
+      data: { status: 'CANCELLED', stripeRefundId },
       include: { room: true, guest: true },
     });
     sendReservationStatusUpdate(reservation, 'CANCELLED')

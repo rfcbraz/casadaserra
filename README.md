@@ -83,9 +83,18 @@ O servidor arranca em `http://localhost:3001`.
 | GET | `/api/rooms/:id` | Detalhes de uma unidade |
 | GET | `/api/availability?checkIn=&checkOut=` | Unidades disponíveis |
 | GET | `/api/availability/room/:id?year=&month=` | Datas ocupadas de uma unidade |
-| POST | `/api/reservations` | Criar pedido de reserva (ficará pendente até validação admin) |
+| POST | `/api/reservations` | Enviar pedido de reserva para aprovação do proprietário |
+| POST | `/api/reservations/:id/cancel-checkout` | Cancelar um Checkout não pago e libertar as datas |
 | GET | `/api/reservations/:id` | Consultar reserva |
 | GET | `/ical/:roomId.ics` | Exportar calendário iCal da unidade |
+
+O proprietário aceita apenas estadias de, no mínimo, duas noites consecutivas. A regra é aplicada tanto na pesquisa de disponibilidade como na criação e confirmação de reservas.
+
+O proprietário aprova ou recusa cada pedido no backoffice. Após a aprovação, o hóspede recebe por email um link Stripe Checkout para pagamento integral por cartão, válido por 35 minutos. O estado passa a `PAID` apenas após o webhook `payment_intent.succeeded`; cancelamentos de reservas pagas iniciam um reembolso integral idempotente. Configura `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` e `FRONTEND_URL` no ambiente do servidor e aponta o webhook Stripe para `/webhooks/stripe`, com os eventos `payment_intent.succeeded` e `checkout.session.expired`. Aplica as migrações com `npm run db:migrate` antes de publicar esta versão.
+
+## Booking.com
+
+O projeto tem feeds iCal de disponibilidade, mas a integração com a API oficial da Booking.com ainda depende de acesso aprovado à Connectivity API e credenciais da propriedade. Sem esse acesso, não é possível sincronizar reservas completas nem fazer alterações de disponibilidade em tempo real.
 
 ### Admin (requer token JWT)
 

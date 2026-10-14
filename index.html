@@ -73,7 +73,7 @@ h2 em{font-style:italic;color:var(--accent)}
 .rooms-section > div{max-width:1200px;margin:0 auto;padding:0 3rem}
 .rooms-section .section-eyebrow,.rooms-section h2{text-align:center;justify-content:center}
 .rooms-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem;margin:3rem auto 0;max-width:1000px}
-.room-card{background:var(--cream);border:1px solid var(--warm);border-radius:var(--radius);overflow:hidden;transition:transform .3s,box-shadow .3s;cursor:pointer}
+.room-card{background:var(--cream);border:1px solid var(--warm);border-radius:var(--radius);overflow:hidden;transition:transform .3s,box-shadow .3s;cursor:pointer;display:flex;flex-direction:column}
 .room-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(42,33,24,.12)}
 .room-visual{aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;overflow:hidden}
 .room-visual-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#211d19}
@@ -82,12 +82,12 @@ h2 em{font-style:italic;color:var(--accent)}
 .room-visual.suite{background:linear-gradient(135deg,#3d2a20,#8b5a35)}
 .room-visual.twin{background:linear-gradient(135deg,#2a2d3d,#354f6b)}
 .room-visual-badge{position:absolute;top:1rem;right:1rem;background:var(--accent);color:#fff;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .7rem;border-radius:2px}
-.room-body{padding:1.5rem}
+.room-body{padding:1.5rem;display:flex;flex:1;flex-direction:column}
 .room-name{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;margin-bottom:.3rem}
 .room-desc{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1rem}
 .room-amenities{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
 .amenity{font-size:.7rem;background:var(--warm);color:var(--earth);padding:.2rem .6rem;border-radius:2px;font-weight:500}
-.room-footer{display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--warm)}
+.room-footer{display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--warm);margin-top:auto}
 .room-price{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--accent)}
 .room-price span{font-family:'Jost',sans-serif;font-size:.7rem;color:var(--muted)}
 .rooms-intro{color:var(--muted);line-height:1.8;max-width:720px;margin:1rem auto 0;text-align:center;font-size:.95rem}
@@ -112,6 +112,7 @@ h2 em{font-style:italic;color:var(--accent)}
 
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
 .about-image{height:500px;background:linear-gradient(135deg,#3d3020,#8b6940);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:6rem;position:relative}
+.about-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
 .about-image::after{content:'Est. 2024';position:absolute;bottom:2rem;right:2rem;font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,.5)}
 .about-text p{font-size:.95rem;color:var(--muted);line-height:1.9;margin-bottom:1.2rem;font-weight:300}
 .about-features{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
@@ -162,6 +163,7 @@ h2 em{font-style:italic;color:var(--accent)}
 .modal.open{display:flex}
 .modal-backdrop{position:absolute;inset:0;background:rgba(42,33,24,.7);backdrop-filter:blur(4px)}
 .modal-content{position:relative;background:var(--white);width:90%;max-width:560px;border-radius:var(--radius);padding:2.5rem;max-height:90vh;overflow-y:auto}
+.booking-modal-content{width:90%;max-width:560px}
 .modal-close-btn{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted);line-height:1}
 .modal-close-btn:hover{color:var(--dark)}
 .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:.3rem}
@@ -338,6 +340,14 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .room-detail-carousel-control.next{right:.75rem}
   .footer-bottom{flex-direction:column;align-items:flex-start;gap:.75rem}
 }
+
+@media (min-width:900px) and (orientation:landscape) {
+  .booking-modal-content{width:min(94vw,1100px);max-width:1100px;padding:2rem;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,.8fr);column-gap:2rem;align-content:start}
+  .booking-modal-content h3,.booking-modal-content .modal-sub{grid-column:1/-1}
+  .booking-modal-content .form-grid{grid-column:1;grid-row:3 / span 2;align-content:start}
+  .booking-modal-content .form-summary{grid-column:2;grid-row:3;margin:0 0 1rem;align-self:start}
+  .booking-modal-content .btn-confirm{grid-column:2;grid-row:4;align-self:start}
+}
 </style>
 </head>
 <body>
@@ -388,7 +398,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   <div class="booking-field">
     <div class="booking-field-label">Unidade</div>
     <select id="bar-room">
-      <option value="">Qualquer unidade</option>
+      <option value="" disabled selected>Selecione uma unidade</option>
       <option>Suite Panorâmica</option>
       <option>Quarto Deluxe</option>
       <option>Quarto Superior</option>
@@ -427,7 +437,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 
 <section id="about">
   <div class="about-grid">
-    <div class="about-image">🏡</div>
+    <div class="about-image"><img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/924928157.jpg?k=e9edb9467d9425a143c62110eb4dc4ead97e2d61c74e22bc4fa9e6220426f715&o=" alt="Casa do Ferreiro" loading="lazy" decoding="async"></div>
     <div class="about-text">
       <div class="section-eyebrow">A nossa história</div>
       <h2>Um refúgio de <em>tranquilidade</em></h2>
@@ -466,7 +476,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <ul>
         <li>Check-in: das 15:00 às 18:00 (necessário informar a hora de chegada com antecedência).</li>
         <li>Check-out: das 08:00 às 11:00.</li>
-        <li>Estadia mínima: 2 noites.</li>
+        <li>Estadia mínima: 2 noites consecutivas.</li>
         <li>Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.</li>
         <li>Não existem camas extra disponíveis.</li>
         <li>Não é permitido fumar no interior nem realizar festas ou eventos.</li>
@@ -553,10 +563,10 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 <!-- BOOKING MODAL -->
 <div class="modal" id="booking-modal">
   <div class="modal-backdrop" onclick="closeBooking()"></div>
-  <div class="modal-content">
+  <div class="modal-content booking-modal-content">
     <button class="modal-close-btn" onclick="closeBooking()">×</button>
     <h3>Fazer Reserva</h3>
-    <p class="modal-sub">Preencha os dados para confirmar a sua reserva diretamente.</p>
+    <p class="modal-sub">Envie o seu pedido; o proprietário irá aprová-lo antes do pagamento.</p>
     <div class="form-grid">
       <div class="form-field"><label>Nome completo</label><input type="text" id="f-name" placeholder="João Silva"></div>
       <div class="form-field"><label>Email</label><input type="email" id="f-email" placeholder="joao@email.com"></div>
@@ -570,7 +580,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <div class="form-field"><label>Check-out</label><input type="date" id="f-checkout"></div>
       <div class="form-field"><label for="f-arrival-time">Hora prevista de chegada</label><select id="f-arrival-time" required disabled><option value="">Selecione primeiro a unidade</option></select></div>
       <div class="form-field"><label>Hóspedes</label><select id="f-guests"><option value="1">1 hóspede</option><option value="2" selected>2 hóspedes</option><option value="3">3 hóspedes</option><option value="4">4 hóspedes</option><option value="5">5 hóspedes</option><option value="6">6 hóspedes</option><option value="7">7 hóspedes</option><option value="8">8 hóspedes</option><option value="9">9 hóspedes</option></select><small class="form-hint" id="guest-limit-hint"></small></div>
-      <div class="form-field full"><p class="form-hint" id="booking-policy-hint">Estadia mínima: 2 noites. Check-out: 08:00–11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.</p></div>
+      <div class="form-field full"><p class="form-hint" id="booking-policy-hint">Estadia mínima: 2 noites consecutivas. Check-out: 08:00–11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.</p></div>
       <div class="form-field full"><label>Observações sobre a estadia</label><textarea id="f-notes" placeholder="Informações adicionais sobre a sua reserva (opcional)..."></textarea></div>
     </div>
     <div class="form-summary">
@@ -580,7 +590,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <div class="summary-item"><strong id="s-guests">—</strong>Hóspedes</div>
       <div class="summary-total"><span class="summary-total-label">Total estimado</span><span class="summary-total-price" id="s-total">—</span></div>
     </div>
-    <button class="btn-confirm" onclick="confirmBooking()">Confirmar Reserva</button>
+    <button class="btn-confirm" onclick="confirmBooking()">Enviar pedido de reserva</button>
   </div>
 </div>
 
@@ -734,6 +744,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 <div class="toast" id="toast"></div>
 
 <script>
+const MINIMUM_STAY_NIGHTS = 2;
 window.addEventListener('scroll',()=>document.getElementById('main-nav').classList.toggle('scrolled',scrollY>60));
 function toggleMobileMenu() {
   const navLinks = document.getElementById('main-nav-links');
@@ -763,6 +774,7 @@ document.getElementById('bar-checkin').value=fmt(ci);
 document.getElementById('bar-checkout').value=fmt(co);
 document.getElementById('f-checkin').value=fmt(ci);
 document.getElementById('f-checkout').value=fmt(co);
+updateBarMinimumCheckoutDate();
 
 let calYear=today.getFullYear(),calMonth=today.getMonth(),selStart=null,selEnd=null;
 let publicOccupiedDates = new Set(); // datas ocupadas vindas da API
@@ -805,6 +817,10 @@ async function loadPublicCalAvailability(roomId) {
   renderCal();
 }
 function selectDay(d){
+  if(selStart && !selEnd && d > selStart && d - selStart < MINIMUM_STAY_NIGHTS){
+    showToast(`A estadia mínima é de ${MINIMUM_STAY_NIGHTS} noites consecutivas.`);
+    return;
+  }
   document.querySelectorAll('.cal-day').forEach(el=>{el.classList.remove('selected','in-range');});
   if(!selStart||selEnd){selStart=d;selEnd=null;}
   else if(d>selStart){selEnd=d;}
@@ -825,6 +841,8 @@ function selectDay(d){
     const ciStr = toDateStr(calYear, calMonth, selStart);
     document.getElementById('bar-checkin').value = ciStr;
     document.getElementById('f-checkin').value = ciStr;
+    updateBarMinimumCheckoutDate();
+    updateMinimumCheckoutDate();
   }
   if(selEnd) {
     const ciStr = toDateStr(calYear, calMonth, selStart);
@@ -1008,7 +1026,7 @@ function populateRoomSelect() {
   const sel = document.getElementById('f-room');
   const barSel = document.getElementById('bar-room');
   sel.innerHTML = '';
-  barSel.innerHTML = '<option value="">Qualquer unidade</option>';
+  barSel.innerHTML = '<option value="" disabled selected>Selecione uma unidade</option>';
   const visibleRooms = (allRooms || []).filter(room => ['T2', 'T3'].includes((room.type || '').toUpperCase()));
   visibleRooms.forEach(r => {
     sel.innerHTML += `<option value="${r.id}" data-price="${r.pricePerNight}" data-name="${r.name}" data-capacity="${getRoomMaxGuests(r)}">${r.name} — €${r.pricePerNight}/noite</option>`;
@@ -1045,8 +1063,8 @@ function updateBookingPolicyHint() {
   const room = allRooms.find(item => item.id === document.getElementById('f-room').value);
   const checkInWindow = room?.type?.toUpperCase() === 'T2' ? '16:00–18:00' : '15:00–18:00';
   const text = room
-    ? `Check-in: ${checkInWindow} (avise a hora de chegada). Check-out: 08:00–11:00. Estadia mínima: 2 noites. Crianças com 18 ou mais anos pagam tarifa de adulto; berço gratuito dos 0 aos 2 anos, mediante pedido. Não há camas extra.`
-    : 'Check-in T2: 16:00–18:00; T3: 15:00–18:00. Check-out: 08:00–11:00. Estadia mínima: 2 noites. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.';
+    ? `Check-in: ${checkInWindow} (avise a hora de chegada). Check-out: 08:00–11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Crianças com 18 ou mais anos pagam tarifa de adulto; berço gratuito dos 0 aos 2 anos, mediante pedido. Não há camas extra.`
+    : `Check-in T2: 16:00–18:00; T3: 15:00–18:00. Check-out: 08:00–11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.`;
   document.getElementById('booking-policy-hint').textContent = text;
 }
 
@@ -1115,6 +1133,17 @@ async function openBookingFromBar() {
   const roomId = document.getElementById('bar-room').value;
   const checkIn = document.getElementById('bar-checkin').value;
   const checkOut = document.getElementById('bar-checkout').value;
+  if (!roomId) {
+    showToast('Selecione uma unidade para verificar a disponibilidade.');
+    return;
+  }
+  if (checkIn && checkOut) {
+    const nights = Math.round((new Date(`${checkOut}T00:00:00`) - new Date(`${checkIn}T00:00:00`)) / 86400000);
+    if (nights < MINIMUM_STAY_NIGHTS) {
+      showToast(`A estadia mínima é de ${MINIMUM_STAY_NIGHTS} noites consecutivas.`);
+      return;
+    }
+  }
   document.getElementById('f-room').value = roomId;
   document.getElementById('f-guests').value = document.getElementById('bar-guests').value;
   if (checkIn) document.getElementById('f-checkin').value = checkIn;
@@ -1149,7 +1178,7 @@ const roomCarouselImages = {
     { title: 'Quartos & casas de banho', text: '3 quartos, cada um com uma cama de casal grande; sofá-cama na sala (4 camas no total).\n3 casas de banho completas com bidé e chuveiro. Toalhas e roupa de cama incluídas.' },
     { title: 'Sala & cozinha', text: 'Sala de estar espaçosa com sofá-cama e ar condicionado.\nCozinha totalmente equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios.' },
     { title: 'Exterior & comodidades', text: 'Varanda e terraço mobilados, com vistas para o lago, montanhas, jardim e cidade. Acesso ao jardim e à área de praia privada.\nEstacionamento privado gratuito, Wi-Fi de alta velocidade, quartos familiares e para não fumadores, ar condicionado e condições de acessibilidade especial.' },
-    { title: 'Regras & horários', text: 'Check-in: 15:00–18:00; informe a hora de chegada com antecedência. Check-out: 08:00–11:00. Estadia mínima: 2 noites.\nCrianças bem-vindas; hóspedes com 18 ou mais anos pagam tarifa de adulto. Berço gratuito dos 0 aos 2 anos, mediante pedido.\nNão há camas extra. Animais, fumo no interior, festas e eventos não são permitidos.' }
+    { title: 'Regras & horários', text: `Check-in: 15:00–18:00; informe a hora de chegada com antecedência. Check-out: 08:00–11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas.\nCrianças bem-vindas; hóspedes com 18 ou mais anos pagam tarifa de adulto. Berço gratuito dos 0 aos 2 anos, mediante pedido.\nNão há camas extra. Animais, fumo no interior, festas e eventos não são permitidos.` }
   ],
   default: [
     { label: 'Espaço acolhedor' },
@@ -1310,17 +1339,22 @@ function updateSummary() {
   document.getElementById('s-guests').textContent = guests + ' hóspede' + (guests > 1 ? 's' : '');
   document.getElementById('s-total').textContent = nights > 0 ? `€${total.toLocaleString('pt-PT')}` : '—';
 }
-function updateMinimumCheckoutDate() {
-  const checkInValue = document.getElementById('f-checkin').value;
-  const checkOutInput = document.getElementById('f-checkout');
+function setMinimumCheckoutDate(checkInId, checkOutId) {
+  const checkInValue = document.getElementById(checkInId).value;
+  const checkOutInput = document.getElementById(checkOutId);
   if (!checkInValue) {
     checkOutInput.removeAttribute('min');
     return;
   }
   const minDate = new Date(`${checkInValue}T00:00:00`);
-  minDate.setDate(minDate.getDate() + 2);
-  checkOutInput.min = `${minDate.getFullYear()}-${String(minDate.getMonth() + 1).padStart(2, '0')}-${String(minDate.getDate()).padStart(2, '0')}`;
+  minDate.setDate(minDate.getDate() + MINIMUM_STAY_NIGHTS);
+  const minDateValue = `${minDate.getFullYear()}-${String(minDate.getMonth() + 1).padStart(2, '0')}-${String(minDate.getDate()).padStart(2, '0')}`;
+  checkOutInput.min = minDateValue;
+  if (checkOutInput.value && checkOutInput.value < minDateValue) checkOutInput.value = '';
 }
+function updateMinimumCheckoutDate() { setMinimumCheckoutDate('f-checkin', 'f-checkout'); }
+function updateBarMinimumCheckoutDate() { setMinimumCheckoutDate('bar-checkin', 'bar-checkout'); }
+document.getElementById('bar-checkin').addEventListener('change', updateBarMinimumCheckoutDate);
 document.getElementById('f-checkin').addEventListener('change', () => {
   updateMinimumCheckoutDate();
   updateSummary();
@@ -1363,12 +1397,15 @@ async function confirmBooking() {
     return;
   }
   const nights = Math.round((new Date(checkOut) - new Date(checkIn)) / 86400000);
-  if (nights < 2) { showToast('A estadia mínima é de 2 noites.'); return; }
+  if (nights < MINIMUM_STAY_NIGHTS) {
+    showToast(`A estadia mínima é de ${MINIMUM_STAY_NIGHTS} noites consecutivas.`);
+    return;
+  }
   const reservationNotes = [`Hora prevista de chegada: ${arrivalTime}`, specialRequests].filter(Boolean).join('\n');
 
   const btn = document.querySelector('.btn-confirm');
   btn.disabled = true;
-  btn.textContent = 'A enviar...';
+  btn.textContent = 'A enviar pedido...';
 
   try {
     const res = await fetch(`${API}/reservations`, {
@@ -1380,11 +1417,14 @@ async function confirmBooking() {
     const data = await res.json();
 
     if (res.ok) {
-      closeBooking();
-      showToast(`✓ Reserva #${data.reservation.ref} enviada! Verifique o seu email.`);
-      // Limpar formulário
-      ['f-name','f-email','f-phone','f-notes'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('f-arrival-time').value = '';
+      if (data.checkoutUrl) {
+        window.location.assign(data.checkoutUrl);
+      } else {
+        closeBooking();
+        showToast(data.message || 'Pedido enviado. Aguarde a resposta do proprietário.');
+        ['f-name','f-email','f-phone','f-notes'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('f-arrival-time').value = '';
+      }
     } else {
       showToast(data.error || 'Erro ao criar reserva. Tente novamente.');
     }
@@ -1393,7 +1433,7 @@ async function confirmBooking() {
     console.error(err);
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Confirmar Reserva';
+    btn.textContent = 'Enviar pedido de reserva';
   }
 }
 
@@ -1544,17 +1584,17 @@ async function loadAdminReservations(statusFilter) {
     const data = await res.json();
     const tbody = document.getElementById('admin-reservations-body');
     if (!tbody) return;
-    const statusLabel = { PENDING: 'Pendente', CONFIRMED: 'Confirmada', DECLINED: 'Recusada', CANCELLED: 'Cancelada', PAID: 'Paga', COMPLETED: 'Concluída' };
-    const statusClass = { PENDING: 'pending', CONFIRMED: 'confirmed', DECLINED: 'declined', CANCELLED: 'cancelled', PAID: 'confirmed', COMPLETED: 'confirmed' };
+    const statusLabel = { PENDING: 'Pendente', AWAITING_PAYMENT: 'Aguardar pagamento', CONFIRMED: 'Confirmada', DECLINED: 'Recusada', CANCELLED: 'Cancelada', PAID: 'Paga', COMPLETED: 'Concluída' };
+    const statusClass = { PENDING: 'pending', AWAITING_PAYMENT: 'pending', CONFIRMED: 'confirmed', DECLINED: 'declined', CANCELLED: 'cancelled', PAID: 'confirmed', COMPLETED: 'confirmed' };
     tbody.innerHTML = data.reservations.map(r => `
       <div class="admin-table-row">
         <div><div class="admin-guest-name">${r.guest.name}</div><div class="admin-guest-email">${r.guest.email}</div></div>
         <div><span class="admin-room-badge">${r.room.name}</span></div>
         <div style="font-size:.85rem">${new Date(r.checkIn).toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}</div>
         <div style="font-size:.85rem">${new Date(r.checkOut).toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}</div>
-        <div><span class="admin-status ${statusClass[r.status]||'pending'}">${statusLabel[r.status]||r.status}</span></div>
+        <div><span class="admin-status ${statusClass[r.status]||'pending'}">${typeof statusLabel[r.status] === 'function' ? statusLabel[r.status](r) : statusLabel[r.status]||r.status}</span></div>
         <div class="admin-actions">
-          ${r.status==='PENDING'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CONFIRMED')">✓ Aceitar</button>`:''}
+          ${r.status==='PENDING' && !r.stripeCheckoutSessionId?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CONFIRMED')">✓ Aceitar</button>`:''}
           ${r.status==='PENDING'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','DECLINED')">✕ Recusar</button>`:''}
           ${r.status!=='CANCELLED' && r.status!=='DECLINED' && r.status!=='PENDING'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CANCELLED')">↺ Cancelar</button>`:''}
         </div>
@@ -1575,13 +1615,17 @@ function filterReservations(status, el) {
 async function updateReservationStatus(id, status) {
   if (!adminToken) return;
   try {
-    await fetch(`${API}/reservations/${id}/status`, {
+    const res = await fetch(`${API}/reservations/${id}/status`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
       body: JSON.stringify({ status })
     });
-    const statusText = status === 'CONFIRMED' ? 'confirmada' : status === 'DECLINED' ? 'recusada' : 'cancelada';
-    showToast(`Reserva ${statusText}.`);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(data.error || 'Não foi possível atualizar a reserva.');
+      return;
+    }
+    showToast(data.message || (status === 'CONFIRMED' ? 'Pedido aprovado; link de pagamento enviado.' : status === 'DECLINED' ? 'Reserva recusada.' : 'Reserva cancelada.'));
     loadAdminReservations();
     loadAdminStats();
   } catch(err) { showToast('Erro ao atualizar reserva.'); }
@@ -1675,13 +1719,18 @@ async function saveRoom() {
   } catch(err) { showToast('Erro de ligação.'); }
 }
 
-async function toggleRoom(id, currentActive) {
+async function toggleRoomActive(id, currentActive) {
   try {
-    await fetch(`${API}/rooms/${id}`, {
+    const res = await fetch(`${API}/rooms/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
       body: JSON.stringify({ isActive: !currentActive })
     });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(data.error || 'Não foi possível atualizar a unidade.');
+      return;
+    }
     showToast(`Quarto ${currentActive ? 'desativado' : 'ativado'}.`);
     await loadRooms();
     loadAdminRooms();
@@ -1873,6 +1922,20 @@ function showToast(msg) {
 }
 
 // ── Inicialização ─────────────────────────────────────────
+const paymentParams = new URLSearchParams(window.location.search);
+const paymentResult = paymentParams.get('payment');
+const paymentReservationId = paymentParams.get('reservation');
+if (paymentResult === 'success') {
+  showToast('Pagamento concluído. A confirmação da reserva será enviada por email.');
+} else if (paymentResult === 'cancelled') {
+  if (paymentReservationId) {
+    fetch(`${API}/reservations/${paymentReservationId}/cancel-checkout`, { method: 'POST' })
+      .catch(err => console.error('Erro ao cancelar sessão de pagamento:', err));
+  }
+  showToast('Pagamento cancelado. Pode iniciar uma nova reserva.');
+}
+if (paymentResult) history.replaceState(null, '', window.location.pathname + window.location.hash);
+
 loadRooms();
 </script>
 </body>
