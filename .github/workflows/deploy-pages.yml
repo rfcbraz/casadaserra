@@ -31,6 +31,7 @@ jobs:
         run: |
           mkdir -p public
           cp index.html .nojekyll public/
+          cp -R assets public/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
