@@ -1,7 +1,7 @@
 // src/routes/reservations.js
 const express = require('express');
 const prisma = require('../lib/prisma');
-const { MINIMUM_STAY_NIGHTS } = require('../lib/reservationRules');
+const { MINIMUM_STAY_NIGHTS, isCheckInDateAllowed } = require('../lib/reservationRules');
 const { validateEmail, normalizePhoneNumber } = require('../lib/contactValidation');
 const { requireAuth } = require('../middleware/auth');
 const { sendReservationConfirmation, sendReservationPaymentLink, sendReservationStatusUpdate, sendAdminNotification } = require('../services/email');
@@ -48,11 +48,8 @@ router.post('/', async (req, res, next) => {
       });
     }
 
-    // Permite check-in hoje — compara só a data, não a hora
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-    if (ciDate < todayStart) {
-      return res.status(400).json({ error: 'A data de check-in não pode ser no passado.' });
+    if (!isCheckInDateAllowed(checkIn)) {
+      return res.status(400).json({ error: 'A data de entrada só pode ser amanhã ou depois.' });
     }
 
     // Verificar quarto

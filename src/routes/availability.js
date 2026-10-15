@@ -2,7 +2,7 @@
 const express = require('express');
 const prisma = require('../lib/prisma');
 const { requireAuth } = require('../middleware/auth');
-const { MINIMUM_STAY_NIGHTS } = require('../lib/reservationRules');
+const { MINIMUM_STAY_NIGHTS, isCheckInDateAllowed } = require('../lib/reservationRules');
 const router = express.Router();
 
 // GET /api/availability?checkIn=YYYY-MM-DD&checkOut=YYYY-MM-DD
@@ -19,6 +19,9 @@ router.get('/', async (req, res, next) => {
 
     if (isNaN(ciDate) || isNaN(coDate) || ciDate >= coDate) {
       return res.status(400).json({ error: 'Datas inválidas.' });
+    }
+    if (!isCheckInDateAllowed(checkIn)) {
+      return res.status(400).json({ error: 'A data de entrada só pode ser amanhã ou depois.' });
     }
 
     const nights = Math.round((coDate - ciDate) / (1000 * 60 * 60 * 24));

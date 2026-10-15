@@ -932,17 +932,35 @@ document.querySelectorAll('.nav-links a').forEach(link => {
     }
   });
 });
-const today=new Date();
-const ci=new Date(today);ci.setDate(today.getDate()+1);
-const co=new Date(today);co.setDate(today.getDate()+4);
-const fmt=d=>d.toISOString().split('T')[0];
-document.getElementById('bar-checkin').value=fmt(ci);
-document.getElementById('bar-checkout').value=fmt(co);
-document.getElementById('f-checkin').value=fmt(ci);
-document.getElementById('f-checkout').value=fmt(co);
+function getPortugalDateString() {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Lisbon',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+function shiftDateString(dateString, days) {
+  const [year, month, day] = dateString.split('-').map(Number);
+  const shifted = new Date(Date.UTC(year, month - 1, day + days));
+  return shifted.toISOString().split('T')[0];
+}
+function getMinimumCheckInDate() {
+  return shiftDateString(getPortugalDateString(), 1);
+}
+const todayDateString = getPortugalDateString();
+const tomorrowDateString = getMinimumCheckInDate();
+document.getElementById('bar-checkin').value=tomorrowDateString;
+document.getElementById('bar-checkout').value=shiftDateString(tomorrowDateString, 3);
+document.getElementById('f-checkin').value=tomorrowDateString;
+document.getElementById('f-checkout').value=shiftDateString(tomorrowDateString, 3);
+document.getElementById('bar-checkin').min=tomorrowDateString;
+document.getElementById('f-checkin').min=tomorrowDateString;
 updateBarMinimumCheckoutDate();
 
-let calYear=today.getFullYear(),calMonth=today.getMonth(),selStart=null,selEnd=null;
+let calYear=Number(todayDateString.slice(0,4)),calMonth=Number(todayDateString.slice(5,7))-1,selStart=null,selEnd=null;
 let publicOccupiedDates = new Set(); // datas ocupadas vindas da API
 
 function renderCal(){
@@ -951,13 +969,15 @@ function renderCal(){
   const grid=document.getElementById('cal-grid');grid.innerHTML='';
   const first=new Date(calYear,calMonth,1).getDay();
   const days=new Date(calYear,calMonth+1,0).getDate();
+  const minimumCheckInDate = getMinimumCheckInDate();
   for(let i=0;i<first;i++){const d=document.createElement('div');d.className='cal-day empty';grid.appendChild(d);}
   for(let d=1;d<=days;d++){
     const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const el=document.createElement('div');el.className='cal-day';el.textContent=d;
-    const isUnavail = publicOccupiedDates.has(dateStr);
+    const isPastOrToday = dateStr < minimumCheckInDate;
+    const isUnavail = isPastOrToday || publicOccupiedDates.has(dateStr);
     if(isUnavail) el.classList.add('unavail');
-    if(d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear())el.classList.add('today');
+    if(dateStr===getPortugalDateString())el.classList.add('today');
     if(!isUnavail) el.onclick=()=>selectDay(d);
     grid.appendChild(el);
   }
@@ -983,6 +1003,11 @@ async function loadPublicCalAvailability(roomId) {
   renderCal();
 }
 function selectDay(d){
+  const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  if (dateStr < getMinimumCheckInDate()) {
+    showToast('A data de entrada só pode ser amanhã ou depois.');
+    return;
+  }
   if(selStart && !selEnd && d > selStart && d - selStart < MINIMUM_STAY_NIGHTS){
     showToast(`A estadia mínima é de ${MINIMUM_STAY_NIGHTS} noites consecutivas.`);
     return;
@@ -1304,6 +1329,10 @@ async function openBookingFromBar() {
     showToast('Selecione uma unidade para verificar a disponibilidade.');
     return;
   }
+  if (checkIn && checkIn < getMinimumCheckInDate()) {
+    showToast('A data de entrada só pode ser amanhã ou depois.');
+    return;
+  }
   if (checkIn && checkOut) {
     const nights = Math.round((new Date(`${checkOut}T00:00:00`) - new Date(`${checkIn}T00:00:00`)) / 86400000);
     if (nights < MINIMUM_STAY_NIGHTS) {
@@ -1502,21 +1531,28 @@ function updateSummary() {
 function setMinimumCheckoutDate(checkInId, checkOutId) {
   const checkInValue = document.getElementById(checkInId).value;
   const checkOutInput = document.getElementById(checkOutId);
-  if (!checkInValue) {
-    checkOutInput.removeAttribute('min');
-    return;
-  }
-  const minDate = new Date(`${checkInValue}T00:00:00`);
-  minDate.setDate(minDate.getDate() + MINIMUM_STAY_NIGHTS);
-  const minDateValue = `${minDate.getFullYear()}-${String(minDate.getMonth() + 1).padStart(2, '0')}-${String(minDate.getDate()).padStart(2, '0')}`;
+  const minDateValue = shiftDateString(checkInValue || getMinimumCheckInDate(), MINIMUM_STAY_NIGHTS);
   checkOutInput.min = minDateValue;
   if (checkOutInput.value && checkOutInput.value < minDateValue) checkOutInput.value = '';
 }
 function updateMinimumCheckoutDate() { setMinimumCheckoutDate('f-checkin', 'f-checkout'); }
 function updateBarMinimumCheckoutDate() { setMinimumCheckoutDate('bar-checkin', 'bar-checkout'); }
-document.getElementById('bar-checkin').addEventListener('change', updateBarMinimumCheckoutDate);
+function validateCheckInInput(checkInId, checkOutId, updateCheckoutDate) {
+  const checkInInput = document.getElementById(checkInId);
+  const minimumDate = getMinimumCheckInDate();
+  checkInInput.min = minimumDate;
+  if (checkInInput.value && checkInInput.value < minimumDate) {
+    checkInInput.value = '';
+    document.getElementById(checkOutId).value = '';
+    showToast('A data de entrada só pode ser amanhã ou depois.');
+  }
+  updateCheckoutDate();
+}
+document.getElementById('bar-checkin').addEventListener('change', () =>
+  validateCheckInInput('bar-checkin', 'bar-checkout', updateBarMinimumCheckoutDate)
+);
 document.getElementById('f-checkin').addEventListener('change', () => {
-  updateMinimumCheckoutDate();
+  validateCheckInInput('f-checkin', 'f-checkout', updateMinimumCheckoutDate);
   updateSummary();
 });
 ['f-checkout','f-guests'].forEach(id =>
@@ -1579,6 +1615,10 @@ async function confirmBooking() {
     phone = `+${combinedDigits}`;
   }
   if (!checkIn || !checkOut) { showToast('Por favor selecione as datas.'); return; }
+  if (checkIn < getMinimumCheckInDate()) {
+    showToast('A data de entrada só pode ser amanhã ou depois.');
+    return;
+  }
   if (!roomId) { showToast('Por favor selecione um quarto.'); return; }
   if (!arrivalTime) { showToast('Indique a hora prevista de chegada.'); return; }
   const selectedRoom = allRooms.find(room => room.id === roomId);
