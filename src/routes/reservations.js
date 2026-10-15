@@ -21,11 +21,17 @@ router.post('/', async (req, res, next) => {
     if (!emailResult.success) {
       return res.status(400).json({ error: 'Indique um endereço de email válido.' });
     }
-    if (phone !== undefined && phone !== null && typeof phone !== 'string') {
+    if (phone === undefined || phone === null || phone === '') {
+      return res.status(400).json({ error: 'O número de telefone é obrigatório.' });
+    }
+    if (typeof phone !== 'string') {
       return res.status(400).json({ error: 'Número de telefone inválido.' });
     }
     const normalizedPhone = normalizePhoneNumber(phone);
-    if (phone && phone.trim() && !normalizedPhone) {
+    if (!phone.trim()) {
+      return res.status(400).json({ error: 'O número de telefone é obrigatório.' });
+    }
+    if (!normalizedPhone) {
       return res.status(400).json({ error: 'O telefone deve ter entre 7 e 15 algarismos.' });
     }
     const validEmail = emailResult.data;

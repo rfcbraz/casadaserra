@@ -24,6 +24,9 @@ nav.scrolled .nav-links a{color:var(--muted)}
 .nav-links a:hover{color:var(--accent)}
 .nav-cta{background:var(--accent);color:#fff;border:none;padding:.6rem 1.6rem;border-radius:2px;font-family:'Jost',sans-serif;font-size:.8rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s}
 .nav-cta:hover{background:var(--dark)}
+.language-select{background:transparent;border:1px solid rgba(255,255,255,.4);border-radius:2px;color:var(--white);padding:.55rem .6rem;font-family:'Jost',sans-serif;font-size:.75rem;cursor:pointer}
+nav.scrolled .language-select{border-color:rgba(42,33,24,.25);color:var(--dark)}
+.language-select option{background:var(--dark);color:var(--white)}
 .nav-toggle{display:none;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid rgba(255,255,255,.35);border-radius:2px;background:transparent;color:#fff;cursor:pointer}
 nav.scrolled .nav-toggle{border-color:rgba(42,33,24,.2);color:var(--dark)}
 .nav-toggle span,.nav-toggle span::before,.nav-toggle span::after{display:block;position:relative;width:18px;height:2px;background:currentColor;border-radius:2px;transition:all .25s ease}
@@ -98,8 +101,6 @@ h2 em{font-style:italic;color:var(--accent)}
 .room-stat small{display:block;font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem}
 .room-visual.t2{background:linear-gradient(135deg,#3d3020,#8b6940)}
 .room-visual.t3{background:linear-gradient(135deg,#2a3d30,#4f6b55)}
-.info-section{padding:0 3rem 6rem;max-width:1200px;margin:0 auto}
-.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
 .info-card{background:var(--cream);border:1px solid var(--warm);border-radius:var(--radius);padding:1.5rem}
 .info-card h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--dark);margin-bottom:.75rem}
 .info-card p,.info-card li{color:var(--muted);line-height:1.8;font-size:.92rem}
@@ -161,13 +162,7 @@ h2 em{font-style:italic;color:var(--accent)}
 .modal-backdrop{position:absolute;inset:0;background:rgba(42,33,24,.7);backdrop-filter:blur(4px)}
 .modal-content{position:relative;background:var(--white);width:90%;max-width:560px;border-radius:var(--radius);padding:2.5rem;max-height:90vh;overflow-y:auto}
 .booking-modal-content{width:90%;max-width:560px}
-.info-modal-content{width:min(90%,560px);padding:2.5rem}
-.info-modal-content h3{padding-right:2rem}
-.info-modal-body{color:var(--muted);font-size:.92rem;line-height:1.8}
-.info-modal-body p{margin-bottom:.85rem}
-.info-modal-body p:last-child{margin-bottom:0}
-.info-modal-body ul{padding-left:1.25rem}
-.info-modal-body li+li{margin-top:.4rem}
+
 .room-detail-content{width:min(94vw,calc(78vh * 4 / 3),1200px);max-width:1200px;padding:clamp(.5rem,1vw,1rem);max-height:94vh;overflow:hidden}
 .modal-close-btn{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted);line-height:1}
 .modal-close-btn:hover{color:var(--dark)}
@@ -193,8 +188,9 @@ h2 em{font-style:italic;color:var(--accent)}
 .form-field.full{grid-column:1/-1}
 .form-field label{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--earth)}
 .form-field input,.form-field select,.form-field textarea{background:var(--cream);border:1px solid var(--warm);border-radius:2px;padding:.75rem 1rem;font-family:'Jost',sans-serif;font-size:.9rem;color:var(--dark);outline:none;transition:border-color .2s;width:100%}
-.phone-number-fields{display:grid;grid-template-columns:minmax(5.5rem,.4fr) minmax(0,1fr);gap:.5rem}
+.phone-number-fields{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:.5rem}
 .phone-number-fields input{min-width:0}
+.phone-number-fields select{min-width:0}
 .form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--accent)}
 .form-field textarea{resize:vertical;min-height:80px}
 .form-summary{background:var(--cream);border:1px solid var(--warm);border-radius:var(--radius);padding:1.2rem;margin:1.5rem 0;display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
@@ -255,20 +251,27 @@ h2 em{font-style:italic;color:var(--accent)}
 
 footer{background:var(--dark);padding:4rem 3rem 2rem}
 .footer-inner{max-width:1200px;margin:0 auto}
-.footer-main{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:3rem;align-items:start;margin-bottom:3rem}
-.footer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem}
-.footer-brand{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--white);margin-bottom:.75rem}
-.footer-tagline{font-size:.82rem;color:var(--stone);line-height:1.7;font-weight:300}
-.footer-col h4{font-size:.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--stone);margin-bottom:1rem}
-.footer-col ul{list-style:none}
-.footer-col ul li{margin-bottom:.5rem}
-.footer-col ul li a{color:rgba(255,255,255,.4);text-decoration:none;font-size:.82rem;transition:color .2s}
-.footer-col ul li a:hover{color:var(--accent2)}
+.footer-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3rem;align-items:start;margin-bottom:3rem}
+.footer-grid{display:grid;grid-template-columns:1fr;gap:1.25rem}
+.footer-col h4{margin:0}
+.footer-section-button,.footer-location-title{padding:0;border:0;background:none;color:var(--stone);font-family:'Jost',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.15em;text-align:left;text-transform:uppercase}
+.footer-section-button{cursor:pointer;transition:color .2s}
+.footer-section-button:hover,.footer-section-button:focus-visible{color:var(--accent2)}
+.footer-info-content{color:var(--muted);font-size:.92rem;line-height:1.8}
+.footer-info-content p{margin-bottom:.85rem}
+.footer-info-content p:last-child{margin-bottom:0}
+.footer-info-content ul{padding-left:1.25rem}
+.footer-info-content li+li{margin-top:.4rem}
+.footer-info-content a{color:var(--earth)}
+.footer-info-content a:hover{color:var(--accent)}
 .footer-location{min-width:0}
-.footer-location h4{font-size:.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--stone);margin-bottom:1rem}
+.footer-location h4{margin:0 0 1rem}
+.footer-location-detail{color:rgba(255,255,255,.6);font-size:.85rem;line-height:1.7;margin-bottom:1rem}
 .footer-map{display:block;width:100%;height:clamp(220px,28vw,320px);border:0;border-radius:var(--radius)}
 .footer-map-link{display:inline-block;margin-top:.75rem;color:var(--accent2);font-size:.82rem;text-decoration:none}
 .footer-map-link:hover{text-decoration:underline}
+.footer-info-modal-content{width:min(90%,560px);padding:2.5rem}
+.footer-info-modal-content h3{padding-right:2rem}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center}
 .footer-copy{font-size:.75rem;color:rgba(255,255,255,.3)}
 .admin-link{font-size:.72rem;color:rgba(255,255,255,.2);cursor:pointer;transition:color .2s;background:none;border:none;font-family:'Jost',sans-serif}
@@ -289,8 +292,8 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .about-grid{gap:3rem}
   .avail-section{padding:5rem 1.5rem}
   .avail-grid{grid-template-columns:1fr}
-  .footer-main{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:2rem}
-  .footer-grid{gap:1.5rem}
+  .footer-main{gap:2rem}
+  .footer-grid{gap:1.25rem}
 }
 
 @media (max-width:768px) {
@@ -317,7 +320,6 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .rooms-grid{grid-template-columns:1fr}
   .room-card{min-width:0}
   .room-visual{aspect-ratio:4/3}
-  .info-grid{grid-template-columns:1fr}
   .about-grid{grid-template-columns:1fr;gap:2rem}
   .about-image{height:320px}
   .avail-inner{padding:0 1rem}
@@ -332,7 +334,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .room-detail-carousel-control{width:34px;height:34px}
   .form-grid{grid-template-columns:1fr}
   .footer-main{grid-template-columns:1fr;gap:2rem}
-  .footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem}
+  .footer-grid{grid-template-columns:1fr;gap:1.25rem}
 }
 
 @media (max-width:540px) {
@@ -371,6 +373,11 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     <li><a href="#contact">Contacto</a></li>
   </ul>
   <button class="nav-cta" onclick="openBooking()">Reservar</button>
+  <select class="language-select" id="language-select" aria-label="Idioma / Language / Idioma">
+    <option value="pt">PT</option>
+    <option value="en">EN</option>
+    <option value="es">ES</option>
+  </select>
 </nav>
 
 <div class="hero">
@@ -460,39 +467,6 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   </div>
 </section>
 
-<section class="info-section">
-  <div class="info-grid">
-    <div class="info-card">
-      <h3>Ficha técnica do alojamento</h3>
-      <p><strong>Casa do Ferreiro T2:</strong> 115 m² · Até 6 hóspedes · Licença AL: <strong>167437/AL</strong>.</p>
-      <p><strong>Casa do Ferreiro T3:</strong> 125 m² · Até 9 hóspedes · Classificação: <strong>9,6/10</strong> · Localização: <strong>10/10</strong>.</p>
-      <p>Anfitrião: <strong>Sr. André</strong> · Português, Inglês e Espanhol.</p>
-    </div>
-    <div class="info-card">
-      <h3>Localização & endereço</h3>
-      <p>R. Ferreiro 3, 5470-504 Venda Nova, Montalegre, Portugal.</p>
-      <p>Situado em frente à praia/albufeira, com vistas sobre o lago, montanhas e jardim, num ambiente de paz, sossego e natureza envolvente.</p>
-    </div>
-    <div class="info-card">
-      <h3>Conforto e comodidade</h3>
-      <p>Estacionamento privado gratuito, Wi‑Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, além de acesso a jardim e área de praia privada.</p>
-      <p>Cozinha totalmente equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.</p>
-    </div>
-    <div class="info-card">
-      <h3>Regras da propriedade</h3>
-      <ul>
-        <li>Check-in: das 15:00 às 18:00 (necessário informar a hora de chegada com antecedência).</li>
-        <li>Check-out: das 08:00 às 11:00.</li>
-        <li>Estadia mínima: 2 noites consecutivas.</li>
-        <li>Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.</li>
-        <li>Não existem camas extra disponíveis.</li>
-        <li>Não é permitido fumar no interior nem realizar festas ou eventos.</li>
-        <li>Animais de estimação não são admitidos.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
 <div id="availability" class="avail-section">
   <div class="avail-inner">
     <div class="section-eyebrow animated-section-eyebrow">Calendário</div>
@@ -527,16 +501,22 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   <div class="footer-inner">
     <div class="footer-main">
       <div class="footer-grid">
-        <div>
-          <div class="footer-brand">Casa do Ferreiro</div>
-          <p class="footer-tagline">Refúgio de tranquilidade entre a Albufeira de Venda Nova e a Serra do Gerês, com conforto, vistas e natureza envolvente.</p>
+        <div class="footer-col">
+          <h4><button class="footer-section-button" type="button" onclick="openFooterInfo('comfort', this)">Conforto e comodidade</button></h4>
         </div>
-        <div class="footer-col"><h4>Alojamento</h4><ul><li><a href="#rooms">T2</a></li><li><a href="#rooms">T3</a></li></ul></div>
-        <div class="footer-col"><h4>Informações</h4><ul><li><a href="#info-modal" onclick="openInfoModal('checkin');return false">Check-in flexível</a></li><li><a href="#info-modal" onclick="openInfoModal('local');return false">Alojamento Local</a></li><li><a href="#info-modal" onclick="openInfoModal('policies');return false">Políticas</a></li></ul></div>
-        <div class="footer-col"><h4>Contacto</h4><ul><li><a href="#">📍 Rua do Ferreiro nº 3, 5470-504 Venda Nova, Montalegre, Portugal</a></li><li><a href="#">✉ reservas@casadoferreiro.pt</a></li><li><a href="#">📞 +351 938 750 239</a></li></ul></div>
+        <div class="footer-col">
+          <h4><button class="footer-section-button" type="button" onclick="openFooterInfo('accommodation', this)">Alojamento</button></h4>
+        </div>
+        <div class="footer-col">
+          <h4><button class="footer-section-button" type="button" onclick="openFooterInfo('policies', this)">Regras da propriedade</button></h4>
+        </div>
+        <div class="footer-col">
+          <h4><button class="footer-section-button" type="button" onclick="openFooterInfo('contact', this)">Contacto</button></h4>
+        </div>
       </div>
       <div class="footer-location">
-        <h4>Localização</h4>
+        <h4><span class="footer-location-title">LOCALIZAÇÃO E MORADA</span></h4>
+        <p class="footer-location-detail">Rua do Ferreiro nº 3, 5470-504 Venda Nova, Montalegre, Portugal. Em frente à albufeira, com vistas sobre o lago, as montanhas e o jardim, num ambiente tranquilo rodeado pela natureza.</p>
         <iframe class="footer-map" title="Localização da Casa do Ferreiro no Google Maps" src="https://maps.google.com/maps?q=Rua%20do%20Ferreiro%203%2C%205470-504%20Venda%20Nova%2C%20Montalegre%2C%20Portugal&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
         <a class="footer-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Rua%20do%20Ferreiro%203%2C%205470-504%20Venda%20Nova%2C%20Montalegre%2C%20Portugal" target="_blank" rel="noopener noreferrer">Abrir no Google Maps</a>
       </div>
@@ -548,12 +528,12 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   </div>
 </footer>
 
-<div class="modal" id="info-modal">
-  <div class="modal-backdrop" onclick="closeInfoModal()"></div>
-  <div class="modal-content info-modal-content" role="dialog" aria-modal="true" aria-labelledby="info-modal-title">
-    <button class="modal-close-btn" type="button" aria-label="Fechar" onclick="closeInfoModal()">×</button>
-    <h3 id="info-modal-title"></h3>
-    <div class="info-modal-body" id="info-modal-body"></div>
+<div class="modal" id="footer-info-modal">
+  <div class="modal-backdrop" onclick="closeFooterInfo()"></div>
+  <div class="modal-content footer-info-modal-content" role="dialog" aria-modal="true" aria-labelledby="footer-info-title" aria-describedby="footer-info-body">
+    <button class="modal-close-btn" type="button" aria-label="Fechar" onclick="closeFooterInfo()">×</button>
+    <h3 id="footer-info-title"></h3>
+    <div class="footer-info-content" id="footer-info-body"></div>
   </div>
 </div>
 
@@ -584,10 +564,10 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <div class="form-field">
         <label for="f-phone">Telefone</label>
         <div class="phone-number-fields">
-          <input type="tel" id="f-phone-code" value="+351" aria-label="Indicativo internacional" autocomplete="tel-country-code" inputmode="tel" maxlength="4">
-          <input type="tel" id="f-phone" placeholder="912 345 678" aria-label="Número de telefone sem indicativo" autocomplete="tel-national" inputmode="tel" maxlength="20">
+          <select id="f-phone-code" aria-label="País e indicativo internacional" autocomplete="tel-country-code"></select>
+          <input type="tel" id="f-phone" placeholder="912 345 678" aria-label="Número de telefone sem indicativo" autocomplete="tel-national" inputmode="tel" maxlength="20" required>
         </div>
-        <small class="form-hint" id="phone-hint" aria-live="polite">Indicativo internacional (PT: +351) e número com 7 a 15 algarismos no total.</small>
+        <small class="form-hint" id="phone-hint" aria-live="polite">Selecione o país e introduza o número.</small>
       </div>
       <div class="form-field"><label>Unidade</label>
         <select id="f-room">
@@ -765,6 +745,277 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 
 <script>
 const MINIMUM_STAY_NIGHTS = 2;
+const translations = {
+  en: {
+    'Acomodações': 'Accommodation', 'Sobre nós': 'About us', 'Disponibilidade': 'Availability', 'Contacto': 'Contact',
+    'Turismo Rural · Barroso': 'Rural Tourism · Barroso', 'Refúgio em': 'A retreat in', 'tranquilidade': 'tranquillity',
+    'entre a albufeira e o Gerês': 'between the reservoir and Gerês', 'A Casa do Ferreiro combina a tradição da região de Barroso com conforto contemporâneo, na proximidade da Albufeira de Venda Nova e da Serra do Gerês.': 'Casa do Ferreiro blends the traditions of the Barroso region with contemporary comfort, close to Venda Nova Reservoir and the Gerês Mountains.',
+    'Reservar agora': 'Book now', 'Ver quartos': 'View accommodation', 'Unidades': 'Units', 'Avaliação': 'Rating', 'Anos': 'Years',
+    'Check-in': 'Check-in', 'Check-out': 'Check-out', 'Unidade': 'Accommodation', 'Selecione uma unidade': 'Select accommodation',
+    'Hóspedes': 'Guests', 'hóspede': 'guest', 'hóspedes': 'guests', 'Verificar Disponibilidade': 'Check availability',
+    'As nossas acomodações': 'Our accommodation', 'Acomodações ': 'Accommodation ', 'A Casa do Ferreiro oferece espaços acolhedores, modernos e funcionais, ideais para famílias, casais ou pequenos grupos que querem viver a tranquilidade da região com conforto total.': 'Casa do Ferreiro offers welcoming, modern and functional spaces, ideal for families, couples or small groups looking to enjoy the tranquillity of the region in complete comfort.',
+    'A nossa história': 'Our story', 'Um refúgio em': 'A haven of', 'A Casa do Ferreiro é um alojamento acolhedor e moderno que combina a tradição da região de Barroso com o conforto contemporâneo. Localizada numa posição privilegiada junto à albufeira da Venda Nova, oferece vistas deslumbrantes sobre a água e as montanhas.': 'Casa do Ferreiro is a welcoming, modern accommodation that combines the traditions of the Barroso region with contemporary comfort. Ideally located by Venda Nova Reservoir, it offers stunning views of the water and mountains.',
+    'Com aproximadamente 115 m², a casa foi pensada para proporcionar momentos de descanso, natureza e convivência, sendo o ponto de partida ideal para explorar a Serra do Gerês, praticar desporto ao ar livre ou simplesmente relaxar ao sol e à vista da paisagem.': 'At approximately 115 m², the house is designed for relaxation, nature and time together. It is the perfect base for exploring the Gerês Mountains, enjoying outdoor activities or simply relaxing in the sun and taking in the scenery.',
+    'Alojamento acolhedor': 'Welcoming accommodation', 'Espaço moderno, funcional e envolvente': 'A modern, practical and inviting space', 'Vista para a albufeira': 'Reservoir views',
+    'Deslumbrante sobre a água e a montanha': 'Stunning views of the water and mountains', 'Cozinha integrada': 'Fully equipped kitchen', 'Placa, forno, micro-ondas, frigorífico e muito mais': 'Hob, oven, microwave, fridge and more',
+    'Natureza envolvente': 'Surrounded by nature', 'Ideial para caminhadas, piqueniques e desporto ao ar livre': 'Ideal for walks, picnics and outdoor activities',
+    'Calendário': 'Calendar', 'em tempo real': 'in real time', 'Selecionado': 'Selected', 'Indisponível': 'Unavailable', 'Disponível': 'Available',
+    'LOCALIZAÇÃO E MORADA': 'LOCATION & ADDRESS', 'Rua do Ferreiro nº 3, 5470-504 Venda Nova, Montalegre, Portugal. Em frente à albufeira, com vistas sobre o lago, as montanhas e o jardim, num ambiente tranquilo rodeado pela natureza.': 'Rua do Ferreiro 3, 5470-504 Venda Nova, Montalegre, Portugal. Facing the reservoir, with views of the lake, mountains and garden in peaceful surroundings.',
+    'Abrir no Google Maps': 'Open in Google Maps', 'Todos os direitos reservados.': 'All rights reserved.', 'Painel de gestão': 'Admin panel',
+    'Localização da Casa do Ferreiro no Google Maps': 'Casa do Ferreiro location on Google Maps', 'João Silva': 'e.g. John Smith',
+    'Conforto e comodidade': 'Comfort & amenities', 'Alojamento': 'Accommodation', 'Regras da propriedade': 'Property rules',
+    'Casa do Ferreiro T2:': 'Casa do Ferreiro T2:', 'Casa do Ferreiro T3:': 'Casa do Ferreiro T3:',
+    '115 m², até 6 hóspedes. Licença AL: 167437/AL.': '115 m², up to 6 guests. AL licence: 167437/AL.',
+    '125 m², até 9 hóspedes. Classificação: 9,6/10 · Localização: 10/10.': '125 m², up to 9 guests. Rating: 9.6/10 · Location: 10/10.',
+    'Check-out: das 08:00 às 11:00.': 'Check-out: 08:00–11:00.',
+    'Não são admitidos animais de estimação.': 'Pets are not allowed.',
+    'Anfitrião:': 'Host:', 'Idiomas: Português, Inglês e Espanhol.': 'Languages: Portuguese, English and Spanish.',
+    'Email:': 'Email:', 'Telefone:': 'Phone:',
+    'Fazer Reserva': 'Make a booking', 'Envie o seu pedido; o proprietário irá aprová-lo antes do pagamento.': 'Send your request; the owner will approve it before payment.',
+    'Nome completo': 'Full name', 'Telefone': 'Phone', 'Número de telefone sem indicativo': 'Phone number without country code',
+    'Selecione o país e introduza o número.': 'Select your country and enter your phone number.',
+    'Selecione primeiro a unidade': 'Select accommodation first', 'Hora prevista de chegada': 'Expected arrival time',
+    'Selecione a hora prevista': 'Select your expected arrival time',
+    'Observações sobre a estadia': 'Notes about your stay', 'Informações adicionais sobre a sua reserva (opcional)...': 'Additional information about your booking (optional)...',
+    'Quarto': 'Room', 'Datas': 'Dates', 'Noites': 'Nights', 'Total estimado': 'Estimated total', 'Enviar pedido de reserva': 'Send booking request',
+    'Tamanho': 'Size', 'Quartos': 'Bedrooms', 'Camas': 'Beds', 'quarto': 'bedroom', 'quartos': 'bedrooms', 'cama': 'bed', 'camas': 'beds',
+    'Reservar': 'Book', 'A carregar as unidades...': 'Loading accommodation...', 'Wi‑Fi gratuito': 'Free Wi-Fi',
+    'Abrir menu': 'Open menu', 'Voltar ao topo': 'Back to top', 'Fechar': 'Close', 'Fotografia anterior': 'Previous photo', 'Fotografia seguinte': 'Next photo',
+    'Fotografias da acomodação': 'Accommodation photos', 'Fotografia do alojamento': 'Accommodation photo', 'Ver fotografias de': 'View photos of',
+    'País e indicativo internacional': 'Country and international calling code',
+    'A verificar disponibilidade...': 'Checking availability...',
+    'Ocupado': 'Booked', 'Erro ao verificar disponibilidade.': 'Unable to check availability.',
+    'A estadia mínima é de 2 noites consecutivas. Check-out: 08:00–11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.': 'Minimum stay: 2 consecutive nights. Check-out: 08:00–11:00. Free cot for children aged 0–2 on request; no extra beds.',
+    'Check-in T2: 16:00–18:00; T3: 15:00–18:00. Check-out: 08:00–11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.': 'Check-in T2: 16:00–18:00; T3: 15:00–18:00. Check-out: 08:00–11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request; no extra beds.',
+    'Não foi possível carregar os quartos. Verifique se o servidor está ligado.': 'Could not load the accommodation. Please check that the server is running.',
+    'Selecione uma unidade para verificar a disponibilidade.': 'Select accommodation to check availability.',
+    'Selecione as datas de entrada e saída antes de reservar.': 'Select check-in and check-out dates before booking.',
+    'A data de entrada só pode ser amanhã ou depois.': 'Check-in must be tomorrow or later.',
+    'Por favor selecione as datas.': 'Please select your dates.', 'Por favor selecione um quarto.': 'Please select accommodation.',
+    'Indique a hora prevista de chegada.': 'Please select your expected arrival time.',
+    'Por favor preencha nome e email.': 'Please enter your name and email.',
+    'Introduza um endereço de email válido.': 'Please enter a valid email address.',
+    'O número de telefone é obrigatório.': 'A phone number is required.',
+    'Introduza um número de telefone para continuar.': 'Enter a phone number to continue.',
+    'Selecione o país e introduza o número com 7 a 15 algarismos no total, incluindo o indicativo.': 'Select your country and enter 7 to 15 digits in total, including the country code.',
+    'Verifique o país, indicativo e número: devem ter entre 7 e 15 algarismos no total.': 'Check the country code and number: together they must contain 7 to 15 digits.',
+    'Introduza um telefone válido com indicativo internacional.': 'Enter a valid phone number with an international country code.',
+    'A enviar pedido...': 'Sending request...', 'Pedido recebido. O pagamento será solicitado se o proprietário aprovar a reserva.': 'Request received. Payment will be requested if the owner approves the booking.',
+    'Pagamento concluído. A confirmação da reserva será enviada por email.': 'Payment complete. Booking confirmation will be sent by email.',
+    'Pagamento cancelado. Pode iniciar uma nova reserva.': 'Payment cancelled. You can start a new booking.',
+    'A Casa do Ferreiro T2': 'Casa do Ferreiro T2', 'Casa de férias T2 com 115 m², composta por 2 quartos de casal com casa de banho privativa, sala espaçosa, cozinha totalmente equipada e varanda/terraço com vista panorâmica para a albufeira e as montanhas.': 'T2 holiday home with 115 m², featuring two double bedrooms with private bathrooms, a spacious living room, fully equipped kitchen and a balcony/terrace with panoramic reservoir and mountain views.',
+    'Apartamento / casa de férias T3 com 125 m², localizado em frente à praia/albufeira, com 3 quartos de casal, sala de estar espaçosa com sofá-cama, cozinha totalmente equipada, varanda e terraço com vistas deslumbrantes sobre o lago, montanhas e jardim.': '125 m² T3 holiday home facing the beach and reservoir, with three double bedrooms, a spacious living room with sofa bed, fully equipped kitchen, balcony and terrace with stunning lake, mountain and garden views.',
+    '2 quartos de casal': '2 double bedrooms', '3 casas de banho': '3 bathrooms', 'Cozinha totalmente equipada': 'Fully equipped kitchen', 'Varanda e terraço': 'Balcony and terrace',
+    'Estacionamento privado': 'Private parking', 'Sala de estar com sofá-cama': 'Living room with sofa bed', 'Jardim e espaço exterior': 'Garden and outdoor space',
+    '3 quartos de casal': '3 double bedrooms', '3 casas de banho completas': '3 full bathrooms', 'Área de praia privada': 'Private beach area',
+    'Estacionamento privado gratuito': 'Free private parking', 'Ar condicionado': 'Air conditioning', 'Quartos para não fumadores': 'Non-smoking rooms',
+    'Quartos com casa de banho privativa': 'Bedrooms with private bathrooms', 'Vista para a albufeira e as montanhas': 'Reservoir and mountain views', 'Cozinha ampla e totalmente equipada': 'Large, fully equipped kitchen',
+    'Vista para o lago e montanhas': 'Lake and mountain views', 'Conforto para famílias e grupos': 'Comfort for families and groups',
+    'Alojamento local': 'Local accommodation', 'Anfitrião': 'Host',
+    'Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, jardim e acesso a área de praia privada.': 'Free private parking, high-speed Wi-Fi, air conditioning, non-smoking rooms, towels and bed linen, a garden and access to a private beach area.',
+    'Cozinha equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.': 'Equipped kitchen with a fridge, coffee machine, microwave, dining table and full set of utensils.',
+    'Check-in: T2 das 16:00 às 18:00; T3 das 15:00 às 18:00. Informe a hora de chegada com antecedência.': 'Check-in: T2 from 16:00 to 18:00; T3 from 15:00 to 18:00. Please let us know your arrival time in advance.',
+    'Estadia mínima: 2 noites consecutivas.': 'Minimum stay: 2 consecutive nights.',
+    'Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.': 'Children welcome; free cot for ages 0–2.',
+    'Não há camas extra.': 'No extra beds are available.',
+    'Não é permitido fumar no interior nem realizar festas ou eventos.': 'Smoking indoors and parties or events are not permitted.',
+    'Animais de estimação não são admitidos.': 'Pets are not allowed.',
+    'Português': 'Portuguese', 'Inglês': 'English', 'Espanhol': 'Spanish', 'Email': 'Email',
+    'Licença AL:': 'AL licence:', 'até': 'up to', 'Classificação:': 'Rating:', 'Localização:': 'Location:',
+    'O pedido foi enviado com sucesso.': 'Your request was sent successfully.',
+    '✓ {{count}} data(s) bloqueada(s).': '✓ {{count}} date(s) blocked.',
+    '✓ {{count}} data(s) desbloqueada(s).': '✓ {{count}} date(s) unblocked.',
+    'A estadia mínima é de {{nights}} noites consecutivas.': 'Minimum stay: {{nights}} consecutive nights.',
+    'Casa do Ferreiro T2': 'Casa do Ferreiro T2', 'Casa do Ferreiro T3': 'Casa do Ferreiro T3',
+    'Noite': 'night', '/ noite': '/ night',
+    '1 hóspede': '1 guest', '2 hóspedes': '2 guests', '3 hóspedes': '3 guests', '4 hóspedes': '4 guests', '5 hóspedes': '5 guests', '6 hóspedes': '6 guests', '7 hóspedes': '7 guests', '8 hóspedes': '8 guests', '9 hóspedes': '9 guests',
+    'Selecione uma unidade; capacidade máxima: 9 hóspedes.': 'Select accommodation; maximum capacity: 9 guests.',
+    'Check-in: 16:00–18:00 (avise a hora de chegada). Check-out: 08:00–11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Não há camas extra.': 'Check-in: 16:00–18:00 (please let us know your arrival time). Check-out: 08:00–11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request. No extra beds.',
+    'Check-in: 15:00–18:00 (avise a hora de chegada). Check-out: 08:00–11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Não há camas extra.': 'Check-in: 15:00–18:00 (please let us know your arrival time). Check-out: 08:00–11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request. No extra beds.',
+    'Capacidade máxima desta unidade: 6 hóspedes.': 'Maximum capacity for this accommodation: 6 guests.',
+    'Capacidade máxima desta unidade: 9 hóspedes.': 'Maximum capacity for this accommodation: 9 guests.',
+    'Não foi possível carregar as unidades.': 'Could not load accommodation.',
+    'Casa de banho do T2 com chuveiro envidraçado': 'T2 bathroom with glass shower',
+    'Quarto do T2 com cama de casal e berço': 'T2 bedroom with double bed and cot',
+    'Sala de estar do T2 com sofá e televisão': 'T2 living room with sofa and TV',
+    'Quarto de casal do T2 com ar condicionado e televisão': 'T2 double bedroom with air conditioning and TV',
+    'Quarto de casal do T3 com televisão e ar condicionado': 'T3 double bedroom with TV and air conditioning',
+    'Quarto de casal do T3 com vista para a albufeira': 'T3 double bedroom with reservoir view',
+    'Cozinha equipada do T3': 'Equipped T3 kitchen',
+  },
+  es: {
+    'Acomodações': 'Alojamientos', 'Sobre nós': 'Sobre nosotros', 'Disponibilidade': 'Disponibilidad', 'Contacto': 'Contacto',
+    'Turismo Rural · Barroso': 'Turismo rural · Barroso', 'Refúgio em': 'Un refugio de', 'tranquilidade': 'tranquilidad',
+    'entre a albufeira e o Gerês': 'entre el embalse y Gerês', 'A Casa do Ferreiro combina a tradição da região de Barroso com conforto contemporâneo, na proximidade da Albufeira de Venda Nova e da Serra do Gerês.': 'Casa do Ferreiro combina la tradición de la región de Barroso con el confort contemporáneo, cerca del embalse de Venda Nova y de la sierra de Gerês.',
+    'Reservar agora': 'Reservar ahora', 'Ver quartos': 'Ver alojamientos', 'Unidades': 'Unidades', 'Avaliação': 'Valoración', 'Anos': 'Años',
+    'Check-in': 'Entrada', 'Check-out': 'Salida', 'Unidade': 'Alojamiento', 'Selecione uma unidade': 'Seleccione un alojamiento',
+    'Hóspedes': 'Huéspedes', 'hóspede': 'huésped', 'hóspedes': 'huéspedes', 'Verificar Disponibilidade': 'Consultar disponibilidad',
+    'As nossas acomodações': 'Nuestros alojamientos', 'Acomodações ': 'Alojamientos ', 'A Casa do Ferreiro oferece espaços acolhedores, modernos e funcionais, ideais para famílias, casais ou pequenos grupos que querem viver a tranquilidade da região com conforto total.': 'Casa do Ferreiro ofrece espacios acogedores, modernos y funcionales, ideales para familias, parejas o grupos pequeños que quieran disfrutar de la tranquilidad de la región con total comodidad.',
+    'A nossa história': 'Nuestra historia', 'Um refúgio em': 'Un refugio de', 'A Casa do Ferreiro é um alojamento acolhedor e moderno que combina a tradição da região de Barroso com o conforto contemporâneo. Localizada numa posição privilegiada junto à albufeira da Venda Nova, oferece vistas deslumbrantes sobre a água e as montanhas.': 'Casa do Ferreiro es un alojamiento acogedor y moderno que combina la tradición de la región de Barroso con el confort contemporáneo. Situada junto al embalse de Venda Nova, ofrece unas vistas impresionantes del agua y las montañas.',
+    'Com aproximadamente 115 m², a casa foi pensada para proporcionar momentos de descanso, natureza e convivência, sendo o ponto de partida ideal para explorar a Serra do Gerês, praticar desporto ao ar livre ou simplesmente relaxar ao sol e à vista da paisagem.': 'Con aproximadamente 115 m², la casa está pensada para disfrutar del descanso, la naturaleza y la convivencia. Es el punto de partida ideal para explorar la sierra de Gerês, practicar actividades al aire libre o simplemente relajarse al sol y contemplar el paisaje.',
+    'Alojamento acolhedor': 'Alojamiento acogedor', 'Espaço moderno, funcional e envolvente': 'Espacio moderno, funcional y acogedor', 'Vista para a albufeira': 'Vistas al embalse',
+    'Deslumbrante sobre a água e a montanha': 'Impresionantes vistas al agua y la montaña', 'Cozinha integrada': 'Cocina equipada', 'Placa, forno, micro-ondas, frigorífico e muito mais': 'Placa, horno, microondas, frigorífico y mucho más',
+    'Natureza envolvente': 'Naturaleza alrededor', 'Ideial para caminhadas, piqueniques e desporto ao ar livre': 'Ideal para paseos, pícnics y actividades al aire libre',
+    'Calendário': 'Calendario', 'em tempo real': 'en tiempo real', 'Selecionado': 'Seleccionado', 'Indisponível': 'No disponible', 'Disponível': 'Disponible',
+    'LOCALIZAÇÃO E MORADA': 'UBICACIÓN Y DIRECCIÓN', 'Rua do Ferreiro nº 3, 5470-504 Venda Nova, Montalegre, Portugal. Em frente à albufeira, com vistas sobre o lago, as montanhas e o jardim, num ambiente tranquilo rodeado pela natureza.': 'Rua do Ferreiro 3, 5470-504 Venda Nova, Montalegre, Portugal. Frente al embalse, con vistas al lago, las montañas y el jardín, en un entorno tranquilo rodeado de naturaleza.',
+    'Abrir no Google Maps': 'Abrir en Google Maps', 'Todos os direitos reservados.': 'Todos los derechos reservados.', 'Painel de gestão': 'Panel de administración',
+    'Localização da Casa do Ferreiro no Google Maps': 'Ubicación de Casa do Ferreiro en Google Maps', 'João Silva': 'p. ej., Juan Pérez',
+    'Conforto e comodidade': 'Confort y comodidades', 'Alojamento': 'Alojamiento', 'Regras da propriedade': 'Normas del alojamiento',
+    'Casa do Ferreiro T2:': 'Casa do Ferreiro T2:', 'Casa do Ferreiro T3:': 'Casa do Ferreiro T3:',
+    '115 m², até 6 hóspedes. Licença AL: 167437/AL.': '115 m², hasta 6 huéspedes. Licencia AL: 167437/AL.',
+    '125 m², até 9 hóspedes. Classificação: 9,6/10 · Localização: 10/10.': '125 m², hasta 9 huéspedes. Valoración: 9,6/10 · Ubicación: 10/10.',
+    'Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, jardim e acesso a área de praia privada.': 'Aparcamiento privado gratuito, Wi-Fi de alta velocidad, aire acondicionado, habitaciones para no fumadores, toallas y ropa de cama incluidas, jardín y acceso a una zona de playa privada.',
+    'Cozinha equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.': 'Cocina equipada con frigorífico, cafetera, microondas, mesa de comedor y menaje completo.',
+    'Check-in: T2 das 16:00 às 18:00; T3 das 15:00 às 18:00. Informe a hora de chegada com antecedência.': 'Entrada: T2 de 16:00 a 18:00; T3 de 15:00 a 18:00. Indique la hora de llegada con antelación.',
+    'Check-out: das 08:00 às 11:00.': 'Salida: de 08:00 a 11:00.',
+    'Estadia mínima: 2 noites consecutivas.': 'Estancia mínima: 2 noches consecutivas.',
+    'Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.': 'Niños bienvenidos; cuna gratuita para edades de 0 a 2 años.',
+    'Não há camas extra.': 'No hay camas supletorias.',
+    'Não é permitido fumar no interior nem realizar festas ou eventos.': 'No se permite fumar en el interior ni celebrar fiestas o eventos.',
+    'Não são admitidos animais de estimação.': 'No se admiten mascotas.',
+    'Anfitrião:': 'Anfitrión:', 'Idiomas: Português, Inglês e Espanhol.': 'Idiomas: portugués, inglés y español.',
+    'Email:': 'Correo electrónico:', 'Telefone:': 'Teléfono:',
+    'Fazer Reserva': 'Hacer una reserva', 'Envie o seu pedido; o proprietário irá aprová-lo antes do pagamento.': 'Envíe su solicitud; el propietario la aprobará antes del pago.',
+    'Nome completo': 'Nombre completo', 'Telefone': 'Teléfono', 'Número de telefone sem indicativo': 'Número de teléfono sin prefijo',
+    'Selecione o país e introduza o número.': 'Seleccione el país e introduzca el número.',
+    'Selecione primeiro a unidade': 'Seleccione primero el alojamiento', 'Hora prevista de chegada': 'Hora prevista de llegada',
+    'Selecione a hora prevista': 'Seleccione la hora prevista de llegada',
+    'Observações sobre a estadia': 'Observaciones sobre la estancia', 'Informações adicionais sobre a sua reserva (opcional)...': 'Información adicional sobre su reserva (opcional)...',
+    'Quarto': 'Habitación', 'Datas': 'Fechas', 'Noites': 'Noches', 'Total estimado': 'Total estimado', 'Enviar pedido de reserva': 'Enviar solicitud de reserva',
+    'Tamanho': 'Tamaño', 'Quartos': 'Dormitorios', 'Camas': 'Camas', 'quarto': 'dormitorio', 'quartos': 'dormitorios', 'cama': 'cama', 'camas': 'camas',
+    'Noite': 'noche', '/ noite': '/ noche',
+    '1 hóspede': '1 huésped', '2 hóspedes': '2 huéspedes', '3 hóspedes': '3 huéspedes', '4 hóspedes': '4 huéspedes', '5 hóspedes': '5 huéspedes', '6 hóspedes': '6 huéspedes', '7 hóspedes': '7 huéspedes', '8 hóspedes': '8 huéspedes', '9 hóspedes': '9 huéspedes',
+    'Reservar': 'Reservar', 'A carregar as unidades...': 'Cargando alojamientos...', 'Wi‑Fi gratuito': 'Wi-Fi gratis',
+    'Abrir menu': 'Abrir menú', 'Voltar ao topo': 'Volver arriba', 'Fechar': 'Cerrar', 'Fotografia anterior': 'Foto anterior', 'Fotografia seguinte': 'Foto siguiente',
+    'Fotografias da acomodação': 'Fotos del alojamiento', 'Fotografia do alojamento': 'Foto del alojamiento', 'Ver fotografias de': 'Ver fotos de',
+    'País e indicativo internacional': 'País y prefijo internacional',
+    'A verificar disponibilidade...': 'Comprobando disponibilidad...', 'Ocupado': 'Ocupado', 'Erro ao verificar disponibilidade.': 'No se pudo comprobar la disponibilidad.',
+    'A estadia mínima é de 2 noites consecutivas.': 'La estancia mínima es de 2 noches consecutivas.',
+    'A estadia mínima é de {{nights}} noites consecutivas.': 'La estancia mínima es de {{nights}} noches consecutivas.',
+    'A estadia mínima é de 2 noites consecutivas. Check-out: 08:00–11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.': 'Estancia mínima: 2 noches consecutivas. Salida: 08:00–11:00. Cuna gratuita para niños de 0 a 2 años bajo petición; no hay camas supletorias.',
+    'Check-in T2: 16:00–18:00; T3: 15:00–18:00. Check-out: 08:00–11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.': 'Entrada T2: 16:00–18:00; T3: 15:00–18:00. Salida: 08:00–11:00. Estancia mínima: 2 noches consecutivas. Cuna gratuita para niños de 0 a 2 años bajo petición; no hay camas supletorias.',
+    'Não foi possível carregar os quartos. Verifique se o servidor está ligado.': 'No se pudieron cargar los alojamientos. Compruebe que el servidor está en funcionamiento.',
+    'Selecione uma unidade para verificar a disponibilidade.': 'Seleccione un alojamiento para consultar la disponibilidad.',
+    'Selecione as datas de entrada e saída antes de reservar.': 'Seleccione las fechas de entrada y salida antes de reservar.',
+    'A data de entrada só pode ser amanhã ou depois.': 'La entrada solo puede ser mañana o en una fecha posterior.',
+    'Por favor selecione as datas.': 'Seleccione las fechas.', 'Por favor selecione um quarto.': 'Seleccione un alojamiento.',
+    'Indique a hora prevista de chegada.': 'Indique la hora prevista de llegada.',
+    'Por favor preencha nome e email.': 'Introduzca su nombre y correo electrónico.',
+    'Introduza um endereço de email válido.': 'Introduzca una dirección de correo electrónico válida.',
+    'O número de telefone é obrigatório.': 'El número de teléfono es obligatorio.',
+    'Introduza um número de telefone para continuar.': 'Introduzca un número de teléfono para continuar.',
+    'Selecione o país e introduza o número com 7 a 15 algarismos no total, incluindo o indicativo.': 'Seleccione el país e introduzca entre 7 y 15 dígitos en total, incluido el prefijo.',
+    'Verifique o país, indicativo e número: devem ter entre 7 e 15 algarismos no total.': 'Compruebe el país, el prefijo y el número: deben tener entre 7 y 15 dígitos en total.',
+    'Introduza um telefone válido com indicativo internacional.': 'Introduzca un teléfono válido con prefijo internacional.',
+    'A enviar pedido...': 'Enviando solicitud...', 'Pedido recebido. O pagamento será solicitado se o proprietário aprovar a reserva.': 'Solicitud recibida. Se solicitará el pago si el propietario aprueba la reserva.',
+    'Pagamento concluído. A confirmação da reserva será enviada por email.': 'Pago completado. Recibirá la confirmación de la reserva por correo electrónico.',
+    'Pagamento cancelado. Pode iniciar uma nova reserva.': 'Pago cancelado. Puede iniciar una nueva reserva.',
+    'Casa de férias T2 com 115 m², composta por 2 quartos de casal com casa de banho privativa, sala espaçosa, cozinha totalmente equipada e varanda/terraço com vista panorâmica para a albufeira e as montanhas.': 'Casa de vacaciones T2 de 115 m² con dos dormitorios dobles con baño privado, salón amplio, cocina totalmente equipada y balcón/terraza con vistas panorámicas al embalse y las montañas.',
+    'Quarto de casal do T2 com ar condicionado e televisão': 'Dormitorio doble del T2 con aire acondicionado y televisión',
+    'Quarto de casal do T3 com televisão e ar condicionado': 'Dormitorio doble del T3 con televisión y aire acondicionado',
+    'Apartamento / casa de férias T3 com 125 m², localizado em frente à praia/albufeira, com 3 quartos de casal, sala de estar espaçosa com sofá-cama, cozinha totalmente equipada, varanda e terraço com vistas deslumbrantes sobre o lago, montanhas e jardim.': 'Casa de vacaciones T3 de 125 m² frente a la playa y al embalse, con tres dormitorios dobles, salón amplio con sofá cama, cocina totalmente equipada, balcón y terraza con magníficas vistas al lago, las montañas y el jardín.',
+    '2 quartos de casal': '2 dormitorios dobles', '3 casas de banho': '3 baños', 'Cozinha totalmente equipada': 'Cocina totalmente equipada', 'Varanda e terraço': 'Balcón y terraza',
+    'Estacionamento privado': 'Aparcamiento privado', 'Sala de estar com sofá-cama': 'Salón con sofá cama', 'Jardim e espaço exterior': 'Jardín y espacio exterior',
+    '3 quartos de casal': '3 dormitorios dobles', '3 casas de banho completas': '3 baños completos', 'Área de praia privada': 'Zona de playa privada',
+    'Estacionamento privado gratuito': 'Aparcamiento privado gratuito', 'Ar condicionado': 'Aire acondicionado', 'Quartos para não fumadores': 'Habitaciones para no fumadores',
+    'Quartos com casa de banho privativa': 'Dormitorios con baño privado', 'Vista para a albufeira e as montanhas': 'Vistas al embalse y las montañas', 'Cozinha ampla e totalmente equipada': 'Cocina amplia y totalmente equipada',
+    'Vista para o lago e montanhas': 'Vistas al lago y las montañas', 'Conforto para famílias e grupos': 'Comodidad para familias y grupos'
+  }
+};
+
+let currentLanguage = (() => {
+  const queryLanguage = new URLSearchParams(window.location.search).get('lang');
+  if (['pt', 'en', 'es'].includes(queryLanguage)) return queryLanguage;
+  const savedLanguage = localStorage.getItem('casadaserra-language');
+  return ['pt', 'en', 'es'].includes(savedLanguage) ? savedLanguage : 'pt';
+})();
+const originalTextNodes = new WeakMap();
+const originalAttributes = new WeakMap();
+
+function translateText(value) {
+  const leadingWhitespace = value.match(/^\s*/)[0];
+  const trailingWhitespace = value.match(/\s*$/)[0];
+  const source = value.slice(leadingWhitespace.length, value.length - trailingWhitespace.length);
+  const translated = translations[currentLanguage]?.[source];
+  return translated === undefined ? value : `${leadingWhitespace}${translated}${trailingWhitespace}`;
+}
+
+function translateTemplate(value, parameters = {}) {
+  return Object.entries(parameters).reduce(
+    (message, [key, parameter]) => message.replaceAll(`{{${key}}}`, parameter),
+    translateText(value)
+  );
+}
+
+function translateSubtree(root) {
+  if (root.nodeType === Node.ELEMENT_NODE
+    && (root.closest('.admin-panel') || root.closest('#admin-login-modal'))) return;
+  if (root.nodeType === Node.TEXT_NODE) {
+    if (root.parentElement?.closest('.admin-panel, #admin-login-modal')) return;
+    const original = originalTextNodes.get(root) ?? root.nodeValue;
+    originalTextNodes.set(root, original);
+    root.nodeValue = translateText(original);
+    return;
+  }
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+  textNodes.forEach(node => {
+    if (node.parentElement?.closest('.admin-panel, #admin-login-modal')) return;
+    const original = originalTextNodes.get(node) ?? node.nodeValue;
+    originalTextNodes.set(node, original);
+    node.nodeValue = translateText(original);
+  });
+
+  const elements = root.nodeType === Node.ELEMENT_NODE ? [root, ...root.querySelectorAll('*')] : [];
+  elements.forEach(element => {
+    if (element.closest('.admin-panel, #admin-login-modal')) return;
+    const attributes = originalAttributes.get(element) || new Map();
+    ['aria-label', 'aria-labelledby', 'alt', 'placeholder', 'title'].forEach(attribute => {
+      if (!element.hasAttribute(attribute)) return;
+      const original = attributes.has(attribute) ? attributes.get(attribute) : element.getAttribute(attribute);
+      attributes.set(attribute, original);
+      element.setAttribute(attribute, translateText(original));
+    });
+    originalAttributes.set(element, attributes);
+  });
+}
+
+function initializeLanguage() {
+  document.documentElement.lang = currentLanguage;
+  const selector = document.getElementById('language-select');
+  selector.value = currentLanguage;
+  translateSubtree(document.body);
+  selector.addEventListener('change', () => {
+    const language = selector.value;
+    localStorage.setItem('casadaserra-language', language);
+    const url = new URL(window.location.href);
+    if (language === 'pt') url.searchParams.delete('lang');
+    else url.searchParams.set('lang', language);
+    window.location.assign(url.href);
+  });
+}
+
+initializeLanguage();
+
+const publicTranslationObserver = new MutationObserver(records => {
+  records.forEach(record => {
+    if (record.type === 'characterData') {
+      const node = record.target;
+      if (node.parentElement?.closest('.admin-panel, #admin-login-modal')) return;
+      const original = originalTextNodes.get(node);
+      if (original !== undefined && translateText(original) === node.nodeValue) return;
+      originalTextNodes.set(node, node.nodeValue);
+      node.nodeValue = translateText(node.nodeValue);
+      return;
+    }
+    record.addedNodes.forEach(node => {
+      if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) translateSubtree(node);
+    });
+  });
+});
+publicTranslationObserver.observe(document.body, { childList: true, characterData: true, subtree: true });
+
 let heroTitleCharacters = [];
 let heroTitleAnimations = [];
 let brandTitleCharacters = [];
@@ -952,10 +1203,6 @@ function getMinimumCheckInDate() {
 }
 const todayDateString = getPortugalDateString();
 const tomorrowDateString = getMinimumCheckInDate();
-document.getElementById('bar-checkin').value=tomorrowDateString;
-document.getElementById('bar-checkout').value=shiftDateString(tomorrowDateString, 3);
-document.getElementById('f-checkin').value=tomorrowDateString;
-document.getElementById('f-checkout').value=shiftDateString(tomorrowDateString, 3);
 document.getElementById('bar-checkin').min=tomorrowDateString;
 document.getElementById('f-checkin').min=tomorrowDateString;
 updateBarMinimumCheckoutDate();
@@ -964,11 +1211,15 @@ let calYear=Number(todayDateString.slice(0,4)),calMonth=Number(todayDateString.s
 let publicOccupiedDates = new Set(); // datas ocupadas vindas da API
 
 function renderCal(){
-  const months=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  document.getElementById('cal-title').textContent=months[calMonth]+' '+calYear;
+  const monthName = new Intl.DateTimeFormat(currentLanguage, { month: 'long' }).format(new Date(calYear, calMonth, 1));
+  document.getElementById('cal-title').textContent=monthName.charAt(0).toLocaleUpperCase(currentLanguage)+monthName.slice(1)+' '+calYear;
   const grid=document.getElementById('cal-grid');grid.innerHTML='';
   const first=new Date(calYear,calMonth,1).getDay();
   const days=new Date(calYear,calMonth+1,0).getDate();
+  document.querySelectorAll('.cal-day-name').forEach((element, index) => {
+    const day = new Date(Date.UTC(2023, 0, 1 + index));
+    element.textContent = new Intl.DateTimeFormat(currentLanguage, { weekday: 'short', timeZone: 'UTC' }).format(day);
+  });
   const minimumCheckInDate = getMinimumCheckInDate();
   for(let i=0;i<first;i++){const d=document.createElement('div');d.className='cal-day empty';grid.appendChild(d);}
   for(let d=1;d<=days;d++){
@@ -1032,8 +1283,13 @@ function selectDay(d){
     const ciStr = toDateStr(calYear, calMonth, selStart);
     document.getElementById('bar-checkin').value = ciStr;
     document.getElementById('f-checkin').value = ciStr;
+    if (!selEnd) {
+      document.getElementById('bar-checkout').value = '';
+      document.getElementById('f-checkout').value = '';
+    }
     updateBarMinimumCheckoutDate();
     updateMinimumCheckoutDate();
+    if (!selEnd) updateSummary();
   }
   if(selEnd) {
     const ciStr = toDateStr(calYear, calMonth, selStart);
@@ -1116,21 +1372,21 @@ function getRoomPresentation(room) {
   const type = (room?.type || '').toUpperCase();
   const override = ROOM_OVERRIDES[type] || null;
   return {
-    name: override?.displayName || room?.name || 'Unidade',
-    description: override?.description || room?.description || 'Descrição em atualização.',
-    amenities: override?.amenities || room?.amenities || [],
+    name: translateText(override?.displayName || room?.name || 'Unidade'),
+    description: translateText(override?.description || room?.description || 'Descrição em atualização.'),
+    amenities: (override?.amenities || room?.amenities || []).map(translateText),
     sizeSqm: override?.sizeSqm || room?.sizeSqm || null,
     bedrooms: override?.bedrooms || room?.bedrooms || null,
     beds: override?.beds || room?.beds || null,
     coverImage: override?.coverImage || null,
-    coverAlt: override?.coverAlt || '',
+    coverAlt: translateText(override?.coverAlt || ''),
     emoji: override?.emoji || '🏡',
     badge: override?.badge || room?.type || 'Unidade',
-    slides: override?.slides || [
+    slides: (override?.slides || [
       { label: 'Espaço acolhedor' },
       { label: 'Conforto e serenidade' },
       { label: 'Ideal para férias' }
-    ]
+    ]).map(slide => ({ ...slide, label: translateText(slide.label) }))
   };
 }
 
@@ -1152,9 +1408,11 @@ function renderRoomCards() {
   grid.innerHTML = visibleRooms.map(room => {
     const presentation = getRoomPresentation(room);
     const amenities = presentation.amenities.slice(0, 6).map(item => `<span class="amenity">${item}</span>`).join('');
+    const bedroomCount = presentation.bedrooms;
+    const bedCount = presentation.beds;
     return `
       <div class="room-card" data-room-id="${room.id}">
-        <div class="room-visual t${(room.type || '').toUpperCase().replace('T','')}" role="button" aria-label="Ver fotografias de ${presentation.name}" tabindex="0">
+        <div class="room-visual t${(room.type || '').toUpperCase().replace('T','')}" role="button" aria-label="${translateText('Ver fotografias de ')}${presentation.name}" tabindex="0">
           <img class="room-visual-photo" src="${presentation.coverImage}" alt="${presentation.coverAlt}" loading="lazy" decoding="async">
           <div class="room-visual-badge">${presentation.badge}</div>
         </div>
@@ -1163,13 +1421,13 @@ function renderRoomCards() {
           <div class="room-desc">${presentation.description}</div>
           <div class="room-stats">
             <div class="room-stat"><span>${presentation.sizeSqm ? `${presentation.sizeSqm} m²` : '—'}</span><small>Tamanho</small></div>
-            <div class="room-stat"><span>${presentation.bedrooms ? `${presentation.bedrooms} quarto${presentation.bedrooms > 1 ? 's' : ''}` : '—'}</span><small>Quartos</small></div>
-            <div class="room-stat"><span>${presentation.beds ? `${presentation.beds} cama${presentation.beds > 1 ? 's' : ''}` : '—'}</span><small>Camas</small></div>
+            <div class="room-stat"><span>${bedroomCount ? `${bedroomCount} ${translateText(bedroomCount === 1 ? 'quarto' : 'quartos')}` : '—'}</span><small>${translateText('Quartos')}</small></div>
+            <div class="room-stat"><span>${bedCount ? `${bedCount} ${translateText(bedCount === 1 ? 'cama' : 'camas')}` : '—'}</span><small>${translateText('Camas')}</small></div>
           </div>
           <div class="room-amenities">${amenities}</div>
           <div class="room-footer">
-            <div class="room-price">€${room.pricePerNight}<span>/ noite</span></div>
-            <button class="btn-book" onclick="event.stopPropagation(); openBookingForRoom('${room.id}')">Reservar</button>
+            <div class="room-price">€${new Intl.NumberFormat(currentLanguage).format(room.pricePerNight)}<span>${translateText('/ noite')}</span></div>
+            <button class="btn-book" onclick="event.stopPropagation(); openBookingForRoom('${room.id}')">${translateText('Reservar')}</button>
           </div>
         </div>
       </div>`;
@@ -1218,11 +1476,12 @@ function populateRoomSelect() {
   const sel = document.getElementById('f-room');
   const barSel = document.getElementById('bar-room');
   sel.innerHTML = '';
-  barSel.innerHTML = '<option value="" disabled selected>Selecione uma unidade</option>';
+  barSel.innerHTML = `<option value="" disabled selected>${translateText('Selecione uma unidade')}</option>`;
   const visibleRooms = (allRooms || []).filter(room => ['T2', 'T3'].includes((room.type || '').toUpperCase()));
   visibleRooms.forEach(r => {
-    sel.innerHTML += `<option value="${r.id}" data-price="${r.pricePerNight}" data-name="${r.name}" data-capacity="${getRoomMaxGuests(r)}">${r.name} — €${r.pricePerNight}/noite</option>`;
-    barSel.innerHTML += `<option value="${r.id}" data-capacity="${getRoomMaxGuests(r)}">${r.name}</option>`;
+    const name = translateText(r.name);
+    sel.innerHTML += `<option value="${r.id}" data-price="${r.pricePerNight}" data-name="${name}" data-capacity="${getRoomMaxGuests(r)}">${name} — €${new Intl.NumberFormat(currentLanguage).format(r.pricePerNight)}/${translateText('noite')}</option>`;
+    barSel.innerHTML += `<option value="${r.id}" data-capacity="${getRoomMaxGuests(r)}">${name}</option>`;
   });
   syncGuestOptions('bar-room', 'bar-guests');
   syncGuestOptions('f-room', 'f-guests', 'guest-limit-hint');
@@ -1240,14 +1499,14 @@ function syncGuestOptions(roomSelectId, guestsSelectId, hintId) {
 
   guestSelect.innerHTML = Array.from({ length: maxGuests }, (_, index) => {
     const count = index + 1;
-    return `<option value="${count}">${count} hóspede${count === 1 ? '' : 's'}</option>`;
+    return `<option value="${count}">${translateText(`${count} ${count === 1 ? 'hóspede' : 'hóspedes'}`)}</option>`;
   }).join('');
   guestSelect.value = String(selectedGuests);
 
   if (hintId) {
-    document.getElementById(hintId).textContent = room
+    document.getElementById(hintId).textContent = translateText(room
       ? `Capacidade máxima desta unidade: ${maxGuests} hóspedes.`
-      : `Selecione uma unidade; capacidade máxima: ${maxGuests} hóspedes.`;
+      : `Selecione uma unidade; capacidade máxima: ${maxGuests} hóspedes.`);
   }
 }
 
@@ -1255,16 +1514,16 @@ function updateBookingPolicyHint() {
   const room = allRooms.find(item => item.id === document.getElementById('f-room').value);
   const checkInWindow = room?.type?.toUpperCase() === 'T2' ? '16:00–18:00' : '15:00–18:00';
   const text = room
-    ? `Check-in: ${checkInWindow} (avise a hora de chegada). Check-out: 08:00–11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Crianças com 18 ou mais anos pagam tarifa de adulto; berço gratuito dos 0 aos 2 anos, mediante pedido. Não há camas extra.`
+    ? `Check-in: ${checkInWindow} (avise a hora de chegada). Check-out: 08:00–11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Não há camas extra.`
     : `Check-in T2: 16:00–18:00; T3: 15:00–18:00. Check-out: 08:00–11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.`;
-  document.getElementById('booking-policy-hint').textContent = text;
+  document.getElementById('booking-policy-hint').textContent = translateText(text);
 }
 
 function updateArrivalTimeOptions() {
   const room = allRooms.find(item => item.id === document.getElementById('f-room').value);
   const select = document.getElementById('f-arrival-time');
   if (!room) {
-    select.innerHTML = '<option value="">Selecione primeiro a unidade</option>';
+    select.innerHTML = `<option value="">${translateText('Selecione primeiro a unidade')}</option>`;
     select.disabled = true;
     return;
   }
@@ -1276,7 +1535,7 @@ function updateArrivalTimeOptions() {
     const time = `${String(Math.floor(minute / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
     options.push(`<option value="${time}">${time}</option>`);
   }
-  select.innerHTML = '<option value="">Selecione a hora prevista</option>' + options.join('');
+  select.innerHTML = `<option value="">${translateText('Selecione a hora prevista')}</option>` + options.join('');
   select.disabled = false;
   select.value = options.some(option => option.includes(`value="${previousValue}"`)) ? previousValue : '';
 }
@@ -1291,10 +1550,10 @@ function renderAvailRooms(availableRooms, checkIn, checkOut) {
     visibleRooms.forEach(r => {
       list.innerHTML += `
         <div class="avail-room">
-          <div><div class="avail-room-name">${r.name}</div><div class="avail-room-type">${r.type}</div></div>
-          <div class="avail-status"><div class="status-dot avail"></div>Disponível</div>
-          <div class="avail-price">€${r.pricePerNight}<small>/ noite</small></div>
-          <button class="btn-book" style="font-size:.7rem;padding:.4rem .9rem" onclick="openBookingForRoomId('${r.id}')">Reservar</button>
+          <div><div class="avail-room-name">${translateText(r.name)}</div><div class="avail-room-type">${r.type}</div></div>
+          <div class="avail-status"><div class="status-dot avail"></div>${translateText('Disponível')}</div>
+          <div class="avail-price">€${new Intl.NumberFormat(currentLanguage).format(r.pricePerNight)}<small>${translateText('/ noite')}</small></div>
+          <button class="btn-book" style="font-size:.7rem;padding:.4rem .9rem" onclick="openBookingForRoomId('${r.id}')">${translateText('Reservar')}</button>
         </div>`;
     });
     return;
@@ -1306,15 +1565,15 @@ function renderAvailRooms(availableRooms, checkIn, checkOut) {
     const isAvail = availIds.has(r.id);
     list.innerHTML += `
       <div class="avail-room" style="${!isAvail ? 'opacity:.6' : ''}">
-        <div><div class="avail-room-name">${r.name}</div><div class="avail-room-type">${r.type}</div></div>
+        <div><div class="avail-room-name">${translateText(r.name)}</div><div class="avail-room-type">${r.type}</div></div>
         <div class="avail-status">
           <div class="status-dot ${isAvail ? 'avail' : 'unavail'}"></div>
-          ${isAvail ? 'Disponível' : 'Indisponível'}
+          ${translateText(isAvail ? 'Disponível' : 'Indisponível')}
         </div>
-        <div class="avail-price">€${r.pricePerNight}<small>/ noite</small></div>
+        <div class="avail-price">€${new Intl.NumberFormat(currentLanguage).format(r.pricePerNight)}<small>${translateText('/ noite')}</small></div>
         ${isAvail
-          ? `<button class="btn-book" style="font-size:.7rem;padding:.4rem .9rem" onclick="openBookingForRoomId('${r.id}')">Reservar</button>`
-          : `<span style="font-size:.72rem;color:var(--stone)">Ocupado</span>`
+          ? `<button class="btn-book" style="font-size:.7rem;padding:.4rem .9rem" onclick="openBookingForRoomId('${r.id}')">${translateText('Reservar')}</button>`
+          : `<span style="font-size:.72rem;color:var(--stone)">${translateText('Ocupado')}</span>`
         }
       </div>`;
   });
@@ -1329,24 +1588,16 @@ async function openBookingFromBar() {
     showToast('Selecione uma unidade para verificar a disponibilidade.');
     return;
   }
-  if (checkIn && checkIn < getMinimumCheckInDate()) {
-    showToast('A data de entrada só pode ser amanhã ou depois.');
+  const dateError = getBookingDateError(checkIn, checkOut);
+  if (dateError) {
+    showToast(dateError);
     return;
-  }
-  if (checkIn && checkOut) {
-    const nights = Math.round((new Date(`${checkOut}T00:00:00`) - new Date(`${checkIn}T00:00:00`)) / 86400000);
-    if (nights < MINIMUM_STAY_NIGHTS) {
-      showToast(`A estadia mínima é de ${MINIMUM_STAY_NIGHTS} noites consecutivas.`);
-      return;
-    }
   }
   document.getElementById('f-room').value = roomId;
   document.getElementById('f-guests').value = document.getElementById('bar-guests').value;
-  if (checkIn) document.getElementById('f-checkin').value = checkIn;
-  if (checkOut) document.getElementById('f-checkout').value = checkOut;
+  document.getElementById('f-checkin').value = checkIn;
+  document.getElementById('f-checkout').value = checkOut;
   syncGuestOptions('f-room', 'f-guests', 'guest-limit-hint');
-
-  if (!checkIn || !checkOut) { openBooking(); return; }
 
   try {
     const res = await fetch(`${API}/availability?checkIn=${checkIn}&checkOut=${checkOut}`);
@@ -1406,7 +1657,7 @@ function renderRoomCarousel(room) {
     const dot = document.createElement('button');
     dot.className = 'room-detail-carousel-dot';
     dot.type = 'button';
-    dot.setAttribute('aria-label', `Ver fotografia ${index + 1}`);
+    dot.setAttribute('aria-label', translateTemplate('Ver fotografia {{index}}', { index: index + 1 }));
     dot.onclick = () => {
       currentCarouselIndex = index;
       updateCarouselPosition();
@@ -1443,31 +1694,46 @@ function openRoomDetails(roomId) {
 }
 
 const footerInfo = {
-  checkin: {
-    title: 'Check-in flexível',
-    content: '<p>O check-in é combinado com o anfitrião. A hora de chegada deve ser comunicada com antecedência.</p><ul><li>T2: das 16:00 às 18:00.</li><li>T3: das 15:00 às 18:00.</li></ul><p>Se precisar de outro horário, contacte-nos antes da chegada para confirmar a possibilidade.</p>'
+  accommodation: {
+    title: 'Alojamento',
+    content: '<p><strong>Casa do Ferreiro T2:</strong> 115 m², até 6 hóspedes. Licença AL: 167437/AL.</p><p><strong>Casa do Ferreiro T3:</strong> 125 m², até 9 hóspedes. Classificação: 9,6/10 · Localização: 10/10.</p>'
   },
-  local: {
-    title: 'Alojamento Local',
-    content: '<p>A Casa do Ferreiro T2 está registada como Alojamento Local, com a licença <strong>167437/AL</strong>.</p><p>O alojamento inclui as unidades T2 e T3, situadas em Venda Nova, Montalegre.</p>'
+  comfort: {
+    title: 'Conforto e comodidade',
+    content: '<p>Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, jardim e acesso a área de praia privada.</p><p>Cozinha equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.</p>'
   },
   policies: {
-    title: 'Políticas',
-    content: '<ul><li>Check-out: das 08:00 às 11:00.</li><li>Estadia mínima: 2 noites consecutivas.</li><li>Crianças são bem-vindas; berço gratuito para crianças dos 0 aos 2 anos, mediante pedido.</li><li>Não estão disponíveis camas extra.</li><li>Não é permitido fumar no interior nem realizar festas ou eventos.</li><li>Não são admitidos animais de estimação.</li></ul>'
-  }
+    title: 'Regras da propriedade',
+    content: '<ul><li>Check-in: T2 das 16:00 às 18:00; T3 das 15:00 às 18:00. Informe a hora de chegada com antecedência.</li><li>Check-out: das 08:00 às 11:00.</li><li>Estadia mínima: 2 noites consecutivas.</li><li>Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.</li><li>Não há camas extra.</li><li>Não é permitido fumar no interior nem realizar festas ou eventos.</li><li>Não são admitidos animais de estimação.</li></ul>'
+  },
+  contact: {
+    title: 'Contacto',
+    content: '<p>Anfitrião: <strong>Sr. André</strong>. Idiomas: Português, Inglês e Espanhol.</p><p>Email: <a href="mailto:reservas@casadoferreiro.pt">reservas@casadoferreiro.pt</a></p><p>Telefone: <a href="tel:+351938750239">+351 938 750 239</a></p>'
+  },
 };
 
-function openInfoModal(infoKey) {
+let footerInfoTrigger;
+
+function openFooterInfo(infoKey, trigger) {
   const info = footerInfo[infoKey];
   if (!info) return;
-  document.getElementById('info-modal-title').textContent = info.title;
-  document.getElementById('info-modal-body').innerHTML = info.content;
-  document.getElementById('info-modal').classList.add('open');
+  footerInfoTrigger = trigger;
+  document.getElementById('footer-info-title').textContent = translateText(info.title);
+  document.getElementById('footer-info-body').innerHTML = info.content;
+  document.getElementById('footer-info-modal').classList.add('open');
+  document.querySelector('#footer-info-modal .modal-close-btn').focus();
 }
 
-function closeInfoModal() {
-  document.getElementById('info-modal').classList.remove('open');
+function closeFooterInfo() {
+  document.getElementById('footer-info-modal').classList.remove('open');
+  if (footerInfoTrigger) footerInfoTrigger.focus();
 }
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && document.getElementById('footer-info-modal').classList.contains('open')) {
+    closeFooterInfo();
+  }
+});
 
 function closeRoomDetails() {
   clearInterval(roomCarouselTimer);
@@ -1490,13 +1756,36 @@ document.querySelectorAll('.room-card').forEach(card => {
 });
 
 // ── Modal de reserva ──────────────────────────────────────
+function getBookingDateError(checkIn, checkOut) {
+  if (!checkIn || !checkOut) {
+    return 'Selecione as datas de entrada e saída antes de reservar.';
+  }
+  if (checkIn < getMinimumCheckInDate()) {
+    return 'A data de entrada só pode ser amanhã ou depois.';
+  }
+  const nights = Math.round((new Date(`${checkOut}T00:00:00`) - new Date(`${checkIn}T00:00:00`)) / 86400000);
+  if (!Number.isFinite(nights) || nights < MINIMUM_STAY_NIGHTS) {
+    return translateTemplate('A estadia mínima é de {{nights}} noites consecutivas.', { nights: MINIMUM_STAY_NIGHTS });
+  }
+  return null;
+}
+
 function openBooking() {
+  const dateError = getBookingDateError(
+    document.getElementById('f-checkin').value,
+    document.getElementById('f-checkout').value
+  );
+  if (dateError) {
+    showToast(dateError);
+    return false;
+  }
   syncGuestOptions('f-room', 'f-guests', 'guest-limit-hint');
   updateBookingPolicyHint();
   updateArrivalTimeOptions();
   updateMinimumCheckoutDate();
   document.getElementById('booking-modal').classList.add('open');
   updateSummary();
+  return true;
 }
 function openBookingForRoom(value) {
   const room = allRooms.find(r => r.id === value || r.name === value || r.type === value);
@@ -1523,10 +1812,14 @@ function updateSummary() {
   const total = price * nights;
   document.getElementById('s-room').textContent = roomName;
   document.getElementById('s-dates').textContent = nights > 0
-    ? `${document.getElementById('f-checkin').value} → ${document.getElementById('f-checkout').value}` : '—';
-  document.getElementById('s-nights').textContent = nights > 0 ? nights + ' noite' + (nights > 1 ? 's' : '') : '—';
-  document.getElementById('s-guests').textContent = guests + ' hóspede' + (guests > 1 ? 's' : '');
-  document.getElementById('s-total').textContent = nights > 0 ? `€${total.toLocaleString('pt-PT')}` : '—';
+    ? `${document.getElementById('f-checkin').value.split('-').reverse().join('-')} → ${document.getElementById('f-checkout').value.split('-').reverse().join('-')}` : '—';
+  document.getElementById('s-nights').textContent = nights > 0
+    ? `${nights} ${translateText(nights === 1 ? 'Noite' : 'Noites').toLocaleLowerCase(currentLanguage)}`
+    : '—';
+  document.getElementById('s-guests').textContent = `${guests} ${translateText(guests === 1 ? 'hóspede' : 'hóspedes')}`;
+  document.getElementById('s-total').textContent = nights > 0
+    ? `€${new Intl.NumberFormat(currentLanguage).format(total)}`
+    : '—';
 }
 function setMinimumCheckoutDate(checkInId, checkOutId) {
   const checkInValue = document.getElementById(checkInId).value;
@@ -1568,13 +1861,47 @@ document.getElementById('f-room').addEventListener('change', function() {
   // Atualiza calendário público com disponibilidade do quarto selecionado
   loadPublicCalAvailability(this.value);
 });
-['f-phone-code','f-phone'].forEach(id => {
-  document.getElementById(id).addEventListener('input', () => {
-    const phoneHint = document.getElementById('phone-hint');
-    phoneHint.classList.remove('error');
-    phoneHint.textContent = 'Indicativo internacional (PT: +351) e número com 7 a 15 algarismos no total.';
-  });
+const phoneCountryDialCodes = `
+BD:880 BE:32 BF:226 BG:359 BA:387 BB:1246 WF:681 BL:590 BM:1441 BN:673 BO:591 BH:973 BI:257 BJ:229 BT:975 JM:1876 BW:267 WS:685 BQ:599 BR:55 BS:1242 JE:441534 BY:375 BZ:501 RU:7 RW:250 RS:381 TL:670 RE:262 TM:993 TJ:992 RO:40 TK:690 GW:245 GU:1671 GT:502 GR:30 GQ:240 GP:590 JP:81 GY:592 GG:441481 GF:594 GE:995 GD:1473 GB:44 GA:241 SV:503 GN:224 GM:220 GL:299 GI:350 GH:233 OM:968 TN:216 JO:962 HR:385 HT:509 HU:36 HK:852 HN:504 VE:58 PR:1787,1939 PS:970 PW:680 PT:351 SJ:47 PY:595 IQ:964 PA:507 PF:689 PG:675 PE:51 PK:92 PH:63 PN:870 PL:48 PM:508 ZM:260 EH:212 EE:372 EG:20 ZA:27 EC:593 IT:39 VN:84 SB:677 ET:251 SO:252 ZW:263 SA:966 ES:34 ER:291 ME:382 MD:373 MG:261 MA:212 MC:377 UZ:998 MM:95 ML:223 MO:853 MN:976 MH:692 MK:389 MU:230 MT:356 MW:265 MV:960 MQ:596 MP:1670 MS:1664 MR:222 IM:441624 UG:256 TZ:255 MY:60 MX:52 IL:972 FR:33 IO:246 SH:290 FI:358 FJ:679 FK:500 FM:691 FO:298 NI:505 NL:31 NO:47 NA:264 VU:678 NC:687 NE:227 NF:672 NG:234 NZ:64 NP:977 NR:674 NU:683 CK:682 CI:225 CH:41 CO:57 CN:86 CM:237 CL:56 CC:61 CA:1 CG:242 CF:236 CD:243 CZ:420 CY:357 CX:61 CR:506 CW:599 CV:238 CU:53 SZ:268 SY:963 SX:599 KG:996 KE:254 SS:211 SR:597 KI:686 KH:855 KN:1869 KM:269 ST:239 SK:421 KR:82 SI:386 KP:850 KW:965 SN:221 SM:378 SL:232 SC:248 KZ:7 KY:1345 SG:65 SE:46 SD:249 DO:1809,1829 DM:1767 DJ:253 DK:45 VG:1284 DE:49 YE:967 DZ:213 US:1 UY:598 YT:262 UM:1 LB:961 LC:1758 LA:856 TV:688 TW:886 TT:1868 TR:90 LK:94 LI:423 LV:371 TO:676 LT:370 LU:352 LR:231 LS:266 TH:66 TG:228 TD:235 TC:1649 LY:218 VA:379 VC:1784 AE:971 AD:376 AG:1268 AF:93 AI:1264 VI:1340 IS:354 IR:98 AM:374 AL:355 AO:244 AS:1684 AR:54 AU:61 AT:43 AW:297 IN:91 AX:35818 AZ:994 IE:353 ID:62 UA:380 QA:974 MZ:258 XK:383
+`.trim().split(/\s+/).map(entry => {
+  const [country, prefixes] = entry.split(':');
+  return { country, prefixes: prefixes.split(',') };
 });
+
+function populatePhoneCountryCodes() {
+  const select = document.getElementById('f-phone-code');
+  const countryNames = new Intl.DisplayNames([currentLanguage], { type: 'region' });
+  const options = phoneCountryDialCodes.flatMap(({ country, prefixes }) =>
+    prefixes.map(prefix => ({
+      country,
+      name: countryNames.of(country) || country,
+      value: `+${prefix}`,
+    }))
+  ).sort((a, b) => {
+    if (a.country === 'PT') return -1;
+    if (b.country === 'PT') return 1;
+    return a.name.localeCompare(b.name, currentLanguage);
+  });
+
+  select.replaceChildren(...options.map(({ name, value }) => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = `${name} (${value})`;
+    return option;
+  }));
+  select.value = '+351';
+}
+
+populatePhoneCountryCodes();
+
+function resetPhoneHint() {
+  const phoneHint = document.getElementById('phone-hint');
+  phoneHint.classList.remove('error');
+  phoneHint.textContent = 'Selecione o país e introduza o número.';
+}
+
+document.getElementById('f-phone-code').addEventListener('change', resetPhoneHint);
+document.getElementById('f-phone').addEventListener('input', resetPhoneHint);
 
 // ── Confirmar reserva → envia para a API ──────────────────
 async function confirmBooking() {
@@ -1597,23 +1924,27 @@ async function confirmBooking() {
     showToast('Introduza um endereço de email válido.');
     return;
   }
-  let phone = null;
   const phoneHint = document.getElementById('phone-hint');
   phoneHint.classList.remove('error');
-  phoneHint.textContent = 'Indicativo internacional (PT: +351) e número com 7 a 15 algarismos no total.';
-  if (phoneNumber) {
-    const nationalDigits = phoneNumber.replace(/[\s().-]/g, '');
-    const callingCodeDigits = phoneCode.startsWith('+') ? phoneCode.slice(1) : '';
-    const combinedDigits = callingCodeDigits + nationalDigits;
-    if (!/^\+[1-9]\d{0,2}$/.test(phoneCode) || !/^\d+$/.test(nationalDigits) || !/^[1-9]\d{6,14}$/.test(combinedDigits)) {
-      phoneHint.textContent = 'Verifique o indicativo e o número: devem ter entre 7 e 15 algarismos no total.';
-      phoneHint.classList.add('error');
-      document.getElementById(/^\+[1-9]\d{0,2}$/.test(phoneCode) ? 'f-phone' : 'f-phone-code').focus();
-      showToast('Introduza um telefone válido com indicativo internacional.');
-      return;
-    }
-    phone = `+${combinedDigits}`;
+  phoneHint.textContent = 'Selecione o país e introduza o número.';
+  if (!phoneNumber) {
+    phoneHint.textContent = 'O número de telefone é obrigatório.';
+    phoneHint.classList.add('error');
+    document.getElementById('f-phone').focus();
+    showToast('Introduza um número de telefone para continuar.');
+    return;
   }
+  const nationalDigits = phoneNumber.replace(/[\s().-]/g, '');
+  const callingCodeDigits = phoneCode.startsWith('+') ? phoneCode.slice(1) : '';
+  const combinedDigits = callingCodeDigits + nationalDigits;
+  if (!/^\+[1-9]\d{0,5}$/.test(phoneCode) || !/^\d+$/.test(nationalDigits) || !/^[1-9]\d{6,14}$/.test(combinedDigits)) {
+    phoneHint.textContent = 'Verifique o país, indicativo e número: devem ter entre 7 e 15 algarismos no total.';
+    phoneHint.classList.add('error');
+    document.getElementById(/^\+[1-9]\d{0,5}$/.test(phoneCode) ? 'f-phone' : 'f-phone-code').focus();
+    showToast('Introduza um telefone válido com indicativo internacional.');
+    return;
+  }
+  const phone = `+${combinedDigits}`;
   if (!checkIn || !checkOut) { showToast('Por favor selecione as datas.'); return; }
   if (checkIn < getMinimumCheckInDate()) {
     showToast('A data de entrada só pode ser amanhã ou depois.');
