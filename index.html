@@ -213,6 +213,8 @@ h2 em{font-style:italic;color:var(--accent)}
 .admin-nav-item:hover,.admin-nav-item.active{color:#fff;background:rgba(255,255,255,.05);border-left-color:var(--accent)}
 .admin-close{margin:1rem 1.5rem 0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);padding:.6rem;border-radius:2px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.75rem;transition:all .2s;width:calc(100% - 3rem)}
 .admin-close:hover{background:rgba(255,255,255,.1);color:#fff}
+.admin-logout{margin:0 1.5rem;background:transparent;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);padding:.6rem;border-radius:2px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.75rem;transition:all .2s;width:calc(100% - 3rem)}
+.admin-logout:hover{border-color:rgba(248,113,113,.6);color:#fca5a5}
 .admin-main{flex:1;overflow-y:auto;padding:2.5rem}
 .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2.5rem}
 .admin-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300}
@@ -374,7 +376,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-eyebrow">Turismo Rural · Barroso</div>
-    <h1>Refúgio de<br><em>tranquilidade</em><br>entre a albufeira e o Gerês</h1>
+    <h1>Refúgio em<br><em>tranquilidade</em><br>entre a albufeira e o Gerês</h1>
     <p class="hero-sub">A Casa do Ferreiro combina a tradição da região de Barroso com conforto contemporâneo, na proximidade da Albufeira de Venda Nova e da Serra do Gerês.</p>
     <div class="hero-actions">
       <button class="btn-hero" onclick="openBooking()">Reservar agora</button>
@@ -428,8 +430,8 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 
 <div id="rooms" class="rooms-section">
   <div>
-    <div class="section-eyebrow">As nossas acomodações</div>
-    <h2>Acomodações <em>T2 & T3</em></h2>
+    <div class="section-eyebrow animated-section-eyebrow">As nossas acomodações</div>
+    <h2 class="animated-section-title">Acomodações <em>T2 & T3</em></h2>
     <p class="rooms-intro">A Casa do Ferreiro oferece espaços acolhedores, modernos e funcionais, ideais para famílias, casais ou pequenos grupos que querem viver a tranquilidade da região com conforto total.</p>
     <div class="rooms-grid" id="rooms-grid"></div>
   </div>
@@ -441,8 +443,8 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   <div class="about-grid">
     <div class="about-image"><img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/924928157.jpg?k=e9edb9467d9425a143c62110eb4dc4ead97e2d61c74e22bc4fa9e6220426f715&o=" alt="Casa do Ferreiro" loading="lazy" decoding="async"></div>
     <div class="about-text">
-      <div class="section-eyebrow">A nossa história</div>
-      <h2>Um refúgio de <em>tranquilidade</em></h2>
+      <div class="section-eyebrow animated-section-eyebrow">A nossa história</div>
+      <h2 class="animated-section-title">Um refúgio em<br><em>tranquilidade</em></h2>
       <p>A Casa do Ferreiro é um alojamento acolhedor e moderno que combina a tradição da região de Barroso com o conforto contemporâneo. Localizada numa posição privilegiada junto à albufeira da Venda Nova, oferece vistas deslumbrantes sobre a água e as montanhas.</p>
       <p>Com aproximadamente 115 m², a casa foi pensada para proporcionar momentos de descanso, natureza e convivência, sendo o ponto de partida ideal para explorar a Serra do Gerês, praticar desporto ao ar livre ou simplesmente relaxar ao sol e à vista da paisagem.</p>
       <div class="about-features">
@@ -490,8 +492,8 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
 
 <div id="availability" class="avail-section">
   <div class="avail-inner">
-    <div class="section-eyebrow">Calendário</div>
-    <h2>Disponibilidade <em>em tempo real</em></h2>
+    <div class="section-eyebrow animated-section-eyebrow">Calendário</div>
+    <h2 class="animated-section-title">Disponibilidade<br><em>em tempo real</em></h2>
     <div class="avail-grid">
       <div>
         <div class="calendar-wrap">
@@ -610,7 +612,8 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <div class="admin-nav-item" onclick="adminTab('availability',this)">📅 Disponibilidade</div>
       <div class="admin-nav-item" onclick="adminTab('stats',this)">📊 Estatísticas</div>
     </div>
-    <button class="admin-close" onclick="closeAdmin()">← Voltar ao site</button>
+    <button class="admin-close" type="button" onclick="closeAdmin()">← Voltar ao site</button>
+    <button class="admin-logout" type="button" onclick="logoutAdmin()">Terminar sessão</button>
   </div>
   <div class="admin-main">
     <div id="admin-tab-reservations">
@@ -756,6 +759,7 @@ let heroTitleCharacters = [];
 let heroTitleAnimations = [];
 let brandTitleCharacters = [];
 let brandTitleAnimations = [];
+const sectionTitleCharacters = new WeakMap();
 
 function animateBrandTitle() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return 0;
@@ -819,6 +823,69 @@ function animateHeroTitle(startDelay = 0) {
   });
 }
 
+function animateSectionText(element, startDelay = 0) {
+  let characters = sectionTitleCharacters.get(element);
+  if (!characters) {
+    characters = [];
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+    textNodes.forEach(node => {
+      const fragment = document.createDocumentFragment();
+      const isEmphasis = Boolean(node.parentElement.closest('em'));
+      Array.from(node.textContent.replace(/\s+/g, ' ')).forEach(character => {
+        const span = document.createElement('span');
+        if (isEmphasis) span.className = 'hero-title-emphasis-char';
+        span.textContent = isEmphasis && character === ' ' ? '\u00a0' : character;
+        fragment.appendChild(span);
+        characters.push({ element: span, isEmphasis });
+      });
+      node.replaceWith(fragment);
+    });
+    sectionTitleCharacters.set(element, characters);
+  }
+
+  characters.forEach(({ element: character, isEmphasis }, index) => {
+    character.animate(
+      isEmphasis
+        ? [{ opacity: 0, transform: 'scale(.75)' }, { opacity: 1, transform: 'scale(1.15)', offset: .72 }, { opacity: 1, transform: 'scale(1)' }]
+        : [{ opacity: 0 }, { opacity: 1 }],
+      { duration: isEmphasis ? 360 : 100, delay: startDelay + index * 40, fill: 'both', easing: 'ease-out' }
+    );
+  });
+  return characters.length ? startDelay + (characters.length - 1) * 40 + 360 : startDelay;
+}
+
+function observeSectionTitles() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const titles = document.querySelectorAll('.animated-section-title');
+  if (!('IntersectionObserver' in window)) {
+    titles.forEach(title => {
+      const eyebrow = title.previousElementSibling;
+      const nextDelay = eyebrow?.classList.contains('animated-section-eyebrow')
+        ? animateSectionText(eyebrow)
+        : 0;
+      animateSectionText(title, nextDelay);
+    });
+    return;
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const title = entry.target;
+      const eyebrow = title.previousElementSibling;
+      const nextDelay = eyebrow?.classList.contains('animated-section-eyebrow')
+        ? animateSectionText(eyebrow)
+        : 0;
+      animateSectionText(title, nextDelay);
+      observer.unobserve(title);
+    });
+  }, { threshold: .2 });
+
+  titles.forEach(title => observer.observe(title));
+}
+
 let hasLeftTop = false;
 function updateScrollControls() {
   const isScrolled = window.scrollY > 60;
@@ -834,6 +901,7 @@ function updateScrollControls() {
 window.addEventListener('scroll', updateScrollControls, { passive: true });
 animateHeroTitle(animateBrandTitle());
 updateScrollControls();
+observeSectionTitles();
 function toggleMobileMenu() {
   const navLinks = document.getElementById('main-nav-links');
   const toggle = document.querySelector('.nav-toggle');
@@ -1546,6 +1614,11 @@ function openAdmin() {
   }
 }
 function closeAdmin() { document.getElementById('admin-panel').classList.remove('open'); }
+function logoutAdmin() {
+  adminToken = null;
+  sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+  closeAdmin();
+}
 function adminTab(tab, el) {
   document.querySelectorAll('[id^="admin-tab-"]').forEach(e => e.style.display = 'none');
   document.getElementById('admin-tab-' + tab).style.display = 'block';
@@ -2044,7 +2117,6 @@ if (paymentResult === 'success') {
 if (paymentResult) history.replaceState(null, '', window.location.pathname + window.location.hash);
 
 loadRooms();
-restoreAdminSession();
 </script>
 </body>
 </html>
