@@ -2,6 +2,7 @@
 const express = require('express');
 const prisma = require('../lib/prisma');
 const { MINIMUM_STAY_NIGHTS } = require('../lib/reservationRules');
+const { validateEmail, normalizePhoneNumber } = require('../lib/contactValidation');
 const { requireAuth } = require('../middleware/auth');
 const { sendReservationConfirmation, sendReservationPaymentLink, sendReservationStatusUpdate, sendAdminNotification } = require('../services/email');
 const { getStripeClient, refundPaymentIntent } = require('../services/stripe');
@@ -16,6 +17,18 @@ router.post('/', async (req, res, next) => {
     if (!name || !email || !roomId || !checkIn || !checkOut || !guests) {
       return res.status(400).json({ error: 'Campos obrigatórios em falta.' });
     }
+    const emailResult = validateEmail(email);
+    if (!emailResult.success) {
+      return res.status(400).json({ error: 'Indique um endereço de email válido.' });
+    }
+    if (phone !== undefined && phone !== null && typeof phone !== 'string') {
+      return res.status(400).json({ error: 'Número de telefone inválido.' });
+    }
+    const normalizedPhone = normalizePhoneNumber(phone);
+    if (phone && phone.trim() && !normalizedPhone) {
+      return res.status(400).json({ error: 'O telefone deve ter entre 7 e 15 algarismos.' });
+    }
+    const validEmail = emailResult.data;
     const guestCount = Number(guests);
     if (!Number.isInteger(guestCount) || guestCount < 1) {
       return res.status(400).json({ error: 'Número de hóspedes inválido.' });
@@ -82,9 +95,9 @@ router.post('/', async (req, res, next) => {
       }
 
       const guest = await transaction.guest.upsert({
-        where: { email },
-        update: { name, phone: phone || undefined },
-        create: { name, email, phone: phone || null },
+        where: { email: validEmail },
+        update: { name, phone: normalizedPhone || undefined },
+        create: { name, email: validEmail, phone: normalizedPhone },
       });
 
       return transaction.reservation.create({

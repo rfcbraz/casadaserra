@@ -189,9 +189,12 @@ h2 em{font-style:italic;color:var(--accent)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .form-field{display:flex;flex-direction:column;gap:.4rem}
 .form-hint{margin:0;color:var(--muted);font-size:.72rem;line-height:1.5}
+.form-hint.error{color:#b42318}
 .form-field.full{grid-column:1/-1}
 .form-field label{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--earth)}
 .form-field input,.form-field select,.form-field textarea{background:var(--cream);border:1px solid var(--warm);border-radius:2px;padding:.75rem 1rem;font-family:'Jost',sans-serif;font-size:.9rem;color:var(--dark);outline:none;transition:border-color .2s;width:100%}
+.phone-number-fields{display:grid;grid-template-columns:minmax(5.5rem,.4fr) minmax(0,1fr);gap:.5rem}
+.phone-number-fields input{min-width:0}
 .form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--accent)}
 .form-field textarea{resize:vertical;min-height:80px}
 .form-summary{background:var(--cream);border:1px solid var(--warm);border-radius:var(--radius);padding:1.2rem;margin:1.5rem 0;display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
@@ -577,8 +580,15 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     <p class="modal-sub">Envie o seu pedido; o proprietário irá aprová-lo antes do pagamento.</p>
     <div class="form-grid">
       <div class="form-field"><label>Nome completo</label><input type="text" id="f-name" placeholder="João Silva"></div>
-      <div class="form-field"><label>Email</label><input type="email" id="f-email" placeholder="joao@email.com"></div>
-      <div class="form-field"><label>Telefone</label><input type="tel" id="f-phone" placeholder="+351 9xx xxx xxx"></div>
+      <div class="form-field"><label for="f-email">Email</label><input type="email" id="f-email" placeholder="joao@email.com" autocomplete="email" maxlength="254" required></div>
+      <div class="form-field">
+        <label for="f-phone">Telefone</label>
+        <div class="phone-number-fields">
+          <input type="tel" id="f-phone-code" value="+351" aria-label="Indicativo internacional" autocomplete="tel-country-code" inputmode="tel" maxlength="4">
+          <input type="tel" id="f-phone" placeholder="912 345 678" aria-label="Número de telefone sem indicativo" autocomplete="tel-national" inputmode="tel" maxlength="20">
+        </div>
+        <small class="form-hint" id="phone-hint" aria-live="polite">Indicativo internacional (PT: +351) e número com 7 a 15 algarismos no total.</small>
+      </div>
       <div class="form-field"><label>Unidade</label>
         <select id="f-room">
           <option value="">A carregar unidades...</option>
@@ -1338,6 +1348,12 @@ const roomCarouselImages = {
 };
 let currentCarouselIndex = 0;
 let currentCarouselRoomType = '';
+let roomCarouselTimer = null;
+
+function startRoomCarouselAutoplay() {
+  clearInterval(roomCarouselTimer);
+  roomCarouselTimer = setInterval(() => moveRoomCarousel(1), 3000);
+}
 
 function renderRoomCarousel(room) {
   const track = document.getElementById('room-detail-carousel-track');
@@ -1365,6 +1381,7 @@ function renderRoomCarousel(room) {
     dot.onclick = () => {
       currentCarouselIndex = index;
       updateCarouselPosition();
+      startRoomCarouselAutoplay();
     };
     dots.appendChild(dot);
   });
@@ -1384,6 +1401,7 @@ function moveRoomCarousel(delta) {
   const images = roomCarouselImages[currentCarouselRoomType] || roomCarouselImages.default;
   currentCarouselIndex = (currentCarouselIndex + delta + images.length) % images.length;
   updateCarouselPosition();
+  startRoomCarouselAutoplay();
 }
 
 function openRoomDetails(roomId) {
@@ -1392,6 +1410,7 @@ function openRoomDetails(roomId) {
   renderRoomCarousel(room);
 
   document.getElementById('room-detail-modal').classList.add('open');
+  startRoomCarouselAutoplay();
 }
 
 const footerInfo = {
@@ -1422,6 +1441,8 @@ function closeInfoModal() {
 }
 
 function closeRoomDetails() {
+  clearInterval(roomCarouselTimer);
+  roomCarouselTimer = null;
   document.getElementById('room-detail-modal').classList.remove('open');
 }
 
@@ -1511,12 +1532,22 @@ document.getElementById('f-room').addEventListener('change', function() {
   // Atualiza calendário público com disponibilidade do quarto selecionado
   loadPublicCalAvailability(this.value);
 });
+['f-phone-code','f-phone'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    const phoneHint = document.getElementById('phone-hint');
+    phoneHint.classList.remove('error');
+    phoneHint.textContent = 'Indicativo internacional (PT: +351) e número com 7 a 15 algarismos no total.';
+  });
+});
 
 // ── Confirmar reserva → envia para a API ──────────────────
 async function confirmBooking() {
   const name = document.getElementById('f-name').value.trim();
-  const email = document.getElementById('f-email').value.trim();
-  const phone = document.getElementById('f-phone').value.trim();
+  const emailInput = document.getElementById('f-email');
+  const email = emailInput.value.trim();
+  emailInput.value = email;
+  const phoneNumber = document.getElementById('f-phone').value.trim();
+  const phoneCode = document.getElementById('f-phone-code').value.trim();
   const roomId = document.getElementById('f-room').value;
   const checkIn = document.getElementById('f-checkin').value;
   const checkOut = document.getElementById('f-checkout').value;
@@ -1525,6 +1556,28 @@ async function confirmBooking() {
   const specialRequests = document.getElementById('f-notes').value.trim();
 
   if (!name || !email) { showToast('Por favor preencha nome e email.'); return; }
+  if (!emailInput.checkValidity()) {
+    emailInput.reportValidity();
+    showToast('Introduza um endereço de email válido.');
+    return;
+  }
+  let phone = null;
+  const phoneHint = document.getElementById('phone-hint');
+  phoneHint.classList.remove('error');
+  phoneHint.textContent = 'Indicativo internacional (PT: +351) e número com 7 a 15 algarismos no total.';
+  if (phoneNumber) {
+    const nationalDigits = phoneNumber.replace(/[\s().-]/g, '');
+    const callingCodeDigits = phoneCode.startsWith('+') ? phoneCode.slice(1) : '';
+    const combinedDigits = callingCodeDigits + nationalDigits;
+    if (!/^\+[1-9]\d{0,2}$/.test(phoneCode) || !/^\d+$/.test(nationalDigits) || !/^[1-9]\d{6,14}$/.test(combinedDigits)) {
+      phoneHint.textContent = 'Verifique o indicativo e o número: devem ter entre 7 e 15 algarismos no total.';
+      phoneHint.classList.add('error');
+      document.getElementById(/^\+[1-9]\d{0,2}$/.test(phoneCode) ? 'f-phone' : 'f-phone-code').focus();
+      showToast('Introduza um telefone válido com indicativo internacional.');
+      return;
+    }
+    phone = `+${combinedDigits}`;
+  }
   if (!checkIn || !checkOut) { showToast('Por favor selecione as datas.'); return; }
   if (!roomId) { showToast('Por favor selecione um quarto.'); return; }
   if (!arrivalTime) { showToast('Indique a hora prevista de chegada.'); return; }
@@ -1562,6 +1615,7 @@ async function confirmBooking() {
         closeBooking();
         showToast(data.message || 'Pedido enviado. Aguarde a resposta do proprietário.');
         ['f-name','f-email','f-phone','f-notes'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('f-phone-code').value = '+351';
         document.getElementById('f-arrival-time').value = '';
       }
     } else {
