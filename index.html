@@ -791,8 +791,8 @@ const translations = {
     'Localização da Casa do Ferreiro no Google Maps': 'Casa do Ferreiro location on Google Maps', 'João Silva': 'e.g. John Smith',
     'Conforto e comodidade': 'Comfort & amenities', 'Alojamento': 'Accommodation', 'Regras da propriedade': 'Property rules',
     'Casa do Ferreiro T2:': 'Casa do Ferreiro T2:', 'Casa do Ferreiro T3:': 'Casa do Ferreiro T3:',
-    '115 m², até 6 hóspedes. Licença AL: 167437/AL.': '115 m², up to 6 guests. AL licence: 167437/AL.',
-    '125 m², até 9 hóspedes. Classificação: 9,6/10 · Localização: 10/10.': '125 m², up to 9 guests. Rating: 9.6/10 · Location: 10/10.',
+    '115 m², até 4 hóspedes. Licença AL: 167437/AL.': '115 m², up to 4 guests. AL licence: 167437/AL.',
+    '125 m², até 6 hóspedes. Classificação: 9,6/10 · Localização: 10/10.': '125 m², up to 6 guests. Rating: 9.6/10 · Location: 10/10.',
     'Check-out: das 08:00 às 11:00.': 'Check-out: 08:00–11:00.',
     'Não são admitidos animais de estimação.': 'Pets are not allowed.',
     'Anfitrião:': 'Host:', 'Idiomas: Português, Inglês e Espanhol.': 'Languages: Portuguese, English and Spanish.',
@@ -893,8 +893,8 @@ const translations = {
     'Localização da Casa do Ferreiro no Google Maps': 'Ubicación de Casa do Ferreiro en Google Maps', 'João Silva': 'p. ej., Juan Pérez',
     'Conforto e comodidade': 'Confort y comodidades', 'Alojamento': 'Alojamiento', 'Regras da propriedade': 'Normas del alojamiento',
     'Casa do Ferreiro T2:': 'Casa do Ferreiro T2:', 'Casa do Ferreiro T3:': 'Casa do Ferreiro T3:',
-    '115 m², até 6 hóspedes. Licença AL: 167437/AL.': '115 m², hasta 6 huéspedes. Licencia AL: 167437/AL.',
-    '125 m², até 9 hóspedes. Classificação: 9,6/10 · Localização: 10/10.': '125 m², hasta 9 huéspedes. Valoración: 9,6/10 · Ubicación: 10/10.',
+    '115 m², até 4 hóspedes. Licença AL: 167437/AL.': '115 m², hasta 4 huéspedes. Licencia AL: 167437/AL.',
+    '125 m², até 6 hóspedes. Classificação: 9,6/10 · Localização: 10/10.': '125 m², hasta 6 huéspedes. Valoración: 9,6/10 · Ubicación: 10/10.',
     'Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, jardim e acesso a área de praia privada.': 'Aparcamiento privado gratuito, Wi-Fi de alta velocidad, aire acondicionado, habitaciones para no fumadores, toallas y ropa de cama incluidas, jardín y acceso a una zona de playa privada.',
     'Cozinha equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.': 'Cocina equipada con frigorífico, cafetera, microondas, mesa de comedor y menaje completo.',
     'Check-in: T2 das 16:00 às 18:00; T3 das 15:00 às 18:00. Informe a hora de chegada com antecedência.': 'Entrada: T2 de 16:00 a 18:00; T3 de 15:00 a 18:00. Indique la hora de llegada con antelación.',
@@ -1497,7 +1497,7 @@ const ROOM_OVERRIDES = {
     sizeSqm: 115,
     bedrooms: 2,
     beds: 2,
-    maxGuests: 6,
+    maxGuests: 4,
     coverImage: 'assets/images/t2-capa.jpg',
     coverAlt: 'Quarto de casal do T2 com ar condicionado e televisão',
     emoji: '🏡',
@@ -1515,7 +1515,7 @@ const ROOM_OVERRIDES = {
     sizeSqm: 125,
     bedrooms: 3,
     beds: 4,
-    maxGuests: 9,
+    maxGuests: 6,
     coverImage: 'assets/images/t3-capa.jpg',
     coverAlt: 'Quarto de casal do T3 com televisão e ar condicionado',
     emoji: '🏞️',
@@ -1920,7 +1920,7 @@ function openRoomDetails(roomId) {
 const footerInfo = {
   accommodation: {
     title: 'Alojamento',
-    content: '<p><strong>Casa do Ferreiro T2:</strong> 115 m², até 6 hóspedes. Licença AL: 167437/AL.</p><p><strong>Casa do Ferreiro T3:</strong> 125 m², até 9 hóspedes. Classificação: 9,6/10 · Localização: 10/10.</p>'
+    content: '<p><strong>Casa do Ferreiro T2:</strong> 115 m², até 4 hóspedes. Licença AL: 167437/AL.</p><p><strong>Casa do Ferreiro T3:</strong> 125 m², até 6 hóspedes. Classificação: 9,6/10 · Localização: 10/10.</p>'
   },
   comfort: {
     title: 'Conforto e comodidade',
