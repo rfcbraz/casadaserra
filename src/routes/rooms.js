@@ -15,6 +15,16 @@ router.get('/', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+// GET /api/rooms/admin — lista todos os quartos para gestão (admin)
+router.get('/admin', requireAuth, async (req, res, next) => {
+  try {
+    const rooms = await prisma.room.findMany({
+      orderBy: { pricePerNight: 'asc' },
+    });
+    res.json(rooms);
+  } catch (err) { next(err); }
+});
+
 // GET /api/rooms/:id
 router.get('/:id', async (req, res, next) => {
   try {

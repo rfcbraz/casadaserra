@@ -1486,6 +1486,7 @@ loadPublicCalAvailability(null);
 // ── Configuração da API ───────────────────────────────────
 const API = 'https://casadaserra-production.up.railway.app/api';
 let allRooms = []; // quartos carregados da API
+let adminRooms = [];
 let roomCardEventsBound = false;
 
 const ROOM_OVERRIDES = {
@@ -2454,20 +2455,27 @@ async function updateReservationStatus(id, status) {
 // ── Gestão de Quartos ────────────────────────────────────
 async function loadAdminRooms() {
   if (!adminToken) return;
+  const tbody = document.getElementById('admin-rooms-body');
+  if (!tbody) return;
   try {
-    const res = await fetch(`${API}/rooms`, { headers: { Authorization: `Bearer ${adminToken}` } });
-    const rooms = await res.json();
-    const tbody = document.getElementById('admin-rooms-body');
-    if (!tbody) return;
+    const res = await fetch(`${API}/rooms/admin`, { headers: { Authorization: `Bearer ${adminToken}` } });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || `Erro ao carregar quartos (HTTP ${res.status}).`);
+    }
+    if (!Array.isArray(data)) {
+      throw new Error('Resposta inválida ao carregar quartos.');
+    }
+    adminRooms = data;
 
-    // Populate availability room select too
+    // Only active units can have availability managed for new bookings.
     const sel = document.getElementById('avail-room-select');
     if (sel) {
       sel.innerHTML = '<option value="">Seleciona um quarto...</option>';
-      rooms.forEach(r => sel.innerHTML += `<option value="${r.id}">${r.name}</option>`);
+      allRooms.forEach(r => sel.innerHTML += `<option value="${r.id}">${r.name}</option>`);
     }
 
-    tbody.innerHTML = rooms.map(r => `
+    tbody.innerHTML = adminRooms.map(r => `
       <div class="admin-table-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 2fr">
         <div class="admin-guest-name">${r.name}</div>
         <div><span class="admin-room-badge">${r.type}</span></div>
@@ -2476,14 +2484,17 @@ async function loadAdminRooms() {
         <div><span class="admin-status ${r.isActive ? 'confirmed' : 'cancelled'}">${r.isActive ? 'Ativo' : 'Inativo'}</span></div>
         <div style="display:flex;gap:.4rem">
           <button class="admin-action" onclick="openEditRoom('${r.id}')">✏ Editar</button>
-          <button class="admin-action" onclick="toggleRoom('${r.id}', ${r.isActive})">${r.isActive ? '🚫 Desativar' : '✓ Ativar'}</button>
+          <button class="admin-action" onclick="toggleRoomActive('${r.id}', ${r.isActive})">${r.isActive ? '🚫 Desativar' : '✓ Ativar'}</button>
         </div>
       </div>`).join('');
-  } catch(err) { console.error('Erro quartos:', err); }
+  } catch(err) {
+    console.error('Erro quartos:', err);
+    tbody.innerHTML = `<div style="padding:2rem;color:#dc2626;font-size:.85rem">${err.message || 'Não foi possível carregar os quartos.'}</div>`;
+  }
 }
 
 function openEditRoom(id) {
-  const room = allRooms.find(r => r.id === id);
+  const room = adminRooms.find(r => r.id === id);
   if (!room) return;
   document.getElementById('edit-room-id').value = room.id;
   document.getElementById('edit-room-name').value = room.name;
@@ -2531,7 +2542,7 @@ async function saveRoom() {
       closeEditRoom();
       showToast('✓ Quarto atualizado com sucesso!');
       await loadRooms();
-      loadAdminRooms();
+      await loadAdminRooms();
     } else {
       const err = await res.json();
       showToast(err.error || 'Erro ao guardar.');
@@ -2553,7 +2564,7 @@ async function toggleRoomActive(id, currentActive) {
     }
     showToast(`Quarto ${currentActive ? 'desativado' : 'ativado'}.`);
     await loadRooms();
-    loadAdminRooms();
+    await loadAdminRooms();
   } catch(err) { showToast('Erro de ligação.'); }
 }
 

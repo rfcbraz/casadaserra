@@ -79,7 +79,7 @@ O servidor arranca em `http://localhost:3001`.
 | Método | Rota | Descrição |
 |--------|------|-----------|
 | GET | `/health` | Health check |
-| GET | `/api/rooms` | Lista todas as unidades |
+| GET | `/api/rooms` | Lista unidades ativas |
 | GET | `/api/rooms/:id` | Detalhes de uma unidade |
 | GET | `/api/availability?checkIn=&checkOut=` | Unidades disponíveis |
 | GET | `/api/availability/room/:id?year=&month=` | Datas ocupadas de uma unidade |
@@ -107,6 +107,7 @@ O projeto tem feeds iCal de disponibilidade, mas a integração com a API oficia
 | PATCH | `/api/reservations/:id/status` | Atualizar estado |
 | DELETE | `/api/reservations/:id` | Cancelar reserva |
 | POST | `/api/rooms` | Criar quarto |
+| GET | `/api/rooms/admin` | Listar todas as unidades, incluindo inativas |
 | PATCH | `/api/rooms/:id` | Editar quarto |
 | DELETE | `/api/rooms/:id` | Desativar quarto |
 | POST | `/api/availability/block` | Bloquear datas |
