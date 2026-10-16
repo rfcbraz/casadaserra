@@ -48,7 +48,7 @@ async function sendReservationConfirmation(reservation) {
 
   const html = baseTemplate(`
     <div class="header">
-      <h1>Casa da Serra</h1>
+      <h1>Casa do Ferreiro</h1>
       <p>Pedido de Reserva Recebido</p>
     </div>
     <div class="body">
@@ -65,18 +65,18 @@ async function sendReservationConfirmation(reservation) {
       </div>
       <p>O envio deste pedido ainda não confirma a reserva.</p>
       <p>Para qualquer dúvida, contacte-nos:</p>
-      <p>📞 +351 960 000 000 &nbsp;|&nbsp; ✉ reservas@casadaserra.pt</p>
+      <p>📞 +351 938 750 239 &nbsp;|&nbsp; ✉ reservas@casadoferreiro.pt</p>
     </div>
     <div class="footer">
-      <p>Casa da Serra · Serra da Estrela, Portugal</p>
-      <p>© 2026 Casa da Serra. Todos os direitos reservados.</p>
+      <p>Casa do Ferreiro · Venda Nova, Montalegre, Portugal</p>
+      <p>© 2026 Casa do Ferreiro. Todos os direitos reservados.</p>
     </div>
   `);
 
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: guest.email,
-    subject: `Pedido de reserva recebido — Casa da Serra #${reservation.id.slice(0,8).toUpperCase()}`,
+    subject: `Pedido de reserva recebido — Casa do Ferreiro #${reservation.id.slice(0,8).toUpperCase()}`,
     html,
   });
 }
@@ -85,7 +85,7 @@ async function sendReservationPaymentLink(reservation, checkoutUrl) {
   const { guest, room } = reservation;
   const html = baseTemplate(`
     <div class="header">
-      <h1>Casa da Serra</h1>
+      <h1>Casa do Ferreiro</h1>
       <p>Reserva aprovada</p>
     </div>
     <div class="body">
@@ -101,13 +101,13 @@ async function sendReservationPaymentLink(reservation, checkoutUrl) {
       <p><a href="${checkoutUrl}" class="btn">Pagar e confirmar reserva</a></p>
       <p>Este link é válido durante 35 minutos.</p>
     </div>
-    <div class="footer"><p>Casa da Serra · Serra da Estrela, Portugal</p></div>
+    <div class="footer"><p>Casa do Ferreiro · Venda Nova, Montalegre, Portugal</p></div>
   `);
 
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: guest.email,
-    subject: `Pedido aprovado: conclua o pagamento — Casa da Serra #${reservation.id.slice(0,8).toUpperCase()}`,
+    subject: `Pedido aprovado: conclua o pagamento — Casa do Ferreiro #${reservation.id.slice(0,8).toUpperCase()}`,
     html,
   });
 }
@@ -127,7 +127,7 @@ async function sendReservationStatusUpdate(reservation, newStatus) {
 
   const html = baseTemplate(`
     <div class="header">
-      <h1>Casa da Serra</h1>
+      <h1>Casa do Ferreiro</h1>
       <p>Atualização de Reserva — ${info.label}</p>
     </div>
     <div class="body">
@@ -142,14 +142,14 @@ async function sendReservationStatusUpdate(reservation, newStatus) {
       </div>
     </div>
     <div class="footer">
-      <p>Casa da Serra · Serra da Estrela, Portugal</p>
+      <p>Casa do Ferreiro · Venda Nova, Montalegre, Portugal</p>
     </div>
   `);
 
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: guest.email,
-    subject: `Reserva ${info.label} — Casa da Serra`,
+    subject: `Reserva ${info.label} — Casa do Ferreiro`,
     html,
   });
 }
@@ -159,7 +159,7 @@ async function sendAdminNotification(reservation) {
 
   const html = baseTemplate(`
     <div class="header">
-      <h1>Casa da Serra</h1>
+      <h1>Casa do Ferreiro</h1>
       <p>Nova Reserva Recebida</p>
     </div>
     <div class="body">
@@ -178,7 +178,7 @@ async function sendAdminNotification(reservation) {
       </div>
       <a href="${process.env.FRONTEND_URL}/admin" class="btn">Ver no Painel</a>
     </div>
-    <div class="footer"><p>Casa da Serra · Painel de Gestão</p></div>
+    <div class="footer"><p>Casa do Ferreiro · Painel de Gestão</p></div>
   `);
 
   await transporter.sendMail({

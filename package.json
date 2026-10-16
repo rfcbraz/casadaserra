@@ -1,7 +1,7 @@
 {
   "name": "casadaserra-backend",
   "version": "1.0.0",
-  "description": "Backend API para Casa da Serra Guest House",
+  "description": "Backend API para Casa do Ferreiro",
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.js",

@@ -116,7 +116,7 @@ function escapeIcsText(value) {
     .replace(/,/g, '\\,');
 }
 
-function buildIcsCalendar({ prodId = 'Casa da Serra', events = [] }) {
+function buildIcsCalendar({ prodId = 'Casa do Ferreiro', events = [] }) {
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -298,7 +298,7 @@ function buildRoomCalendar(room, reservations, blockedDates) {
     });
   });
 
-  return buildIcsCalendar({ prodId: `Casa da Serra - ${room.name}`, events });
+  return buildIcsCalendar({ prodId: `Casa do Ferreiro - ${room.name}`, events });
 }
 
 module.exports = {

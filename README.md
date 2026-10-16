@@ -1,6 +1,6 @@
-# 🏡 Casa da Serra — Backend API
+# 🏡 Casa do Ferreiro — Backend API
 
-Backend Node.js + PostgreSQL para o sistema de reservas da Casa da Serra.
+Backend Node.js + PostgreSQL para o sistema de reservas da Casa do Ferreiro.
 
 ---
 

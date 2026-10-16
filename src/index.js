@@ -85,6 +85,6 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`\n🏡 Casa da Serra API a correr em http://localhost:${PORT}`);
+  console.log(`\n🏡 Casa do Ferreiro API a correr em http://localhost:${PORT}`);
   console.log(`   Ambiente: ${process.env.NODE_ENV || 'development'}\n`);
 });
