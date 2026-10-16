@@ -168,6 +168,7 @@ JWT_SECRET          → string aleatória longa
 ADMIN_EMAIL         → o teu email
 ADMIN_PASSWORD      → password segura
 SMTP_HOST/USER/PASS → configuração de email
+ADMIN_NOTIFICATION_EMAIL → email que recebe os novos pedidos (opcional; por omissão usa ADMIN_EMAIL)
 FRONTEND_URL        → URL do teu site
 NODE_ENV            → production
 ```

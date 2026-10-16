@@ -2220,11 +2220,25 @@ async function confirmBooking() {
 // ── Admin panel ───────────────────────────────────────────
 const ADMIN_TOKEN_KEY = 'casadaserra-admin-token';
 let adminToken = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+let adminReservationsFilter = null;
+let adminReservationPollTimer = null;
 
 function showAdminPanel() {
   document.getElementById('admin-panel').classList.add('open');
   loadAdminStats();
   loadAdminReservations();
+  startAdminReservationPolling();
+}
+
+function startAdminReservationPolling() {
+  clearInterval(adminReservationPollTimer);
+  adminReservationPollTimer = setInterval(() => {
+    const panel = document.getElementById('admin-panel');
+    const reservationsTab = document.getElementById('admin-tab-reservations');
+    if (!adminToken || !panel?.classList.contains('open') || reservationsTab?.style.display === 'none') return;
+    loadAdminReservations(adminReservationsFilter);
+    loadAdminStats();
+  }, 30000);
 }
 
 async function restoreAdminSession() {
@@ -2254,7 +2268,11 @@ function openAdmin() {
     showAdminLogin();
   }
 }
-function closeAdmin() { document.getElementById('admin-panel').classList.remove('open'); }
+function closeAdmin() {
+  document.getElementById('admin-panel').classList.remove('open');
+  clearInterval(adminReservationPollTimer);
+  adminReservationPollTimer = null;
+}
 function logoutAdmin() {
   adminToken = null;
   sessionStorage.removeItem(ADMIN_TOKEN_KEY);
@@ -2429,6 +2447,7 @@ async function loadAdminReservations(statusFilter) {
 }
 
 function filterReservations(status, el) {
+  adminReservationsFilter = status;
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   loadAdminReservations(status);

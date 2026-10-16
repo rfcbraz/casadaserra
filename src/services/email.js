@@ -183,7 +183,7 @@ async function sendAdminNotification(reservation) {
 
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
-    to: process.env.ADMIN_EMAIL,
+    to: process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL,
     subject: `Novo pedido de reserva: ${guest.name} — ${room.name}`,
     html,
   });
