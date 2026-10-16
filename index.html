@@ -44,7 +44,7 @@ nav.scrolled .nav-toggle{border-color:rgba(42,33,24,.2);color:var(--dark)}
 .nav-toggle.is-open span::after{top:0;transform:rotate(-45deg)}
 
 .hero{height:auto;min-height:100vh;padding:6rem 0 4rem;position:relative;display:flex;align-items:center;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#2a2118 0%,#3d3020 40%,#5a4535 70%,#8b6940 100%);z-index:0}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,rgba(42,33,24,.3),rgba(42,33,24,.12)),url("assets/images/hero-reservoir.png") center 55%/cover no-repeat;z-index:0}
 .hero-pattern{position:absolute;inset:0;opacity:.06;background-image:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%);background-size:30px 30px;z-index:1}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(42,33,24,.7) 0%,rgba(42,33,24,.2) 60%,transparent 100%);z-index:2}
 .hero-content{position:relative;z-index:3;padding:0 3rem;max-width:700px}
@@ -53,13 +53,13 @@ nav.scrolled .nav-toggle{border-color:rgba(42,33,24,.2);color:var(--dark)}
 .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,7vw,6rem);font-weight:300;line-height:1.05;color:var(--white);margin-bottom:1.5rem;letter-spacing:-.01em}
 .hero h1 em{font-style:italic;color:var(--accent2)}
 .hero-title-emphasis-char{display:inline-block}
-.hero-sub{font-size:1rem;color:rgba(255,255,255,.7);line-height:1.8;max-width:480px;margin-bottom:2.5rem;font-weight:300}
+.hero-sub{font-size:1.05rem;color:rgba(255,255,255,.88);line-height:1.8;max-width:480px;margin-bottom:2.5rem;font-weight:400}
 .hero-actions{display:flex;gap:1rem;flex-wrap:wrap}
 .btn-hero{background:var(--accent);color:#fff;border:none;padding:1rem 2.5rem;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s}
 .btn-hero:hover{background:var(--accent2);color:var(--dark)}
-.btn-hero-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);padding:1rem 2.5rem;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s}
+.btn-hero-outline{background:rgba(32,25,19,.48);color:#fff;border:2px solid rgba(255,255,255,.65);padding:1rem 2.5rem;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s}
 .btn-hero-outline:hover{border-color:#fff;background:rgba(255,255,255,.1)}
-.hero-badges{position:absolute;bottom:3rem;right:3rem;z-index:3;display:flex;gap:2rem}
+.hero-badges{position:absolute;bottom:2rem;right:2rem;z-index:3;display:flex;gap:2rem;padding:1rem 1.5rem;background:rgba(32,25,19,.78);border:1px solid rgba(255,255,255,.12);border-radius:3px;backdrop-filter:blur(6px)}
 .hero-badge{text-align:center;color:rgba(255,255,255,.7)}
 .hero-badge-num{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--accent2);display:block;line-height:1}
 .hero-badge-label{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;margin-top:.3rem;display:block}
@@ -329,7 +329,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .hero{height:auto;padding:5rem 0 3rem}
   .hero-content{max-width:100%;padding:0 1rem}
   .hero h1{font-size:clamp(2.5rem,10vw,4rem)}
-  .hero-sub{font-size:.95rem;max-width:100%}
+  .hero-sub{font-size:1rem;max-width:100%}
   .hero-actions{flex-direction:column;align-items:flex-start}
   .hero-actions button{width:100%}
   .booking-bar{padding:1rem;gap:.75rem}
@@ -417,7 +417,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   </div>
   <div class="hero-badges">
     <div class="hero-badge"><span class="hero-badge-num">2</span><span class="hero-badge-label">Unidades</span></div>
-    <div class="hero-badge"><span class="hero-badge-num">4.9</span><span class="hero-badge-label">Avaliação</span></div>
+    <div class="hero-badge"><span class="hero-badge-num">9.6</span><span class="hero-badge-label">Avaliação Booking.com</span></div>
     <div class="hero-badge"><span class="hero-badge-num">8+</span><span class="hero-badge-label">Anos</span></div>
   </div>
 </div>
@@ -771,7 +771,7 @@ const translations = {
     'Acomodações': 'Accommodation', 'Sobre nós': 'About us', 'Disponibilidade': 'Availability', 'Contacto': 'Contact',
     'Turismo Rural · Barroso': 'Rural Tourism · Barroso', 'Refúgio em': 'A retreat in', 'tranquilidade': 'tranquillity',
     'entre a albufeira e o Gerês': 'between the reservoir and Gerês', 'A Casa do Ferreiro combina a tradição da região de Barroso com conforto contemporâneo, na proximidade da Albufeira de Venda Nova e da Serra do Gerês.': 'Casa do Ferreiro blends the traditions of the Barroso region with contemporary comfort, close to Venda Nova Reservoir and the Gerês Mountains.',
-    'Reservar agora': 'Book now', 'Ver quartos': 'View accommodation', 'Unidades': 'Units', 'Avaliação': 'Rating', 'Anos': 'Years',
+    'Reservar agora': 'Book now', 'Ver quartos': 'View accommodation', 'Unidades': 'Units', 'Avaliação Booking.com': 'Booking.com rating', 'Anos': 'Years',
     'Check-in': 'Check-in', 'Check-out': 'Check-out', 'Unidade': 'Accommodation', 'Selecione uma unidade': 'Select accommodation',
     'Hóspedes': 'Guests', 'hóspede': 'guest', 'hóspedes': 'guests', 'Verificar Disponibilidade': 'Check availability',
     'As nossas acomodações': 'Our accommodation', 'Acomodações ': 'Accommodation ', 'A Casa do Ferreiro oferece espaços acolhedores, modernos e funcionais, ideais para famílias, casais ou pequenos grupos que querem viver a tranquilidade da região com conforto total.': 'Casa do Ferreiro offers welcoming, modern and functional spaces, ideal for families, couples or small groups looking to enjoy the tranquillity of the region in complete comfort.',
@@ -873,7 +873,7 @@ const translations = {
     'Acomodações': 'Alojamientos', 'Sobre nós': 'Sobre nosotros', 'Disponibilidade': 'Disponibilidad', 'Contacto': 'Contacto',
     'Turismo Rural · Barroso': 'Turismo rural · Barroso', 'Refúgio em': 'Un refugio de', 'tranquilidade': 'tranquilidad',
     'entre a albufeira e o Gerês': 'entre el embalse y Gerês', 'A Casa do Ferreiro combina a tradição da região de Barroso com conforto contemporâneo, na proximidade da Albufeira de Venda Nova e da Serra do Gerês.': 'Casa do Ferreiro combina la tradición de la región de Barroso con el confort contemporáneo, cerca del embalse de Venda Nova y de la sierra de Gerês.',
-    'Reservar agora': 'Reservar ahora', 'Ver quartos': 'Ver alojamientos', 'Unidades': 'Unidades', 'Avaliação': 'Valoración', 'Anos': 'Años',
+    'Reservar agora': 'Reservar ahora', 'Ver quartos': 'Ver alojamientos', 'Unidades': 'Unidades', 'Avaliação Booking.com': 'Valoración en Booking.com', 'Anos': 'Años',
     'Check-in': 'Entrada', 'Check-out': 'Salida', 'Unidade': 'Alojamiento', 'Selecione uma unidade': 'Seleccione un alojamiento',
     'Hóspedes': 'Huéspedes', 'hóspede': 'huésped', 'hóspedes': 'huéspedes', 'Verificar Disponibilidade': 'Consultar disponibilidad',
     'As nossas acomodações': 'Nuestros alojamientos', 'Acomodações ': 'Alojamientos ', 'A Casa do Ferreiro oferece espaços acolhedores, modernos e funcionais, ideais para famílias, casais ou pequenos grupos que querem viver a tranquilidade da região com conforto total.': 'Casa do Ferreiro ofrece espacios acogedores, modernos y funcionales, ideales para familias, parejas o grupos pequeños que quieran disfrutar de la tranquilidad de la región con total comodidad.',
