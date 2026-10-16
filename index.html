@@ -372,7 +372,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     <li><a href="#availability">Disponibilidade</a></li>
     <li><a href="#contact">Contacto</a></li>
   </ul>
-  <button class="nav-cta" onclick="openBooking()">Reservar</button>
+  <button class="nav-cta" onclick="document.getElementById('availability').scrollIntoView({behavior:'smooth'})">Reservar</button>
   <select class="language-select" id="language-select" aria-label="Idioma / Language / Idioma">
     <option value="pt">PT</option>
     <option value="en">EN</option>
@@ -389,7 +389,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     <h1>Refúgio em<br><em>tranquilidade</em><br>entre a albufeira e o Gerês</h1>
     <p class="hero-sub">A Casa do Ferreiro combina a tradição da região de Barroso com conforto contemporâneo, na proximidade da Albufeira de Venda Nova e da Serra do Gerês.</p>
     <div class="hero-actions">
-      <button class="btn-hero" onclick="openBooking()">Reservar agora</button>
+      <button class="btn-hero" onclick="document.getElementById('availability').scrollIntoView({behavior:'smooth'})">Reservar agora</button>
       <button class="btn-hero-outline" onclick="document.getElementById('rooms').scrollIntoView({behavior:'smooth'})">Ver quartos</button>
     </div>
   </div>
