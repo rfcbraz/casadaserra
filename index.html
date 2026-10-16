@@ -2412,6 +2412,7 @@ async function loadAdminReservations(statusFilter) {
           ${r.status==='PENDING' && !r.stripeCheckoutSessionId?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CONFIRMED')">✓ Aceitar</button>`:''}
           ${r.status==='PENDING'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','DECLINED')">✕ Recusar</button>`:''}
           ${r.status!=='CANCELLED' && r.status!=='DECLINED' && r.status!=='PENDING'?`<button class="admin-action" onclick="updateReservationStatus('${r.id}','CANCELLED')">↺ Cancelar</button>`:''}
+          ${['AWAITING_PAYMENT','CONFIRMED','DECLINED'].includes(r.status)?`<button class="admin-action" onclick="deleteDecidedReservation('${r.id}')">🗑 Apagar</button>`:''}
         </div>
       </div>
       <div style="grid-column:1/-1;padding:.4rem 0 .6rem;border-bottom:1px solid var(--warm);font-size:.75rem;color:var(--muted);display:flex;gap:1.5rem;flex-wrap:wrap">
@@ -2450,6 +2451,28 @@ async function updateReservationStatus(id, status) {
     loadAdminReservations();
     loadAdminStats();
   } catch(err) { showToast('Erro ao atualizar reserva.'); }
+}
+
+async function deleteDecidedReservation(id) {
+  if (!adminToken) return;
+  if (!window.confirm('Apagar permanentemente esta reserva? Esta ação não pode ser anulada.')) return;
+
+  try {
+    const res = await fetch(`${API}/reservations/${id}/record`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${adminToken}` }
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      showToast(data.error || 'Não foi possível apagar a reserva.');
+      return;
+    }
+    showToast(data.message || 'Reserva apagada com sucesso.');
+    await loadAdminReservations();
+    loadAdminStats();
+  } catch(err) {
+    showToast('Erro de ligação ao apagar a reserva.');
+  }
 }
 
 // ── Gestão de Quartos ────────────────────────────────────

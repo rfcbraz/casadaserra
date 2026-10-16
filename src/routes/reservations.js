@@ -410,6 +410,43 @@ router.patch('/:id/status', requireAuth, async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+// DELETE /api/reservations/:id/record — apagar reserva decidida (admin)
+router.delete('/:id/record', requireAuth, async (req, res, next) => {
+  try {
+    const reservation = await prisma.reservation.findUnique({ where: { id: req.params.id } });
+    if (!reservation) return res.status(404).json({ error: 'Reserva não encontrada.' });
+
+    const deletableStatuses = ['AWAITING_PAYMENT', 'CONFIRMED', 'DECLINED'];
+    if (!deletableStatuses.includes(reservation.status)) {
+      return res.status(409).json({
+        error: 'Só é possível apagar uma reserva depois de ser aceite ou recusada, e antes de ser paga.',
+      });
+    }
+
+    if (reservation.status === 'AWAITING_PAYMENT' && reservation.stripeCheckoutSessionId) {
+      const stripe = getStripeClient();
+      const session = await stripe.checkout.sessions.retrieve(reservation.stripeCheckoutSessionId);
+      if (session.status === 'complete') {
+        return res.status(409).json({ error: 'O pagamento está a ser confirmado. Atualize a lista de reservas.' });
+      }
+      if (session.status === 'open') {
+        await stripe.checkout.sessions.expire(reservation.stripeCheckoutSessionId);
+      } else if (session.status !== 'expired') {
+        return res.status(409).json({ error: 'Não foi possível confirmar o estado do pagamento. Atualize a lista e tente novamente.' });
+      }
+    }
+
+    const result = await prisma.reservation.deleteMany({
+      where: { id: reservation.id, status: { in: deletableStatuses } },
+    });
+    if (result.count === 0) {
+      return res.status(409).json({ error: 'O estado da reserva foi alterado. Atualize a lista e tente novamente.' });
+    }
+
+    res.json({ message: 'Reserva apagada com sucesso.' });
+  } catch (err) { next(err); }
+});
+
 // DELETE /api/reservations/:id — cancelar reserva (admin)
 router.delete('/:id', requireAuth, async (req, res, next) => {
   try {

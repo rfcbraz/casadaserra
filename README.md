@@ -105,6 +105,7 @@ O projeto tem feeds iCal de disponibilidade, mas a integração com a API oficia
 | GET | `/api/admin/stats` | Estatísticas do dashboard |
 | GET | `/api/reservations` | Listar reservas |
 | PATCH | `/api/reservations/:id/status` | Atualizar estado |
+| DELETE | `/api/reservations/:id/record` | Apagar reserva aceite (antes do pagamento) ou recusada |
 | DELETE | `/api/reservations/:id` | Cancelar reserva |
 | POST | `/api/rooms` | Criar quarto |
 | GET | `/api/rooms/admin` | Listar todas as unidades, incluindo inativas |
