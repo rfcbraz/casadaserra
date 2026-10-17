@@ -17,6 +17,9 @@ function formatDate(date) {
   });
 }
 
+// Todos os avisos (novas reservas e contactos) e respostas dos hóspedes vão para este email
+const RESERVATIONS_EMAIL = process.env.NOTIFICATION_EMAIL || 'reservas@casadoferreirovn.pt';
+
 const CHECK_IN_TIME = 'a partir das 16:00';
 const CHECK_OUT_TIME = 'até às 11:00';
 
@@ -92,7 +95,7 @@ async function sendReservationConfirmation(reservation) {
       ${SCHEDULE_NOTE}
       <p>O envio deste pedido ainda não confirma a reserva.</p>
       <p>Para qualquer dúvida, contacte-nos:</p>
-      <p>📞 +351 938 750 239 &nbsp;|&nbsp; ✉ reservas@casadoferreiro.pt</p>
+      <p>📞 +351 938 750 239 &nbsp;|&nbsp; ✉ ${RESERVATIONS_EMAIL}</p>
     </div>
     <div class="footer">
       <p>Casa do Ferreiro · Venda Nova, Montalegre, Portugal</p>
@@ -103,6 +106,7 @@ async function sendReservationConfirmation(reservation) {
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: guest.email,
+    replyTo: RESERVATIONS_EMAIL,
     subject: `Pedido de reserva recebido — Casa do Ferreiro #${reservation.id.slice(0,8).toUpperCase()}`,
     html,
   });
@@ -134,6 +138,7 @@ async function sendReservationPaymentLink(reservation, checkoutUrl) {
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: guest.email,
+    replyTo: RESERVATIONS_EMAIL,
     subject: `Pedido aprovado: conclua o pagamento — Casa do Ferreiro #${reservation.id.slice(0,8).toUpperCase()}`,
     html,
   });
@@ -176,6 +181,7 @@ async function sendReservationStatusUpdate(reservation, newStatus) {
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: guest.email,
+    replyTo: RESERVATIONS_EMAIL,
     subject: `Reserva ${info.label} — Casa do Ferreiro`,
     html,
   });
@@ -210,13 +216,41 @@ async function sendAdminNotification(reservation) {
 
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
-    to: process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL,
+    to: RESERVATIONS_EMAIL,
     subject: `Novo pedido de reserva: ${guest.name} — ${room.name}`,
     html,
   });
 }
 
+async function sendContactMessage({ name, email, phone, message }) {
+  const html = baseTemplate(`
+    <div class="header">
+      <h1>Casa do Ferreiro</h1>
+      <p>Nova mensagem de contacto</p>
+    </div>
+    <div class="body">
+      <p>Foi enviada uma mensagem através do formulário de contacto do site. Pode responder diretamente a este email.</p>
+      <div class="box">
+        <div class="box-row"><span class="box-label">Nome</span><span class="box-value">${escapeHtml(name)}</span></div>
+        <div class="box-row"><span class="box-label">Email</span><span class="box-value">${escapeHtml(email)}</span></div>
+        <div class="box-row"><span class="box-label">Telefone</span><span class="box-value">${escapeHtml(phone || '—')}</span></div>
+      </div>
+      <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
+    </div>
+    <div class="footer"><p>Casa do Ferreiro · Formulário de contacto</p></div>
+  `);
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: RESERVATIONS_EMAIL,
+    replyTo: `"${name.replace(/["\r\n]/g, '')}" <${email}>`,
+    subject: `Mensagem de contacto: ${name.replace(/[\r\n]/g, ' ')}`,
+    html,
+  });
+}
+
 module.exports = {
+  sendContactMessage,
   sendReservationConfirmation,
   sendReservationPaymentLink,
   sendReservationStatusUpdate,

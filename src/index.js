@@ -11,6 +11,7 @@ const adminRoutes = require('./routes/admin');
 const availabilityRoutes = require('./routes/availability');
 const icalRoutes = require('./routes/ical');
 const webhookRoutes = require('./routes/webhooks');
+const contactRoutes = require('./routes/contact');
 const { syncExternalCalendars } = require('./services/ical');
 
 const app = express();
@@ -43,7 +44,15 @@ app.use('/api/reservations', rateLimit({
   message: { error: 'Limite de reservas atingido. Tente novamente em 1 hora.' }
 }));
 
+// Rate limiting para o formulário de contacto
+app.use('/api/contact', rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 5,
+  message: { error: 'Limite de mensagens atingido. Tente novamente em 1 hora.' }
+}));
+
 // ── Rotas ──────────────────────────────────────────────────
+app.use('/api/contact', contactRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/availability', availabilityRoutes);

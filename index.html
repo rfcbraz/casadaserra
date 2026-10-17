@@ -219,6 +219,10 @@ h2 em{font-style:italic;color:var(--accent)}
 .summary-total-price{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--accent)}
 .btn-confirm{width:100%;background:var(--accent);color:#fff;border:none;padding:1rem;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:background .2s;margin-top:.5rem}
 .btn-confirm:hover{background:var(--dark)}
+.btn-confirm:disabled{opacity:.6;cursor:wait}
+.contact-email-link{background:none;border:none;padding:0;font:inherit;color:var(--accent);text-decoration:underline;cursor:pointer}
+.contact-email-link:hover{color:var(--dark)}
+.contact-honeypot{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 
 .admin-panel{display:none;position:fixed;inset:0;z-index:600;background:var(--cream)}
 .admin-panel.open{display:flex}
@@ -557,6 +561,24 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   </div>
 </div>
 
+<!-- CONTACT FORM MODAL -->
+<div class="modal" id="contact-modal">
+  <div class="modal-backdrop" onclick="closeContactForm()"></div>
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+    <button class="modal-close-btn" type="button" aria-label="Fechar" onclick="closeContactForm()">×</button>
+    <h3 id="contact-title">Contacte-nos</h3>
+    <p class="modal-sub">A sua mensagem será enviada para reservas@casadoferreirovn.pt.</p>
+    <form id="contact-form" class="form-grid" onsubmit="submitContactForm(event)" novalidate>
+      <div class="form-field"><label for="c-name">Nome</label><input type="text" id="c-name" autocomplete="name" maxlength="100" required></div>
+      <div class="form-field"><label for="c-email">Email</label><input type="email" id="c-email" autocomplete="email" maxlength="254" required></div>
+      <div class="form-field full"><label for="c-phone">Telefone (opcional)</label><input type="tel" id="c-phone" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="+351 912 345 678"></div>
+      <div class="form-field full"><label for="c-message">Mensagem</label><textarea id="c-message" maxlength="5000" required placeholder="Escreva a sua mensagem..."></textarea></div>
+      <input type="text" id="c-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="contact-honeypot">
+      <div class="form-field full"><button class="btn-confirm" type="submit" id="c-submit">Enviar mensagem</button></div>
+    </form>
+  </div>
+</div>
+
 <!-- ROOM DETAIL MODAL -->
 <div class="modal" id="room-detail-modal">
   <div class="modal-backdrop" onclick="closeRoomDetails()"></div>
@@ -796,6 +818,21 @@ const translations = {
     'Não são admitidos animais de estimação.': 'Pets are not allowed.',
     'Anfitrião:': 'Host:', 'Idiomas: Português, Inglês e Espanhol.': 'Languages: Portuguese, English and Spanish.',
     'Email:': 'Email:', 'Telefone:': 'Phone:',
+    'Contacte-nos': 'Contact us',
+    'A sua mensagem será enviada para reservas@casadoferreirovn.pt.': 'Your message will be sent to reservas@casadoferreirovn.pt.',
+    'Nome': 'Name',
+    'Telefone (opcional)': 'Phone (optional)',
+    'Mensagem': 'Message',
+    'Escreva a sua mensagem...': 'Write your message...',
+    'Enviar mensagem': 'Send message',
+    'A mensagem deve ter pelo menos 10 caracteres.': 'Your message must be at least 10 characters long.',
+    'Mensagem enviada. Responderemos com a maior brevidade possível.': 'Message sent. We will get back to you as soon as possible.',
+    'Não foi possível enviar a mensagem. Tente novamente mais tarde.': 'Your message could not be sent. Please try again later.',
+    'Não foi possível ligar ao servidor. Verifique a sua ligação.': 'Could not connect to the server. Please check your connection.',
+    'Indique o seu nome.': 'Please enter your name.',
+    'A mensagem deve ter entre 10 e 5000 caracteres.': 'Your message must be between 10 and 5000 characters long.',
+    'Número de telefone inválido.': 'Invalid phone number.',
+    'Limite de mensagens atingido. Tente novamente em 1 hora.': 'Message limit reached. Please try again in 1 hour.',
     'Fazer Reserva': 'Make a booking', 'Envie o seu pedido; o proprietário irá aprová-lo antes do pagamento.': 'Send your request; the owner will approve it before payment.',
     'Nome completo': 'Full name', 'Telefone': 'Phone', 'Número de telefone sem indicativo': 'Phone number without country code',
     'Selecione o país e introduza o número.': 'Select your country and enter your phone number.',
@@ -912,6 +949,21 @@ const translations = {
     'Não são admitidos animais de estimação.': 'No se admiten mascotas.',
     'Anfitrião:': 'Anfitrión:', 'Idiomas: Português, Inglês e Espanhol.': 'Idiomas: portugués, inglés y español.',
     'Email:': 'Correo electrónico:', 'Telefone:': 'Teléfono:',
+    'Contacte-nos': 'Contáctenos',
+    'A sua mensagem será enviada para reservas@casadoferreirovn.pt.': 'Su mensaje se enviará a reservas@casadoferreirovn.pt.',
+    'Nome': 'Nombre',
+    'Telefone (opcional)': 'Teléfono (opcional)',
+    'Mensagem': 'Mensaje',
+    'Escreva a sua mensagem...': 'Escriba su mensaje...',
+    'Enviar mensagem': 'Enviar mensaje',
+    'A mensagem deve ter pelo menos 10 caracteres.': 'El mensaje debe tener al menos 10 caracteres.',
+    'Mensagem enviada. Responderemos com a maior brevidade possível.': 'Mensaje enviado. Le responderemos lo antes posible.',
+    'Não foi possível enviar a mensagem. Tente novamente mais tarde.': 'No se pudo enviar el mensaje. Inténtelo de nuevo más tarde.',
+    'Não foi possível ligar ao servidor. Verifique a sua ligação.': 'No se pudo conectar con el servidor. Compruebe su conexión.',
+    'Indique o seu nome.': 'Indique su nombre.',
+    'A mensagem deve ter entre 10 e 5000 caracteres.': 'El mensaje debe tener entre 10 y 5000 caracteres.',
+    'Número de telefone inválido.': 'Número de teléfono no válido.',
+    'Limite de mensagens atingido. Tente novamente em 1 hora.': 'Límite de mensajes alcanzado. Inténtelo de nuevo en 1 hora.',
     'Fazer Reserva': 'Hacer una reserva', 'Envie o seu pedido; o proprietário irá aprová-lo antes do pagamento.': 'Envíe su solicitud; el propietario la aprobará antes del pago.',
     'Nome completo': 'Nombre completo', 'Telefone': 'Teléfono', 'Número de telefone sem indicativo': 'Número de teléfono sin prefijo',
     'Selecione o país e introduza o número.': 'Seleccione el país e introduzca el número.',
@@ -1972,7 +2024,7 @@ const footerInfo = {
   },
   contact: {
     title: 'Contacto',
-    content: '<p>Anfitrião: <strong>Sr. André</strong>. Idiomas: Português, Inglês e Espanhol.</p><p>Email: <a href="mailto:reservas@casadoferreiro.pt">reservas@casadoferreiro.pt</a></p><p>Telefone: <a href="tel:+351938750239">+351 938 750 239</a></p>'
+    content: '<p>Anfitrião: <strong>Sr. André</strong>. Idiomas: Português, Inglês e Espanhol.</p><p>Email: <button type="button" class="contact-email-link" onclick="openContactForm()">reservas@casadoferreirovn.pt</button></p><p>Telefone: <a href="tel:+351938750239">+351 938 750 239</a></p>'
   },
   location: {
     title: 'Localização e morada',
@@ -2000,10 +2052,61 @@ function closeFooterInfo() {
 }
 
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && document.getElementById('footer-info-modal').classList.contains('open')) {
+  if (event.key !== 'Escape') return;
+  if (document.getElementById('contact-modal').classList.contains('open')) {
+    closeContactForm();
+  } else if (document.getElementById('footer-info-modal').classList.contains('open')) {
     closeFooterInfo();
   }
 });
+
+// Formulário de contacto (aberto a partir do email na janela "Contacto")
+function openContactForm() {
+  document.getElementById('footer-info-modal').classList.remove('open');
+  document.getElementById('contact-modal').classList.add('open');
+  document.getElementById('c-name').focus();
+}
+
+function closeContactForm() {
+  document.getElementById('contact-modal').classList.remove('open');
+  if (footerInfoTrigger) footerInfoTrigger.focus();
+}
+
+async function submitContactForm(event) {
+  event.preventDefault();
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const phone = document.getElementById('c-phone').value.trim();
+  const message = document.getElementById('c-message').value.trim();
+  const website = document.getElementById('c-website').value;
+
+  if (!name || !email) { showToast(translateText('Por favor preencha nome e email.')); return; }
+  if (!document.getElementById('c-email').checkValidity()) { showToast(translateText('Introduza um endereço de email válido.')); return; }
+  if (message.length < 10) { showToast(translateText('A mensagem deve ter pelo menos 10 caracteres.')); return; }
+
+  const btn = document.getElementById('c-submit');
+  btn.disabled = true;
+  try {
+    const res = await fetch(`${API}/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, phone, message, website })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) {
+      document.getElementById('contact-form').reset();
+      closeContactForm();
+      showToast(translateText('Mensagem enviada. Responderemos com a maior brevidade possível.'));
+    } else {
+      showToast(translateText(data.error || 'Não foi possível enviar a mensagem. Tente novamente mais tarde.'));
+    }
+  } catch (err) {
+    console.error(err);
+    showToast(translateText('Não foi possível ligar ao servidor. Verifique a sua ligação.'));
+  } finally {
+    btn.disabled = false;
+  }
+}
 
 function closeRoomDetails() {
   clearInterval(roomCarouselTimer);
