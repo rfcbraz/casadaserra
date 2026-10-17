@@ -4,12 +4,34 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false,
+  secure: process.env.SMTP_PORT === '465', // 465 usa SSL direto; 587 usa STARTTLS
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
+  // Falhar depressa em vez de esperar 2 minutos quando o SMTP não está acessível
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 20000,
 });
+
+// O Railway bloqueia SMTP fora do plano Pro; com RESEND_API_KEY os emails seguem pela API HTTPS do Resend
+async function sendMail({ from, to, replyTo, subject, html }) {
+  if (process.env.RESEND_API_KEY) {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ from, to: [to], reply_to: replyTo, subject, html }),
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
+    return res.json();
+  }
+  return transporter.sendMail({ from, to, replyTo, subject, html });
+}
 
 function formatDate(date) {
   return new Date(date).toLocaleDateString('pt-PT', {
@@ -103,7 +125,7 @@ async function sendReservationConfirmation(reservation) {
     </div>
   `);
 
-  await transporter.sendMail({
+  await sendMail({
     from: process.env.EMAIL_FROM,
     to: guest.email,
     replyTo: RESERVATIONS_EMAIL,
@@ -135,7 +157,7 @@ async function sendReservationPaymentLink(reservation, checkoutUrl) {
     <div class="footer"><p>Casa do Ferreiro · Venda Nova, Montalegre, Portugal</p></div>
   `);
 
-  await transporter.sendMail({
+  await sendMail({
     from: process.env.EMAIL_FROM,
     to: guest.email,
     replyTo: RESERVATIONS_EMAIL,
@@ -178,7 +200,7 @@ async function sendReservationStatusUpdate(reservation, newStatus) {
     </div>
   `);
 
-  await transporter.sendMail({
+  await sendMail({
     from: process.env.EMAIL_FROM,
     to: guest.email,
     replyTo: RESERVATIONS_EMAIL,
@@ -214,7 +236,7 @@ async function sendAdminNotification(reservation) {
     <div class="footer"><p>Casa do Ferreiro · Painel de Gestão</p></div>
   `);
 
-  await transporter.sendMail({
+  await sendMail({
     from: process.env.EMAIL_FROM,
     to: RESERVATIONS_EMAIL,
     subject: `Novo pedido de reserva: ${guest.name} — ${room.name}`,
@@ -240,7 +262,7 @@ async function sendContactMessage({ name, email, phone, message }) {
     <div class="footer"><p>Casa do Ferreiro · Formulário de contacto</p></div>
   `);
 
-  await transporter.sendMail({
+  await sendMail({
     from: process.env.EMAIL_FROM,
     to: RESERVATIONS_EMAIL,
     replyTo: `"${name.replace(/["\r\n]/g, '')}" <${email}>`,

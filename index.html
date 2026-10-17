@@ -2090,7 +2090,8 @@ async function submitContactForm(event) {
     const res = await fetch(`${API}/contact`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, phone, message, website })
+      body: JSON.stringify({ name, email, phone, message, website }),
+      signal: AbortSignal.timeout(45000)
     });
     const data = await res.json().catch(() => ({}));
     if (res.ok) {
