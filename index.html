@@ -227,9 +227,10 @@ html.intro-pending .hero h1,html.intro-pending .nav-logo{visibility:hidden}
 .form-summary{background:var(--cream);border:1px solid var(--warm);border-radius:var(--radius);padding:1.2rem;margin:1.5rem 0;display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
 .summary-item{font-size:.8rem;color:var(--muted)}
 .summary-item strong{color:var(--dark);display:block;font-size:.85rem}
+#s-guests{white-space:pre-line;line-height:1.45}
 .summary-total{grid-column:1/-1;border-top:1px solid var(--warm);padding-top:.75rem;margin-top:.25rem;display:flex;justify-content:space-between;align-items:center}
 .summary-total-label{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--dark)}
-.summary-total-price{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--accent)}
+.summary-total-price{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--accent);font-variant-numeric:lining-nums}
 .summary-breakdown{grid-column:1/-1;font-size:.72rem;color:var(--muted);line-height:1.6}
 .summary-breakdown:empty{display:none}
 .summary-promo{grid-column:1/-1;font-size:.78rem;color:var(--earth);background:rgba(201,137,58,.1);border-left:3px solid var(--accent);padding:.5rem .75rem;line-height:1.5}
@@ -1010,6 +1011,14 @@ const translations = {
     'Pessoas a mais': 'Extra guests',
     'Desconto por pessoas a menos': 'Fewer guests discount',
     'Berço': 'Cot',
+    'adulto': 'adult',
+    'adultos': 'adults',
+    'jovem (7–17 anos)': 'young person (7–17)',
+    'jovens (7–17 anos)': 'young people (7–17)',
+    'criança (3–6 anos)': 'child (3–6)',
+    'crianças (3–6 anos)': 'children (3–6)',
+    'bebé (0–2 anos)': 'baby (0–2)',
+    'bebés (0–2 anos)': 'babies (0–2)',
     'Promoção': 'Promotion',
     'Reserve pelo menos {{nights}} noites e tenha {{pct}}% de desconto (promoção «{{name}}»).': 'Book at least {{nights}} nights and get {{pct}}% off ({{name}} promotion).',
     '✓ Desconto de {{pct}}% aplicado (promoção «{{name}}»).': '✓ {{pct}}% discount applied ({{name}} promotion).',
@@ -1167,6 +1176,14 @@ const translations = {
     'Pessoas a mais': 'Personas adicionales',
     'Desconto por pessoas a menos': 'Descuento por menos personas',
     'Berço': 'Cuna',
+    'adulto': 'adulto',
+    'adultos': 'adultos',
+    'jovem (7–17 anos)': 'joven (7–17 años)',
+    'jovens (7–17 anos)': 'jóvenes (7–17 años)',
+    'criança (3–6 anos)': 'niño (3–6 años)',
+    'crianças (3–6 anos)': 'niños (3–6 años)',
+    'bebé (0–2 anos)': 'bebé (0–2 años)',
+    'bebés (0–2 anos)': 'bebés (0–2 años)',
     'Promoção': 'Promoción',
     'Reserve pelo menos {{nights}} noites e tenha {{pct}}% de desconto (promoção «{{name}}»).': 'Reserve al menos {{nights}} noches y obtenga un {{pct}}% de descuento (promoción «{{name}}»).',
     '✓ Desconto de {{pct}}% aplicado (promoção «{{name}}»).': '✓ Descuento del {{pct}}% aplicado (promoción «{{name}}»).',
@@ -2526,8 +2543,14 @@ function updateSummary() {
   document.getElementById('s-nights').textContent = nights > 0
     ? `${nights} ${translateText(nights === 1 ? 'Noite' : 'Noites').toLocaleLowerCase(currentLanguage)}`
     : '—';
-  document.getElementById('s-guests').textContent = `${guests} ${translateText(guests === 1 ? 'hóspede' : 'hóspedes')}`
-    + (party.infants ? ` + ${party.infants} ${translateText(party.infants === 1 ? 'bebé' : 'bebés')}` : '');
+  // Uma linha por faixa etária escolhida (ex.: "2 adultos", "1 criança (3–6 anos)")
+  const partyLines = [
+    [party.adults, 'adulto', 'adultos'],
+    [party.teens, 'jovem (7–17 anos)', 'jovens (7–17 anos)'],
+    [party.children, 'criança (3–6 anos)', 'crianças (3–6 anos)'],
+    [party.infants, 'bebé (0–2 anos)', 'bebés (0–2 anos)'],
+  ].filter(([count]) => count > 0).map(([count, one, many]) => `${count} ${translateText(count === 1 ? one : many)}`);
+  document.getElementById('s-guests').textContent = partyLines.length ? partyLines.join('\n') : '—';
   updateQuote(sel.value, nights);
 }
 
