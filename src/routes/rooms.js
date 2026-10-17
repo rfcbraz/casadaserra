@@ -2,7 +2,11 @@
 const express = require('express');
 const prisma = require('../lib/prisma');
 const { requireAuth } = require('../middleware/auth');
+const { normalizeParty, validateParty, calculateQuote } = require('../lib/pricing');
+const { loadPricing } = require('../lib/priceRules');
 const router = express.Router();
+
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 // GET /api/rooms — lista todos os quartos ativos
 router.get('/', async (req, res, next) => {
@@ -23,6 +27,170 @@ router.get('/admin', requireAuth, async (req, res, next) => {
     });
     res.json(rooms);
   } catch (err) { next(err); }
+});
+
+// GET /api/rooms/promotions/active — promoções ativas que ainda não terminaram (público, para o pop-up do site)
+router.get('/promotions/active', async (req, res, next) => {
+  try {
+    const today = new Date(`${new Date().toISOString().slice(0, 10)}T00:00:00Z`);
+    const promotions = await prisma.promotion.findMany({
+      where: { isActive: true, endDate: { gte: today } },
+      include: { room: { select: { name: true, isActive: true } } },
+      orderBy: [{ discountPct: 'desc' }],
+    });
+    res.json(promotions
+      .filter(promotion => !promotion.room || promotion.room.isActive)
+      .map(promotion => ({
+        name: promotion.name,
+        discountPct: promotion.discountPct,
+        minNights: promotion.minNights,
+        startDate: promotion.startDate.toISOString().slice(0, 10),
+        endDate: promotion.endDate.toISOString().slice(0, 10),
+        roomName: promotion.room?.name || null,
+      })));
+  } catch (err) { next(err); }
+});
+
+// GET /api/rooms/:id/quote?checkIn&checkOut&adults&teens&children&infants — orçamento (público)
+router.get('/:id/quote', async (req, res, next) => {
+  try {
+    const { checkIn, checkOut } = req.query;
+    if (!DATE_PATTERN.test(checkIn || '') || !DATE_PATTERN.test(checkOut || '') || checkIn >= checkOut) {
+      return res.status(400).json({ error: 'Datas inválidas.' });
+    }
+    const room = await prisma.room.findUnique({ where: { id: req.params.id } });
+    if (!room || !room.isActive) return res.status(404).json({ error: 'Quarto não encontrado.' });
+
+    const party = normalizeParty(req.query);
+    const partyError = validateParty(room, party);
+    if (partyError) return res.status(400).json({ error: partyError });
+
+    const { rules, promotions } = await loadPricing(prisma, room.id, checkIn, checkOut);
+    res.json(calculateQuote(room, rules, checkIn, checkOut, party, promotions));
+  } catch (err) { next(err); }
+});
+
+// GET /api/rooms/:id/price-rules — épocas e feriados da unidade (admin)
+router.get('/:id/price-rules', requireAuth, async (req, res, next) => {
+  try {
+    const rules = await prisma.priceRule.findMany({
+      where: { roomId: req.params.id },
+      orderBy: [{ startDate: 'asc' }],
+    });
+    res.json(rules);
+  } catch (err) { next(err); }
+});
+
+// POST /api/rooms/:id/price-rules — criar época ou feriado (admin)
+router.post('/:id/price-rules', requireAuth, async (req, res, next) => {
+  try {
+    const { name, kind, startDate, endDate, price, weekendPrice } = req.body || {};
+    if (!['SEASON', 'HOLIDAY'].includes(kind)) return res.status(400).json({ error: 'Tipo inválido.' });
+    if (!String(name || '').trim()) return res.status(400).json({ error: 'Indique um nome.' });
+    if (!DATE_PATTERN.test(startDate || '') || !DATE_PATTERN.test(endDate || '') || startDate > endDate) {
+      return res.status(400).json({ error: 'Datas inválidas: a data final tem de ser igual ou posterior à inicial.' });
+    }
+    const nightlyPrice = parseFloat(price);
+    if (!(nightlyPrice > 0)) return res.status(400).json({ error: 'Indique um preço por noite válido.' });
+    let weekendNightlyPrice = null;
+    if (kind === 'SEASON' && weekendPrice !== undefined && weekendPrice !== null && weekendPrice !== '') {
+      weekendNightlyPrice = parseFloat(weekendPrice);
+      if (!(weekendNightlyPrice > 0)) return res.status(400).json({ error: 'Preço de fim de semana inválido.' });
+    }
+    const room = await prisma.room.findUnique({ where: { id: req.params.id } });
+    if (!room) return res.status(404).json({ error: 'Quarto não encontrado.' });
+
+    const rule = await prisma.priceRule.create({
+      data: {
+        roomId: room.id,
+        name: String(name).trim().slice(0, 100),
+        kind,
+        startDate: new Date(`${startDate}T00:00:00Z`),
+        endDate: new Date(`${endDate}T00:00:00Z`),
+        price: nightlyPrice,
+        weekendPrice: weekendNightlyPrice,
+      },
+    });
+    res.status(201).json(rule);
+  } catch (err) { next(err); }
+});
+
+// DELETE /api/rooms/price-rules/:ruleId — apagar época ou feriado (admin)
+router.delete('/price-rules/:ruleId', requireAuth, async (req, res, next) => {
+  try {
+    await prisma.priceRule.delete({ where: { id: req.params.ruleId } });
+    res.json({ message: 'Regra de preço apagada.' });
+  } catch (err) {
+    if (err.code === 'P2025') return res.status(404).json({ error: 'Regra não encontrada.' });
+    next(err);
+  }
+});
+
+// GET /api/rooms/:id/promotions — promoções da unidade e de todas as unidades (admin)
+router.get('/:id/promotions', requireAuth, async (req, res, next) => {
+  try {
+    const promotions = await prisma.promotion.findMany({
+      where: { OR: [{ roomId: req.params.id }, { roomId: null }] },
+      orderBy: [{ startDate: 'asc' }],
+    });
+    res.json(promotions);
+  } catch (err) { next(err); }
+});
+
+// POST /api/rooms/:id/promotions — criar promoção; allRooms=true aplica a todas as unidades (admin)
+router.post('/:id/promotions', requireAuth, async (req, res, next) => {
+  try {
+    const { name, startDate, endDate, discountPct, minNights, allRooms } = req.body || {};
+    if (!String(name || '').trim()) return res.status(400).json({ error: 'Indique um nome para a promoção.' });
+    if (!DATE_PATTERN.test(startDate || '') || !DATE_PATTERN.test(endDate || '') || startDate > endDate) {
+      return res.status(400).json({ error: 'Datas inválidas: a data final tem de ser igual ou posterior à inicial.' });
+    }
+    const pct = parseFloat(discountPct);
+    if (!(pct > 0 && pct <= 100)) return res.status(400).json({ error: 'O desconto tem de estar entre 0 e 100%.' });
+    const nights = parseInt(minNights, 10);
+    if (!(nights >= 1)) return res.status(400).json({ error: 'O mínimo de noites tem de ser pelo menos 1.' });
+    const room = await prisma.room.findUnique({ where: { id: req.params.id } });
+    if (!room) return res.status(404).json({ error: 'Quarto não encontrado.' });
+
+    const promotion = await prisma.promotion.create({
+      data: {
+        roomId: allRooms ? null : room.id,
+        name: String(name).trim().slice(0, 100),
+        startDate: new Date(`${startDate}T00:00:00Z`),
+        endDate: new Date(`${endDate}T00:00:00Z`),
+        discountPct: pct,
+        minNights: nights,
+        isActive: true,
+      },
+    });
+    res.status(201).json(promotion);
+  } catch (err) { next(err); }
+});
+
+// PATCH /api/rooms/promotions/:promotionId — ativar/desativar promoção (admin)
+router.patch('/promotions/:promotionId', requireAuth, async (req, res, next) => {
+  try {
+    if (typeof req.body?.isActive !== 'boolean') return res.status(400).json({ error: 'isActive tem de ser verdadeiro ou falso.' });
+    const promotion = await prisma.promotion.update({
+      where: { id: req.params.promotionId },
+      data: { isActive: req.body.isActive },
+    });
+    res.json(promotion);
+  } catch (err) {
+    if (err.code === 'P2025') return res.status(404).json({ error: 'Promoção não encontrada.' });
+    next(err);
+  }
+});
+
+// DELETE /api/rooms/promotions/:promotionId — apagar promoção (admin)
+router.delete('/promotions/:promotionId', requireAuth, async (req, res, next) => {
+  try {
+    await prisma.promotion.delete({ where: { id: req.params.promotionId } });
+    res.json({ message: 'Promoção apagada.' });
+  } catch (err) {
+    if (err.code === 'P2025') return res.status(404).json({ error: 'Promoção não encontrada.' });
+    next(err);
+  }
 });
 
 // GET /api/rooms/:id
@@ -52,7 +220,7 @@ router.post('/', requireAuth, async (req, res, next) => {
 router.patch('/:id', requireAuth, async (req, res, next) => {
   try {
     // Only allow a whitelist of updatable fields to avoid accidental/invalid writes
-    const allowed = ['name','type','description','pricePerNight','capacity','amenities','images','isActive','sizeSqm','bedrooms','beds','bookingIcalUrl','airbnbIcalUrl'];
+    const allowed = ['name','type','description','pricePerNight','weekendPrice','capacity','baseOccupancy','fewerGuestDiscountPct','extraGuestFee','cribFeePerNight','amenities','images','isActive','sizeSqm','bedrooms','beds','bookingIcalUrl','airbnbIcalUrl'];
     const data = {};
     for (const key of allowed) {
       if (Object.prototype.hasOwnProperty.call(req.body, key)) {
@@ -96,6 +264,27 @@ router.patch('/:id', requireAuth, async (req, res, next) => {
       if (Number.isNaN(data.beds)) {
         return res.status(400).json({ error: 'beds precisa ser um número válido.' });
       }
+    }
+
+    // Preços: campos opcionais (vazio = sem valor) e não negativos
+    const pricingFields = {
+      weekendPrice: { parse: parseFloat, nullable: true, label: 'Preço de fim de semana' },
+      baseOccupancy: { parse: value => parseInt(value, 10), nullable: true, label: 'Ocupação base' },
+      fewerGuestDiscountPct: { parse: parseFloat, max: 100, label: 'Desconto por pessoa a menos' },
+      extraGuestFee: { parse: parseFloat, label: 'Valor por pessoa a mais' },
+      cribFeePerNight: { parse: parseFloat, label: 'Valor do berço' },
+    };
+    for (const [key, rule] of Object.entries(pricingFields)) {
+      if (data[key] === undefined) continue;
+      if (data[key] === '' || data[key] === null) {
+        data[key] = rule.nullable ? null : 0;
+        continue;
+      }
+      const value = rule.parse(data[key]);
+      if (Number.isNaN(value) || value < 0 || (rule.max !== undefined && value > rule.max)) {
+        return res.status(400).json({ error: `${rule.label}: valor inválido.` });
+      }
+      data[key] = value;
     }
 
     // Normalize arrays (allow comma-separated strings from form submissions)

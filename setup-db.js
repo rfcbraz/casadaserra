@@ -119,6 +119,69 @@ async function main() {
     );
   `);
 
+  // Preços: configuração por unidade, preços por datas e idades nas reservas
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Room"
+      ADD COLUMN IF NOT EXISTS "weekendPrice" DOUBLE PRECISION,
+      ADD COLUMN IF NOT EXISTS "baseOccupancy" INTEGER,
+      ADD COLUMN IF NOT EXISTS "fewerGuestDiscountPct" DOUBLE PRECISION NOT NULL DEFAULT 0,
+      ADD COLUMN IF NOT EXISTS "extraGuestFee" DOUBLE PRECISION NOT NULL DEFAULT 0,
+      ADD COLUMN IF NOT EXISTS "cribFeePerNight" DOUBLE PRECISION NOT NULL DEFAULT 0;
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    UPDATE "Room" SET "baseOccupancy" = CASE UPPER("type") WHEN 'T2' THEN 4 WHEN 'T3' THEN 6 ELSE "capacity" END
+    WHERE "baseOccupancy" IS NULL;
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    DO $$ BEGIN
+      CREATE TYPE "PriceRuleKind" AS ENUM ('SEASON', 'HOLIDAY');
+    EXCEPTION WHEN duplicate_object THEN null;
+    END $$;
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS "PriceRule" (
+      "id" TEXT NOT NULL PRIMARY KEY,
+      "name" TEXT NOT NULL,
+      "kind" "PriceRuleKind" NOT NULL,
+      "startDate" TIMESTAMP NOT NULL,
+      "endDate" TIMESTAMP NOT NULL,
+      "price" DOUBLE PRECISION NOT NULL,
+      "weekendPrice" DOUBLE PRECISION,
+      "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+      "roomId" TEXT NOT NULL REFERENCES "Room"("id") ON DELETE CASCADE
+    );
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    CREATE INDEX IF NOT EXISTS "PriceRule_roomId_idx" ON "PriceRule"("roomId");
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS "Promotion" (
+      "id" TEXT NOT NULL PRIMARY KEY,
+      "name" TEXT NOT NULL,
+      "startDate" TIMESTAMP NOT NULL,
+      "endDate" TIMESTAMP NOT NULL,
+      "discountPct" DOUBLE PRECISION NOT NULL,
+      "minNights" INTEGER NOT NULL DEFAULT 1,
+      "isActive" BOOLEAN NOT NULL DEFAULT true,
+      "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+      "roomId" TEXT REFERENCES "Room"("id") ON DELETE CASCADE
+    );
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Reservation"
+      ADD COLUMN IF NOT EXISTS "adults" INTEGER NOT NULL DEFAULT 0,
+      ADD COLUMN IF NOT EXISTS "teens" INTEGER NOT NULL DEFAULT 0,
+      ADD COLUMN IF NOT EXISTS "children" INTEGER NOT NULL DEFAULT 0,
+      ADD COLUMN IF NOT EXISTS "infants" INTEGER NOT NULL DEFAULT 0,
+      ADD COLUMN IF NOT EXISTS "priceBreakdown" JSONB;
+  `);
+
   // Lotação atual: T2 até 6 (cama extra insuflável e sofá), T3 até 8 (sofá-cama).
   // Só altera os valores antigos conhecidos, para não sobrescrever alterações feitas no painel.
   await prisma.$executeRawUnsafe(`

@@ -67,6 +67,43 @@ function stayRows(reservation) {
         <div class="box-row"><span class="box-label">Check-out</span><span class="box-value">${formatDate(reservation.checkOut)}, ${CHECK_OUT_TIME}</span></div>`;
 }
 
+// Hóspedes por idade; reservas antigas só têm o total
+function partyLabel(reservation) {
+  const groups = [
+    [reservation.adults, 'adulto', 'adultos'],
+    [reservation.teens, 'jovem (7–17)', 'jovens (7–17)'],
+    [reservation.children, 'criança (3–6)', 'crianças (3–6)'],
+    [reservation.infants, 'bebé (0–2)', 'bebés (0–2)'],
+  ].filter(([count]) => count > 0).map(([count, one, many]) => `${count} ${count === 1 ? one : many}`);
+  return groups.length ? groups.join(', ') : String(reservation.guests);
+}
+
+function euros(value) {
+  return `€${Math.abs(value).toFixed(2)}`;
+}
+
+// Detalhe do preço guardado na reserva (reservas antigas não o têm)
+function priceRows(reservation) {
+  const quote = reservation.priceBreakdown;
+  if (!quote) return '';
+  const row = (label, value) => `<div class="box-row"><span class="box-label">${label}</span><span class="box-value">${value}</span></div>`;
+  const rows = [row('Alojamento', euros(quote.accommodation))];
+  if (quote.guestAdjustment > 0) rows.push(row('Pessoas a mais', `+${euros(quote.guestAdjustment)}`));
+  if (quote.guestAdjustment < 0) rows.push(row('Desconto por pessoas a menos', `−${euros(quote.guestAdjustment)}`));
+  if (quote.crib > 0) rows.push(row('Berço', euros(quote.crib)));
+  if (quote.promotion) {
+    rows.push(row(`Promoção «${escapeHtml(quote.promotion.name)}» (−${quote.promotion.discountPct}%)`, `−${euros(quote.promotion.discount)}`));
+  }
+  return rows.join('\n        ');
+}
+
+// Nota destacada para o hóspede quando a reserva tem promoção
+function promotionNote(reservation) {
+  const promotion = reservation.priceBreakdown?.promotion;
+  if (!promotion) return '';
+  return `<p>🎉 <strong>Promoção «${escapeHtml(promotion.name)}»:</strong> ${promotion.discountPct}% de desconto em estadias de ${promotion.minNights} ou mais noites. Nesta reserva poupou ${euros(promotion.discount)}.</p>`;
+}
+
 const SCHEDULE_NOTE = `<p>Check-in ${CHECK_IN_TIME}, à hora que lhe for mais conveniente. Check-out ${CHECK_OUT_TIME}.</p>`;
 
 function baseTemplate(content) {
@@ -111,9 +148,11 @@ async function sendReservationConfirmation(reservation) {
         <div class="box-row"><span class="box-label">Quarto</span><span class="box-value">${room.name}</span></div>
         ${stayRows(reservation)}
         <div class="box-row"><span class="box-label">Noites</span><span class="box-value">${nights}</span></div>
-        <div class="box-row"><span class="box-label">Hóspedes</span><span class="box-value">${reservation.guests}</span></div>
+        <div class="box-row"><span class="box-label">Hóspedes</span><span class="box-value">${partyLabel(reservation)}</span></div>
+        ${priceRows(reservation)}
         <div class="box-row"><span class="box-label">Total</span><span class="box-value">€${reservation.totalPrice.toFixed(2)}</span></div>
       </div>
+      ${promotionNote(reservation)}
       ${SCHEDULE_NOTE}
       <p>O envio deste pedido ainda não confirma a reserva.</p>
       <p>Para qualquer dúvida, contacte-nos:</p>
@@ -148,10 +187,12 @@ async function sendReservationPaymentLink(reservation, checkoutUrl) {
         <div class="box-row"><span class="box-label">Referência</span><span class="box-value">#${reservation.id.slice(0,8).toUpperCase()}</span></div>
         <div class="box-row"><span class="box-label">Unidade</span><span class="box-value">${room.name}</span></div>
         ${stayRows(reservation)}
+        ${priceRows(reservation)}
         <div class="box-row"><span class="box-label">Total</span><span class="box-value">€${reservation.totalPrice.toFixed(2)}</span></div>
       </div>
       <p><a href="${checkoutUrl}" class="btn">Pagar e confirmar reserva</a></p>
       <p>Este link é válido durante 35 minutos.</p>
+      ${promotionNote(reservation)}
       ${SCHEDULE_NOTE}
     </div>
     <div class="footer"><p>Casa do Ferreiro · Venda Nova, Montalegre, Portugal</p></div>
@@ -191,9 +232,10 @@ async function sendReservationStatusUpdate(reservation, newStatus) {
         <div class="box-row"><span class="box-label">Referência</span><span class="box-value">#${reservation.id.slice(0,8).toUpperCase()}</span></div>
         <div class="box-row"><span class="box-label">Quarto</span><span class="box-value">${room.name}</span></div>
         ${stayRows(reservation)}
+        ${priceRows(reservation)}
         <div class="box-row"><span class="box-label">Total</span><span class="box-value">€${reservation.totalPrice.toFixed(2)}</span></div>
       </div>
-      ${['CONFIRMED', 'PAID'].includes(newStatus) ? SCHEDULE_NOTE : ''}
+      ${['CONFIRMED', 'PAID'].includes(newStatus) ? promotionNote(reservation) + SCHEDULE_NOTE : ''}
     </div>
     <div class="footer">
       <p>Casa do Ferreiro · Venda Nova, Montalegre, Portugal</p>
@@ -227,7 +269,8 @@ async function sendAdminNotification(reservation) {
         <div class="box-row"><span class="box-label">Telefone</span><span class="box-value">${guest.phone || '—'}</span></div>
         <div class="box-row"><span class="box-label">Quarto</span><span class="box-value">${room.name}</span></div>
         ${stayRows(reservation)}
-        <div class="box-row"><span class="box-label">Hóspedes</span><span class="box-value">${reservation.guests}</span></div>
+        <div class="box-row"><span class="box-label">Hóspedes</span><span class="box-value">${partyLabel(reservation)}</span></div>
+        ${priceRows(reservation)}
         <div class="box-row"><span class="box-label">Total</span><span class="box-value">€${reservation.totalPrice.toFixed(2)}</span></div>
         ${notes ? `<div class="box-row"><span class="box-label">Observações</span><span class="box-value">${escapeHtml(notes).replace(/\n/g, '<br>')}</span></div>` : ''}
       </div>

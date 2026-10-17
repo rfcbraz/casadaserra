@@ -1,9 +1,11 @@
 // src/routes/reservations.js
 const express = require('express');
 const prisma = require('../lib/prisma');
-const { MINIMUM_STAY_NIGHTS, isCheckInDateAllowed } = require('../lib/reservationRules');
+const { MINIMUM_STAY_NIGHTS, CHECK_IN_DATE_ERROR, isCheckInDateAllowed } = require('../lib/reservationRules');
 const { validateEmail, normalizePhoneNumber } = require('../lib/contactValidation');
 const { requireAuth } = require('../middleware/auth');
+const { normalizeParty, validateParty, countedGuests, calculateQuote } = require('../lib/pricing');
+const { loadPricing } = require('../lib/priceRules');
 const { sendReservationConfirmation, sendReservationPaymentLink, sendReservationStatusUpdate, sendAdminNotification } = require('../services/email');
 const { getStripeClient, refundPaymentIntent } = require('../services/stripe');
 const router = express.Router();
@@ -12,9 +14,12 @@ const router = express.Router();
 router.post('/', async (req, res, next) => {
   try {
     const { name, email, phone, roomId, checkIn, checkOut, guests, specialRequests } = req.body;
+    // Idades: adultos (18+), 7–17, 3–6 e bebés (0–2). Pedidos antigos só com "guests" contam como adultos.
+    const hasAgeGroups = ['adults', 'teens', 'children', 'infants'].some(key => req.body[key] !== undefined);
+    const party = normalizeParty(hasAgeGroups ? req.body : { adults: guests });
 
     // Validação básica
-    if (!name || !email || !roomId || !checkIn || !checkOut || !guests) {
+    if (!name || !email || !roomId || !checkIn || !checkOut || (!guests && !hasAgeGroups)) {
       return res.status(400).json({ error: 'Campos obrigatórios em falta.' });
     }
     const emailResult = validateEmail(email);
@@ -35,10 +40,6 @@ router.post('/', async (req, res, next) => {
       return res.status(400).json({ error: 'O telefone deve ter entre 7 e 15 algarismos.' });
     }
     const validEmail = emailResult.data;
-    const guestCount = Number(guests);
-    if (!Number.isInteger(guestCount) || guestCount < 1) {
-      return res.status(400).json({ error: 'Número de hóspedes inválido.' });
-    }
 
     const ciDate = new Date(checkIn);
     const coDate = new Date(checkOut);
@@ -55,7 +56,7 @@ router.post('/', async (req, res, next) => {
     }
 
     if (!isCheckInDateAllowed(checkIn)) {
-      return res.status(400).json({ error: 'A data de entrada só pode ser amanhã ou depois.' });
+      return res.status(400).json({ error: CHECK_IN_DATE_ERROR });
     }
 
     // Verificar quarto
@@ -63,11 +64,13 @@ router.post('/', async (req, res, next) => {
     if (!room || !room.isActive) {
       return res.status(404).json({ error: 'Quarto não encontrado.' });
     }
-    if (guestCount > room.capacity) {
-      return res.status(400).json({ error: `Esta unidade permite até ${room.capacity} hóspedes.` });
-    }
+    const partyError = validateParty(room, party);
+    if (partyError) return res.status(400).json({ error: partyError });
+    const guestCount = countedGuests(party);
 
-    const totalPrice = room.pricePerNight * nights;
+    const { rules, promotions } = await loadPricing(prisma, room.id, ciDate, coDate);
+    const quote = calculateQuote(room, rules, ciDate, coDate, party, promotions);
+    const totalPrice = quote.total;
     const reservation = await prisma.$transaction(async transaction => {
       const conflict = await transaction.reservation.findFirst({
         where: {
@@ -109,6 +112,11 @@ router.post('/', async (req, res, next) => {
           checkOut: coDate,
           nights,
           guests: guestCount,
+          adults: party.adults,
+          teens: party.teens,
+          children: party.children,
+          infants: party.infants,
+          priceBreakdown: quote,
           totalPrice,
           breakfast: false,
           specialRequests: specialRequests || null,

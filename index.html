@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  document.documentElement.classList.add('intro-pending');
+  window.introSafetyTimer = setTimeout(function () { document.documentElement.classList.remove('intro-pending'); }, 4000);
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -184,6 +188,15 @@ h2 em{font-style:italic;color:var(--accent)}
 .room-detail-content{width:min(94vw,calc(78vh * 4 / 3),1200px);max-width:1200px;padding:clamp(.5rem,1vw,1rem);max-height:94vh;overflow:hidden}
 .modal-close-btn{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted);line-height:1}
 .modal-close-btn:hover{color:var(--dark)}
+html.intro-pending .hero h1,html.intro-pending .nav-logo{visibility:hidden}
+.modal-content.promo-modal-content{width:min(92vw,480px);max-width:none;padding:clamp(1.75rem,6vw,3rem) clamp(1.25rem,5vw,2.75rem);text-align:center}
+.promo-modal-badge{display:inline-block;font-size:.68rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:.3rem .9rem;margin-bottom:1rem}
+.promo-modal-item+.promo-modal-item{border-top:1px solid var(--warm);margin-top:1.25rem;padding-top:1.25rem}
+.promo-modal-pct{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,13vw,4.75rem);font-weight:300;line-height:1;color:var(--accent);font-variant-numeric:lining-nums}
+.promo-modal-pct small{display:block;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:.35rem}
+.promo-modal-name{font-family:'Cormorant Garamond',serif;font-size:clamp(1.35rem,4.5vw,1.75rem);color:var(--dark);margin:.75rem 0 .4rem}
+.promo-modal-text{font-size:.9rem;color:var(--muted);line-height:1.6}
+.promo-modal-cta{margin-top:1.75rem;width:100%}
 .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:.3rem}
 .modal-sub{font-size:.82rem;color:var(--muted);margin-bottom:2rem}
 .room-detail-carousel{position:relative;overflow:hidden;border-radius:var(--radius);margin:0 auto;width:100%;aspect-ratio:4/3;min-height:0}
@@ -217,6 +230,15 @@ h2 em{font-style:italic;color:var(--accent)}
 .summary-total{grid-column:1/-1;border-top:1px solid var(--warm);padding-top:.75rem;margin-top:.25rem;display:flex;justify-content:space-between;align-items:center}
 .summary-total-label{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--dark)}
 .summary-total-price{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--accent)}
+.summary-breakdown{grid-column:1/-1;font-size:.72rem;color:var(--muted);line-height:1.6}
+.summary-breakdown:empty{display:none}
+.summary-promo{grid-column:1/-1;font-size:.78rem;color:var(--earth);background:rgba(201,137,58,.1);border-left:3px solid var(--accent);padding:.5rem .75rem;line-height:1.5}
+.summary-promo:empty{display:none}
+.summary-promo.applied{color:#15803d;background:rgba(21,128,61,.08);border-left-color:#15803d;font-weight:500}
+.age-groups{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem}
+.age-group{display:flex;flex-direction:column;gap:.35rem;font-size:.8rem;color:var(--dark);text-transform:none;letter-spacing:0;font-weight:500}
+.age-group small{display:block;font-size:.68rem;color:var(--muted);font-weight:400}
+@media (max-width:540px){.age-groups{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .btn-confirm{width:100%;background:var(--accent);color:#fff;border:none;padding:1rem;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:background .2s;margin-top:.5rem}
 .btn-confirm:hover{background:var(--dark)}
 .btn-confirm:disabled{opacity:.6;cursor:wait}
@@ -263,6 +285,32 @@ h2 em{font-style:italic;color:var(--accent)}
 .admin-tabs{display:flex;gap:0;margin-bottom:1.5rem;border:1px solid var(--warm);border-radius:var(--radius);overflow:hidden;width:fit-content}
 .admin-tab{padding:.6rem 1.5rem;font-size:.78rem;font-weight:500;cursor:pointer;border:none;background:var(--white);color:var(--muted);transition:all .2s}
 .admin-tab.active{background:var(--dark);color:#fff}
+.price-admin-intro{color:var(--muted);font-size:.85rem;line-height:1.6;max-width:760px;margin-bottom:1.5rem}
+.price-admin-room{max-width:320px;margin-bottom:1.5rem}
+.price-admin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem;margin-bottom:1.5rem}
+.price-admin-card{background:var(--white);border:1px solid var(--warm);border-radius:4px;padding:1.5rem}
+.price-admin-card h4{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--earth);margin-bottom:1rem}
+.price-admin-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem 1rem}
+.price-admin-help{font-size:.75rem;color:var(--muted);margin:.75rem 0 0}
+.price-admin-btn{margin-top:1rem;background:var(--accent);color:#fff;border:none;padding:.7rem 1.4rem;font-family:'Jost',sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px}
+.price-admin-btn:hover{background:var(--dark)}
+.price-admin-btn.secondary{background:var(--dark)}
+.price-admin-btn.secondary:hover{background:var(--accent)}
+.price-sim-result{margin-top:1rem;font-size:.85rem;color:var(--dark);line-height:1.6}
+.price-sim-result table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.78rem}
+.price-sim-result td{padding:.25rem 0;border-bottom:1px solid var(--warm)}
+.price-sim-result td:last-child{text-align:right}
+.price-rule-form{display:grid;grid-template-columns:1.2fr 1.6fr 1fr 1fr .9fr .9fr auto;gap:.75rem;align-items:end;margin-bottom:1.25rem}
+.price-rule-form .price-admin-btn{margin-top:0;white-space:nowrap}
+.price-rules-list{border-top:1px solid var(--warm)}
+.price-rule-row{display:grid;grid-template-columns:1fr 1.6fr 1.6fr 1fr 1fr auto;gap:1rem;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--warm);font-size:.85rem}
+.price-rule-kind{font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--earth)}
+.price-rule-empty{padding:1rem 0;color:var(--muted);font-size:.85rem}
+.promo-row{grid-template-columns:1.4fr 1.6fr .8fr 1fr 1fr auto}
+.promo-status{font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.promo-status.on{color:#15803d}
+.promo-status.off{color:var(--muted)}
+@media (max-width:1100px){.price-admin-grid{grid-template-columns:1fr}.price-rule-form{grid-template-columns:repeat(2,minmax(0,1fr))}.price-rule-row{grid-template-columns:1fr 1fr;gap:.25rem 1rem}}
 
 .toast{position:fixed;bottom:2rem;right:2rem;background:var(--dark);color:#fff;padding:1rem 1.5rem;border-radius:var(--radius);font-size:.85rem;z-index:999;transform:translateY(100px);opacity:0;transition:all .3s;border-left:3px solid var(--accent)}
 .toast.show{transform:translateY(0);opacity:1}
@@ -274,12 +322,16 @@ h2 em{font-style:italic;color:var(--accent)}
 footer{background:var(--dark);padding:4rem 3rem 2rem}
 .footer-inner{max-width:1200px;margin:0 auto}
 .footer-main{margin-bottom:3rem}
-.footer-grid{display:flex;justify-content:space-between;gap:1.5rem}
+.footer-grid{display:flex;justify-content:space-between;align-items:center;gap:1.5rem}
 .footer-col{min-width:0}
 .footer-col h4{margin:0}
 .footer-section-button{max-width:100%;padding:0;border:0;background:none;color:var(--stone);font-family:'Jost',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.15em;text-align:left;text-transform:uppercase;overflow-wrap:anywhere}
 .footer-section-button{cursor:pointer;transition:color .2s}
 .footer-section-button:hover,.footer-section-button:focus-visible{color:var(--accent2)}
+.footer-social-links{display:flex;gap:.75rem}
+.footer-social-links a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid rgba(255,255,255,.15);border-radius:50%;color:var(--stone);transition:color .2s,border-color .2s}
+.footer-social-links a:hover,.footer-social-links a:focus-visible{color:var(--accent2);border-color:var(--accent2)}
+.footer-social-links svg{width:17px;height:17px;fill:currentColor}
 .footer-info-content{color:var(--muted);font-size:.92rem;line-height:1.8}
 .footer-info-content p{margin-bottom:.85rem}
 .footer-info-content p:last-child{margin-bottom:0}
@@ -315,7 +367,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .about-grid{gap:3rem}
   .avail-section{padding:5rem 1.5rem}
   .avail-grid{grid-template-columns:1fr}
-  .footer-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}
+  .footer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}
 }
 
 @media (max-width:768px) {
@@ -356,7 +408,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .room-detail-content{width:min(96vw,calc(78vh * 4 / 3));padding:.5rem}
   .room-detail-carousel-control{width:34px;height:34px}
   .form-grid{grid-template-columns:1fr}
-  .footer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem}
+  .footer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem}
 }
 
 @media (max-width:540px) {
@@ -367,7 +419,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   .btn-hero,.btn-hero-outline{width:100%;text-align:center}
   .room-detail-carousel-control.prev{left:.75rem}
   .room-detail-carousel-control.next{right:.75rem}
-  .footer-grid{grid-template-columns:minmax(0,1fr);gap:1.25rem}
+  .footer-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:1.25rem}
   .footer-bottom{grid-template-columns:1fr;justify-items:start;gap:.75rem}
   .footer-credit,.admin-link{justify-self:start}
 }
@@ -542,6 +594,16 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
         <div class="footer-col">
           <h4><button class="footer-section-button" type="button" onclick="openFooterInfo('location', this)">Localização e morada</button></h4>
         </div>
+        <div class="footer-col footer-social">
+          <div class="footer-social-links">
+            <a href="https://www.facebook.com/profile.php?id=61574804381073&amp;sk=directory_basic_info" target="_blank" rel="noopener noreferrer" aria-label="Facebook da Casa do Ferreiro" title="Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.5h-2.8V24C19.62 23.1 24 18.1 24 12.07"/></svg>
+            </a>
+            <a href="https://www.instagram.com/casadoferreirovn/" target="_blank" rel="noopener noreferrer" aria-label="Instagram da Casa do Ferreiro" title="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.88 5.88 0 0 0-2.13 1.38A5.88 5.88 0 0 0 .63 4.14C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13a5.88 5.88 0 0 0 2.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.88 5.88 0 0 0 2.13-1.38 5.88 5.88 0 0 0 1.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.88 5.88 0 0 0-1.38-2.13A5.88 5.88 0 0 0 19.86.63C19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
     <div class="footer-bottom">
@@ -558,6 +620,17 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
     <button class="modal-close-btn" type="button" aria-label="Fechar" onclick="closeFooterInfo()">×</button>
     <h3 id="footer-info-title"></h3>
     <div class="footer-info-content" id="footer-info-body"></div>
+  </div>
+</div>
+
+<!-- PROMOTION MODAL -->
+<div class="modal" id="promo-modal">
+  <div class="modal-backdrop" onclick="closePromoModal()"></div>
+  <div class="modal-content promo-modal-content" role="dialog" aria-modal="true" aria-labelledby="promo-modal-title">
+    <button class="modal-close-btn" type="button" aria-label="Fechar" onclick="closePromoModal()">×</button>
+    <span class="promo-modal-badge" id="promo-modal-title">Promoção</span>
+    <div id="promo-modal-body"></div>
+    <button class="btn-confirm promo-modal-cta" type="button" onclick="closePromoModal(true)">Ver disponibilidade</button>
   </div>
 </div>
 
@@ -619,8 +692,16 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <div class="form-field"><label>Check-in</label><input type="date" id="f-checkin"></div>
       <div class="form-field"><label>Check-out</label><input type="date" id="f-checkout"></div>
       <div class="form-field"><label for="f-arrival-time">Hora prevista de chegada</label><select id="f-arrival-time" required disabled><option value="">Selecione primeiro a unidade</option></select></div>
-      <div class="form-field"><label>Hóspedes</label><select id="f-guests"><option value="1">1 hóspede</option><option value="2" selected>2 hóspedes</option><option value="3">3 hóspedes</option><option value="4">4 hóspedes</option><option value="5">5 hóspedes</option><option value="6">6 hóspedes</option><option value="7">7 hóspedes</option><option value="8">8 hóspedes</option></select><small class="form-hint" id="guest-limit-hint"></small></div>
-      <div class="form-field full"><p class="form-hint" id="booking-policy-hint">Estadia mínima: 2 noites consecutivas. Check-out: até às 11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.</p></div>
+      <div class="form-field full"><label>Hóspedes por idade</label>
+        <div class="age-groups">
+          <label class="age-group"><span>Adultos<small>18+ anos</small></span><select id="f-adults"><option value="2" selected>2</option></select></label>
+          <label class="age-group"><span>Jovens<small>7–17 anos</small></span><select id="f-teens"><option value="0" selected>0</option></select></label>
+          <label class="age-group"><span>Crianças<small>3–6 anos</small></span><select id="f-children"><option value="0" selected>0</option></select></label>
+          <label class="age-group"><span>Bebés<small>0–2 anos (berço)</small></span><select id="f-infants"><option value="0" selected>0</option></select></label>
+        </div>
+        <small class="form-hint" id="guest-limit-hint"></small>
+      </div>
+      <div class="form-field full"><p class="form-hint" id="booking-policy-hint">Estadia mínima: 2 noites consecutivas. Check-out: até às 11:00. Berço para bebés dos 0 aos 2 anos, mediante pedido, com custo por noite; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.</p></div>
       <div class="form-field full"><label>Observações sobre a estadia</label><textarea id="f-notes" placeholder="Informações adicionais sobre a sua reserva (opcional)..."></textarea></div>
     </div>
     <div class="form-summary">
@@ -629,6 +710,8 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <div class="summary-item"><strong id="s-nights">—</strong>Noites</div>
       <div class="summary-item"><strong id="s-guests">—</strong>Hóspedes</div>
       <div class="summary-total"><span class="summary-total-label">Total estimado</span><span class="summary-total-price" id="s-total">—</span></div>
+      <div class="summary-breakdown" id="s-breakdown"></div>
+      <div class="summary-promo" id="s-promo-hint"></div>
     </div>
     <button class="btn-confirm" onclick="confirmBooking()">Enviar pedido de reserva</button>
   </div>
@@ -642,6 +725,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <div class="admin-nav-item active" onclick="adminTab('reservations',this)">📋 Reservas</div>
       <div class="admin-nav-item" onclick="adminTab('rooms',this)">🛏 Quartos</div>
       <div class="admin-nav-item" onclick="adminTab('availability',this)">📅 Disponibilidade</div>
+      <div class="admin-nav-item" onclick="adminTab('prices',this)">💶 Preços</div>
       <div class="admin-nav-item" onclick="adminTab('stats',this)">📊 Estatísticas</div>
     </div>
     <button class="admin-close" type="button" onclick="closeAdmin()">← Voltar ao site</button>
@@ -764,6 +848,84 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
         </div>
       </div>
     </div>
+    <!-- TAB PREÇOS -->
+    <div id="admin-tab-prices" style="display:none">
+      <div class="admin-header"><div class="admin-title">Preços</div></div>
+      <p class="price-admin-intro">O preço de cada noite segue esta ordem: <strong>feriado</strong> → <strong>época</strong> (com preço de fim de semana nas noites de sexta e sábado) → <strong>preço base</strong> da unidade. Depois aplica-se o ajuste por pessoas: crianças dos 3 aos 6 anos contam como meia pessoa e bebés (0–2) pagam só o berço.</p>
+      <div class="form-field price-admin-room">
+        <label for="price-room-select">Unidade</label>
+        <select id="price-room-select" onchange="loadPriceAdmin()"><option value="">Seleciona uma unidade...</option></select>
+      </div>
+
+      <div id="price-admin-content" style="display:none">
+        <div class="price-admin-grid">
+          <div class="price-admin-card">
+            <h4>Preço base e pessoas</h4>
+            <div class="price-admin-fields">
+              <div class="form-field"><label for="pr-base-price">Preço base / noite (€)</label><input type="number" id="pr-base-price" min="0" step="0.01"></div>
+              <div class="form-field"><label for="pr-weekend-price">Fim de semana / noite (€)</label><input type="number" id="pr-weekend-price" min="0" step="0.01" placeholder="Igual ao base"></div>
+              <div class="form-field"><label for="pr-base-occupancy">Pessoas incluídas no preço</label><input type="number" id="pr-base-occupancy" min="1" step="1"></div>
+              <div class="form-field"><label for="pr-discount-pct">Desconto por pessoa a menos (%)</label><input type="number" id="pr-discount-pct" min="0" max="100" step="0.5"></div>
+              <div class="form-field"><label for="pr-extra-fee">Pessoa a mais (€ / noite)</label><input type="number" id="pr-extra-fee" min="0" step="0.01"></div>
+              <div class="form-field"><label for="pr-crib-fee">Berço (€ / noite)</label><input type="number" id="pr-crib-fee" min="0" step="0.01"></div>
+            </div>
+            <p class="price-admin-help">Fim de semana = noites de sexta e sábado, fora das épocas. Deixa vazio para usar o preço base.</p>
+            <button class="price-admin-btn" type="button" onclick="savePriceSettings()">Guardar</button>
+          </div>
+
+          <div class="price-admin-card">
+            <h4>Simulador</h4>
+            <div class="price-admin-fields">
+              <div class="form-field"><label for="sim-checkin">Entrada</label><input type="date" id="sim-checkin"></div>
+              <div class="form-field"><label for="sim-checkout">Saída</label><input type="date" id="sim-checkout"></div>
+              <div class="form-field"><label for="sim-adults">Adultos (18+)</label><input type="number" id="sim-adults" min="1" value="2"></div>
+              <div class="form-field"><label for="sim-teens">Jovens (7–17)</label><input type="number" id="sim-teens" min="0" value="0"></div>
+              <div class="form-field"><label for="sim-children">Crianças (3–6)</label><input type="number" id="sim-children" min="0" value="0"></div>
+              <div class="form-field"><label for="sim-infants">Bebés (0–2)</label><input type="number" id="sim-infants" min="0" value="0"></div>
+            </div>
+            <button class="price-admin-btn secondary" type="button" onclick="simulatePrice()">Calcular</button>
+            <div id="sim-result" class="price-sim-result"></div>
+          </div>
+        </div>
+
+        <div class="price-admin-card">
+          <h4>Épocas e feriados</h4>
+          <div class="price-rule-form">
+            <div class="form-field"><label for="rule-kind">Tipo</label>
+              <select id="rule-kind" onchange="document.getElementById('rule-weekend-field').style.display = this.value === 'SEASON' ? '' : 'none'">
+                <option value="SEASON">Época</option>
+                <option value="HOLIDAY">Feriado / data especial</option>
+              </select>
+            </div>
+            <div class="form-field"><label for="rule-name">Nome</label><input type="text" id="rule-name" maxlength="100" placeholder="Ex.: Época alta"></div>
+            <div class="form-field"><label for="rule-start">Primeira noite</label><input type="date" id="rule-start"></div>
+            <div class="form-field"><label for="rule-end">Última noite</label><input type="date" id="rule-end"></div>
+            <div class="form-field"><label for="rule-price">Preço / noite (€)</label><input type="number" id="rule-price" min="0" step="0.01"></div>
+            <div class="form-field" id="rule-weekend-field"><label for="rule-weekend">Fim de semana (€)</label><input type="number" id="rule-weekend" min="0" step="0.01" placeholder="Opcional"></div>
+            <button class="price-admin-btn" type="button" onclick="addPriceRule()">+ Adicionar</button>
+          </div>
+          <div id="price-rules-list" class="price-rules-list"></div>
+        </div>
+
+        <div class="price-admin-card" style="margin-top:1.5rem">
+          <h4>Promoções</h4>
+          <p class="price-admin-help" style="margin:0 0 1rem">O desconto aplica-se às noites dentro das datas da promoção, se a estadia tiver pelo menos o mínimo de noites. Se houver várias, vale a de maior desconto. O berço não tem desconto.</p>
+          <div class="price-rule-form promo-form">
+            <div class="form-field"><label for="promo-name">Nome</label><input type="text" id="promo-name" maxlength="100" placeholder="Ex.: Estadia longa"></div>
+            <div class="form-field"><label for="promo-start">Primeira noite</label><input type="date" id="promo-start"></div>
+            <div class="form-field"><label for="promo-end">Última noite</label><input type="date" id="promo-end"></div>
+            <div class="form-field"><label for="promo-pct">Desconto (%)</label><input type="number" id="promo-pct" min="1" max="100" step="0.5"></div>
+            <div class="form-field"><label for="promo-min-nights">Mínimo de noites</label><input type="number" id="promo-min-nights" min="1" step="1" value="5"></div>
+            <div class="form-field"><label for="promo-scope">Aplicar a</label>
+              <select id="promo-scope"><option value="room">Esta unidade</option><option value="all">Todas as unidades</option></select>
+            </div>
+            <button class="price-admin-btn" type="button" onclick="addPromotion()">+ Adicionar</button>
+          </div>
+          <div id="promotions-list" class="price-rules-list"></div>
+        </div>
+      </div>
+    </div>
+
     <div id="admin-tab-stats" style="display:none">
       <div class="admin-header"><div class="admin-title">Estatísticas</div></div>
       <div class="admin-cards">
@@ -810,7 +972,7 @@ const translations = {
     'LOCALIZAÇÃO E MORADA': 'LOCATION & ADDRESS', 'Localização e morada': 'Location & address', 'Rua do Ferreiro nº 3, 5470-504 Venda Nova, Montalegre, Portugal. Em frente à albufeira, com vistas sobre o lago, as montanhas e o jardim, num ambiente tranquilo rodeado pela natureza.': 'Rua do Ferreiro 3, 5470-504 Venda Nova, Montalegre, Portugal. Facing the reservoir, with views of the lake, mountains and garden in peaceful surroundings.',
     'Abrir no Google Maps': 'Open in Google Maps', 'Todos os direitos reservados.': 'All rights reserved.', 'Site criado por rfcb': 'Website created by rfcb', 'Painel de gestão': 'Admin panel',
     'Localização da Casa do Ferreiro no Google Maps': 'Casa do Ferreiro location on Google Maps', 'João Silva': 'e.g. John Smith',
-    'Conforto e comodidade': 'Comfort & amenities', 'Alojamento': 'Accommodation', 'Regras da propriedade': 'Property rules',
+    'Conforto e comodidade': 'Comfort & amenities', 'Alojamento': 'Accommodation', 'Regras da propriedade': 'Property rules', 'Facebook da Casa do Ferreiro': 'Casa do Ferreiro on Facebook', 'Instagram da Casa do Ferreiro': 'Casa do Ferreiro on Instagram',
     'Casa do Ferreiro T2:': 'Casa do Ferreiro T2:', 'Casa do Ferreiro T3:': 'Casa do Ferreiro T3:',
     '115 m², até 6 hóspedes, com cama extra insuflável e sofá confortável na sala.': '115 m², up to 6 guests, with an inflatable extra bed and a comfortable sofa in the living room.',
     '125 m², até 8 hóspedes, com sofá-cama na sala.': '125 m², up to 8 guests, with a sofa bed in the living room.', '9,6/10 ·': '9.6/10 ·',
@@ -833,6 +995,30 @@ const translations = {
     'A mensagem deve ter entre 10 e 5000 caracteres.': 'Your message must be between 10 and 5000 characters long.',
     'Número de telefone inválido.': 'Invalid phone number.',
     'Limite de mensagens atingido. Tente novamente em 1 hora.': 'Message limit reached. Please try again in 1 hour.',
+    'Hóspedes por idade': 'Guests by age',
+    'Adultos': 'Adults',
+    '18+ anos': '18+ years',
+    'Jovens': 'Young people',
+    '7–17 anos': '7–17 years',
+    'Crianças': 'Children',
+    '3–6 anos': '3–6 years',
+    'Bebés': 'Babies',
+    '0–2 anos (berço)': '0–2 years (cot)',
+    'bebé': 'baby',
+    'bebés': 'babies',
+    'A calcular...': 'Calculating...',
+    'Pessoas a mais': 'Extra guests',
+    'Desconto por pessoas a menos': 'Fewer guests discount',
+    'Berço': 'Cot',
+    'Promoção': 'Promotion',
+    'Reserve pelo menos {{nights}} noites e tenha {{pct}}% de desconto (promoção «{{name}}»).': 'Book at least {{nights}} nights and get {{pct}}% off ({{name}} promotion).',
+    '✓ Desconto de {{pct}}% aplicado (promoção «{{name}}»).': '✓ {{pct}}% discount applied ({{name}} promotion).',
+    'de desconto': 'off',
+    'Em estadias de {{nights}} ou mais noites, de {{start}} a {{end}}.': 'On stays of {{nights}} nights or more, from {{start}} to {{end}}.',
+    'Válida na {{room}}.': 'Valid at {{room}}.',
+    'Ver disponibilidade': 'See availability',
+    'A reserva tem de incluir pelo menos um adulto.': 'The booking must include at least one adult.',
+    'Esta unidade permite até {{max}} hóspedes (bebés até 2 anos não contam).': 'This accommodation allows up to {{max}} guests (babies up to 2 years old are not counted).',
     'Fazer Reserva': 'Make a booking', 'Envie o seu pedido; o proprietário irá aprová-lo antes do pagamento.': 'Send your request; the owner will approve it before payment.',
     'Nome completo': 'Full name', 'Telefone': 'Phone', 'Número de telefone sem indicativo': 'Phone number without country code',
     'Selecione o país e introduza o número.': 'Select your country and enter your phone number.',
@@ -847,12 +1033,12 @@ const translations = {
     'País e indicativo internacional': 'Country and international calling code',
     'A verificar disponibilidade...': 'Checking availability...',
     'Ocupado': 'Booked', 'Erro ao verificar disponibilidade.': 'Unable to check availability.',
-    'A estadia mínima é de 2 noites consecutivas. Check-out: até às 11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Minimum stay: 2 consecutive nights. Check-out: by 11:00. Free cot for children aged 0–2 on request; T2 has an inflatable extra bed and a sofa in the living room; T3 has a sofa bed in the living room.',
-    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Check-in: from 16:00 (please let us know your arrival time). Check-out: by 11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request; T2 has an inflatable extra bed and a sofa in the living room; T3 has a sofa bed in the living room.',
+    'A estadia mínima é de 2 noites consecutivas. Check-out: até às 11:00. Berço para bebés dos 0 aos 2 anos, mediante pedido, com custo por noite; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Minimum stay: 2 consecutive nights. Check-out: by 11:00. Cot for babies aged 0–2 on request, charged per night; T2 has an inflatable extra bed and a sofa in the living room; T3 has a sofa bed in the living room.',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço para bebés dos 0 aos 2 anos, mediante pedido, com custo por noite; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Check-in: from 16:00 (please let us know your arrival time). Check-out: by 11:00. Minimum stay: 2 consecutive nights. Cot for babies aged 0–2 on request, charged per night; T2 has an inflatable extra bed and a sofa in the living room; T3 has a sofa bed in the living room.',
     'Não foi possível carregar os quartos. Verifique se o servidor está ligado.': 'Could not load the accommodation. Please check that the server is running.',
     'Selecione uma unidade para verificar a disponibilidade.': 'Select accommodation to check availability.',
     'Selecione as datas de entrada e saída antes de reservar.': 'Select check-in and check-out dates before booking.',
-    'A data de entrada só pode ser amanhã ou depois.': 'Check-in must be tomorrow or later.',
+    'Essa data de entrada já não está disponível. Reservas para o próprio dia são aceites até às 22:00.': 'That check-in date is no longer available. Same-day bookings are accepted until 22:00.',
     'Por favor selecione as datas.': 'Please select your dates.', 'Por favor selecione um quarto.': 'Please select accommodation.',
     'Indique a hora prevista de chegada.': 'Please select your expected arrival time.',
     'Por favor preencha nome e email.': 'Please enter your name and email.',
@@ -874,11 +1060,12 @@ const translations = {
     'Quartos com casa de banho privativa': 'Bedrooms with private bathrooms', 'Vista para a albufeira e as montanhas': 'Reservoir and mountain views', 'Cozinha ampla e totalmente equipada': 'Large, fully equipped kitchen',
     'Vista para o lago e montanhas': 'Lake and mountain views', 'Conforto para famílias e grupos': 'Comfort for families and groups',
     'Alojamento local': 'Local accommodation', 'Anfitrião': 'Host',
-    'Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, jardim e acesso a área de praia privada.': 'Free private parking, high-speed Wi-Fi, air conditioning, non-smoking rooms, towels and bed linen, a garden and access to a private beach area.',
+    'Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, gel de banho e champô, jardim e acesso a área de praia privada.': 'Free private parking, high-speed Wi-Fi, air conditioning, non-smoking rooms, towels and bed linen, shower gel and shampoo, a garden and access to a private beach area.',
     'Cozinha equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.': 'Equipped kitchen with a fridge, coffee machine, microwave, dining table and full set of utensils.',
+    'Em breve: carregamento de veículos elétricos (EV) para os hóspedes.': 'Coming soon: electric vehicle (EV) charging for guests.',
     'Check-in: a partir das 16:00. Informe a hora prevista de chegada com antecedência.': 'Check-in: from 16:00. Please let us know your expected arrival time in advance.',
     'Estadia mínima: 2 noites consecutivas.': 'Minimum stay: 2 consecutive nights.',
-    'Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.': 'Children welcome; free cot for ages 0–2.',
+    'Crianças bem-vindas; berço para bebés dos 0 aos 2 anos, com custo por noite.': 'Children welcome; cot for babies aged 0–2, charged per night.',
     'T2: cama extra insuflável e sofá confortável na sala (até 6 hóspedes).': 'T2: inflatable extra bed and comfortable sofa in the living room (up to 6 guests).',
     'T3: sofá-cama na sala (até 8 hóspedes).': 'T3: sofa bed in the living room (up to 8 guests).',
     'Não é permitido fumar no interior nem realizar festas ou eventos.': 'Smoking indoors and parties or events are not permitted.',
@@ -893,8 +1080,8 @@ const translations = {
     'Noite': 'night', '/ noite': '/ night',
     '1 hóspede': '1 guest', '2 hóspedes': '2 guests', '3 hóspedes': '3 guests', '4 hóspedes': '4 guests', '5 hóspedes': '5 guests', '6 hóspedes': '6 guests', '7 hóspedes': '7 guests', '8 hóspedes': '8 guests', '9 hóspedes': '9 guests',
     'Selecione uma unidade; capacidade máxima: 8 hóspedes.': 'Select accommodation; maximum capacity: 8 guests.',
-    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Cama extra insuflável e sofá confortável na sala.': 'Check-in: from 16:00 (please let us know your arrival time). Check-out: by 11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request. Inflatable extra bed and comfortable sofa in the living room.',
-    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Sofá-cama na sala.': 'Check-in: from 16:00 (please let us know your arrival time). Check-out: by 11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request. Sofa bed in the living room.',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço para bebés dos 0 aos 2 anos, mediante pedido, com custo por noite. Cama extra insuflável e sofá confortável na sala.': 'Check-in: from 16:00 (please let us know your arrival time). Check-out: by 11:00. Minimum stay: 2 consecutive nights. Cot for babies aged 0–2 on request, charged per night. Inflatable extra bed and comfortable sofa in the living room.',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço para bebés dos 0 aos 2 anos, mediante pedido, com custo por noite. Sofá-cama na sala.': 'Check-in: from 16:00 (please let us know your arrival time). Check-out: by 11:00. Minimum stay: 2 consecutive nights. Cot for babies aged 0–2 on request, charged per night. Sofa bed in the living room.',
     'Capacidade máxima desta unidade: 6 hóspedes.': 'Maximum capacity for this accommodation: 6 guests.',
     'Capacidade máxima desta unidade: 8 hóspedes.': 'Maximum capacity for this accommodation: 8 guests.',
     'Não foi possível carregar as unidades.': 'Could not load accommodation.',
@@ -928,20 +1115,21 @@ const translations = {
     'LOCALIZAÇÃO E MORADA': 'UBICACIÓN Y DIRECCIÓN', 'Localização e morada': 'Ubicación y dirección', 'Rua do Ferreiro nº 3, 5470-504 Venda Nova, Montalegre, Portugal. Em frente à albufeira, com vistas sobre o lago, as montanhas e o jardim, num ambiente tranquilo rodeado pela natureza.': 'Rua do Ferreiro 3, 5470-504 Venda Nova, Montalegre, Portugal. Frente al embalse, con vistas al lago, las montañas y el jardín, en un entorno tranquilo rodeado de naturaleza.',
     'Abrir no Google Maps': 'Abrir en Google Maps', 'Todos os direitos reservados.': 'Todos los derechos reservados.', 'Site criado por rfcb': 'Sitio web creado por rfcb', 'Painel de gestão': 'Panel de administración',
     'Localização da Casa do Ferreiro no Google Maps': 'Ubicación de Casa do Ferreiro en Google Maps', 'João Silva': 'p. ej., Juan Pérez',
-    'Conforto e comodidade': 'Confort y comodidades', 'Alojamento': 'Alojamiento', 'Regras da propriedade': 'Normas del alojamiento',
+    'Conforto e comodidade': 'Confort y comodidades', 'Alojamento': 'Alojamiento', 'Regras da propriedade': 'Normas del alojamiento', 'Facebook da Casa do Ferreiro': 'Casa do Ferreiro en Facebook', 'Instagram da Casa do Ferreiro': 'Casa do Ferreiro en Instagram',
     'Casa do Ferreiro T2:': 'Casa do Ferreiro T2:', 'Casa do Ferreiro T3:': 'Casa do Ferreiro T3:',
     '115 m², até 6 hóspedes, com cama extra insuflável e sofá confortável na sala.': '115 m², hasta 6 huéspedes, con cama supletoria hinchable y sofá cómodo en el salón.',
     '125 m², até 8 hóspedes, com sofá-cama na sala.': '125 m², hasta 8 huéspedes, con sofá cama en el salón.', 'Classificação:': 'Valoración:', 'Localização:': 'Ubicación:', 'Licença AL:': 'Licencia AL:',
-    'Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, jardim e acesso a área de praia privada.': 'Aparcamiento privado gratuito, Wi-Fi de alta velocidad, aire acondicionado, habitaciones para no fumadores, toallas y ropa de cama incluidas, jardín y acceso a una zona de playa privada.',
+    'Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, gel de banho e champô, jardim e acesso a área de praia privada.': 'Aparcamiento privado gratuito, Wi-Fi de alta velocidad, aire acondicionado, habitaciones para no fumadores, toallas y ropa de cama incluidas, gel de ducha y champú, jardín y acceso a una zona de playa privada.',
     'Cozinha equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.': 'Cocina equipada con frigorífico, cafetera, microondas, mesa de comedor y menaje completo.',
+    'Em breve: carregamento de veículos elétricos (EV) para os hóspedes.': 'Próximamente: carga de vehículos eléctricos (EV) para los huéspedes.',
     'Check-in: a partir das 16:00. Informe a hora prevista de chegada com antecedência.': 'Entrada: a partir de las 16:00. Indique la hora prevista de llegada con antelación.',
     'Check-out: até às 11:00.': 'Salida: hasta las 11:00.',
     'Estadia mínima: 2 noites consecutivas.': 'Estancia mínima: 2 noches consecutivas.',
-    'Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.': 'Niños bienvenidos; cuna gratuita para edades de 0 a 2 años.',
+    'Crianças bem-vindas; berço para bebés dos 0 aos 2 anos, com custo por noite.': 'Niños bienvenidos; cuna para bebés de 0 a 2 años, con coste por noche.',
     'T2: cama extra insuflável e sofá confortável na sala (até 6 hóspedes).': 'T2: cama supletoria hinchable y sofá cómodo en el salón (hasta 6 huéspedes).',
     'T3: sofá-cama na sala (até 8 hóspedes).': 'T3: sofá cama en el salón (hasta 8 huéspedes).',
-    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Cama extra insuflável e sofá confortável na sala.': 'Entrada: a partir de las 16:00 (avise de su hora de llegada). Salida: hasta las 11:00. Estancia mínima: 2 noches consecutivas. Cuna gratuita para niños de 0 a 2 años bajo petición. Cama supletoria hinchable y sofá cómodo en el salón.',
-    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Sofá-cama na sala.': 'Entrada: a partir de las 16:00 (avise de su hora de llegada). Salida: hasta las 11:00. Estancia mínima: 2 noches consecutivas. Cuna gratuita para niños de 0 a 2 años bajo petición. Sofá cama en el salón.',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço para bebés dos 0 aos 2 anos, mediante pedido, com custo por noite. Cama extra insuflável e sofá confortável na sala.': 'Entrada: a partir de las 16:00 (avise de su hora de llegada). Salida: hasta las 11:00. Estancia mínima: 2 noches consecutivas. Cuna para bebés de 0 a 2 años bajo petición, con coste por noche. Cama supletoria hinchable y sofá cómodo en el salón.',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço para bebés dos 0 aos 2 anos, mediante pedido, com custo por noite. Sofá-cama na sala.': 'Entrada: a partir de las 16:00 (avise de su hora de llegada). Salida: hasta las 11:00. Estancia mínima: 2 noches consecutivas. Cuna para bebés de 0 a 2 años bajo petición, con coste por noche. Sofá cama en el salón.',
     'Capacidade máxima desta unidade: 6 hóspedes.': 'Capacidad máxima de este alojamiento: 6 huéspedes.',
     'Capacidade máxima desta unidade: 8 hóspedes.': 'Capacidad máxima de este alojamiento: 8 huéspedes.',
     'Selecione uma unidade; capacidade máxima: 8 hóspedes.': 'Seleccione un alojamiento; capacidad máxima: 8 huéspedes.',
@@ -964,6 +1152,30 @@ const translations = {
     'A mensagem deve ter entre 10 e 5000 caracteres.': 'El mensaje debe tener entre 10 y 5000 caracteres.',
     'Número de telefone inválido.': 'Número de teléfono no válido.',
     'Limite de mensagens atingido. Tente novamente em 1 hora.': 'Límite de mensajes alcanzado. Inténtelo de nuevo en 1 hora.',
+    'Hóspedes por idade': 'Huéspedes por edad',
+    'Adultos': 'Adultos',
+    '18+ anos': '18+ años',
+    'Jovens': 'Jóvenes',
+    '7–17 anos': '7–17 años',
+    'Crianças': 'Niños',
+    '3–6 anos': '3–6 años',
+    'Bebés': 'Bebés',
+    '0–2 anos (berço)': '0–2 años (cuna)',
+    'bebé': 'bebé',
+    'bebés': 'bebés',
+    'A calcular...': 'Calculando...',
+    'Pessoas a mais': 'Personas adicionales',
+    'Desconto por pessoas a menos': 'Descuento por menos personas',
+    'Berço': 'Cuna',
+    'Promoção': 'Promoción',
+    'Reserve pelo menos {{nights}} noites e tenha {{pct}}% de desconto (promoção «{{name}}»).': 'Reserve al menos {{nights}} noches y obtenga un {{pct}}% de descuento (promoción «{{name}}»).',
+    '✓ Desconto de {{pct}}% aplicado (promoção «{{name}}»).': '✓ Descuento del {{pct}}% aplicado (promoción «{{name}}»).',
+    'de desconto': 'de descuento',
+    'Em estadias de {{nights}} ou mais noites, de {{start}} a {{end}}.': 'En estancias de {{nights}} noches o más, del {{start}} al {{end}}.',
+    'Válida na {{room}}.': 'Válida en {{room}}.',
+    'Ver disponibilidade': 'Ver disponibilidad',
+    'A reserva tem de incluir pelo menos um adulto.': 'La reserva debe incluir al menos un adulto.',
+    'Esta unidade permite até {{max}} hóspedes (bebés até 2 anos não contam).': 'Este alojamiento admite hasta {{max}} huéspedes (los bebés de hasta 2 años no cuentan).',
     'Fazer Reserva': 'Hacer una reserva', 'Envie o seu pedido; o proprietário irá aprová-lo antes do pagamento.': 'Envíe su solicitud; el propietario la aprobará antes del pago.',
     'Nome completo': 'Nombre completo', 'Telefone': 'Teléfono', 'Número de telefone sem indicativo': 'Número de teléfono sin prefijo',
     'Selecione o país e introduza o número.': 'Seleccione el país e introduzca el número.',
@@ -981,12 +1193,12 @@ const translations = {
     'A verificar disponibilidade...': 'Comprobando disponibilidad...', 'Ocupado': 'Ocupado', 'Erro ao verificar disponibilidade.': 'No se pudo comprobar la disponibilidad.',
     'A estadia mínima é de 2 noites consecutivas.': 'La estancia mínima es de 2 noches consecutivas.',
     'A estadia mínima é de {{nights}} noites consecutivas.': 'La estancia mínima es de {{nights}} noches consecutivas.',
-    'A estadia mínima é de 2 noites consecutivas. Check-out: até às 11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Estancia mínima: 2 noches consecutivas. Salida: hasta las 11:00. Cuna gratuita para niños de 0 a 2 años bajo petición; el T2 dispone de cama supletoria hinchable y sofá en el salón; el T3, de sofá cama en el salón.',
-    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Entrada: a partir de las 16:00 (avise de su hora de llegada). Salida: hasta las 11:00. Estancia mínima: 2 noches consecutivas. Cuna gratuita para niños de 0 a 2 años bajo petición; el T2 dispone de cama supletoria hinchable y sofá en el salón; el T3, de sofá cama en el salón.',
+    'A estadia mínima é de 2 noites consecutivas. Check-out: até às 11:00. Berço para bebés dos 0 aos 2 anos, mediante pedido, com custo por noite; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Estancia mínima: 2 noches consecutivas. Salida: hasta las 11:00. Cuna para bebés de 0 a 2 años bajo petición, con coste por noche; el T2 dispone de cama supletoria hinchable y sofá en el salón; el T3, de sofá cama en el salón.',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço para bebés dos 0 aos 2 anos, mediante pedido, com custo por noite; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Entrada: a partir de las 16:00 (avise de su hora de llegada). Salida: hasta las 11:00. Estancia mínima: 2 noches consecutivas. Cuna para bebés de 0 a 2 años bajo petición, con coste por noche; el T2 dispone de cama supletoria hinchable y sofá en el salón; el T3, de sofá cama en el salón.',
     'Não foi possível carregar os quartos. Verifique se o servidor está ligado.': 'No se pudieron cargar los alojamientos. Compruebe que el servidor está en funcionamiento.',
     'Selecione uma unidade para verificar a disponibilidade.': 'Seleccione un alojamiento para consultar la disponibilidad.',
     'Selecione as datas de entrada e saída antes de reservar.': 'Seleccione las fechas de entrada y salida antes de reservar.',
-    'A data de entrada só pode ser amanhã ou depois.': 'La entrada solo puede ser mañana o en una fecha posterior.',
+    'Essa data de entrada já não está disponível. Reservas para o próprio dia são aceites até às 22:00.': 'Esa fecha de entrada ya no está disponible. Las reservas para el mismo día se aceptan hasta las 22:00.',
     'Por favor selecione as datas.': 'Seleccione las fechas.', 'Por favor selecione um quarto.': 'Seleccione un alojamiento.',
     'Indique a hora prevista de chegada.': 'Indique la hora prevista de llegada.',
     'Por favor preencha nome e email.': 'Introduzca su nombre y correo electrónico.',
@@ -1345,9 +1557,17 @@ function updateScrollControls() {
 }
 window.addEventListener('scroll', updateScrollControls, { passive: true });
 window.addEventListener('resize', updateScrollControls);
-animateHeroTitle(animateBrandTitle());
 updateScrollControls();
-observeSectionTitles();
+// As animações do texto só começam depois de fechado o pop-up de promoção (se houver)
+let introStarted = false;
+function startIntroAnimations() {
+  if (introStarted) return;
+  introStarted = true;
+  document.documentElement.classList.remove('intro-pending');
+  animateHeroTitle(animateBrandTitle());
+  observeSectionTitles();
+}
+Promise.resolve().then(showActivePromotions);
 function toggleMobileMenu() {
   const navLinks = document.getElementById('main-nav-links');
   const toggle = document.querySelector('.nav-toggle');
@@ -1383,8 +1603,19 @@ function shiftDateString(dateString, days) {
   const shifted = new Date(Date.UTC(year, month - 1, day + days));
   return shifted.toISOString().split('T')[0];
 }
+// Minutos desde a meia-noite em Portugal (ex.: 21:10 → 1270)
+function getPortugalMinutesNow() {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Lisbon', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return Number(values.hour) * 60 + Number(values.minute);
+}
+// Reservas para o próprio dia até às 22:00 (hora de Portugal); depois disso, a partir de amanhã
+const SAME_DAY_CUTOFF_MINUTES = 22 * 60;
 function getMinimumCheckInDate() {
-  return shiftDateString(getPortugalDateString(), 1);
+  const today = getPortugalDateString();
+  return getPortugalMinutesNow() < SAME_DAY_CUTOFF_MINUTES ? today : shiftDateString(today, 1);
 }
 const todayDateString = getPortugalDateString();
 const tomorrowDateString = getMinimumCheckInDate();
@@ -1500,7 +1731,7 @@ async function loadPublicCalAvailability(roomId) {
 }
 function selectDay(dateStr){
   if (dateStr < getMinimumCheckInDate()) {
-    showToast('A data de entrada só pode ser amanhã ou depois.');
+    showToast('Essa data de entrada já não está disponível. Reservas para o próprio dia são aceites até às 22:00.');
     return;
   }
   if(selStart && !selEnd && dateStr > selStart && nightsBetween(selStart, dateStr) < MINIMUM_STAY_NIGHTS){
@@ -1545,7 +1776,12 @@ function selectDay(dateStr){
     const list = document.getElementById('avail-rooms-list');
     if (list) list.innerHTML = '<p style="color:var(--stone);font-size:.9rem;padding:1rem 0">A verificar disponibilidade...</p>';
     fetch(`${API}/availability?checkIn=${ciStr}&checkOut=${coStr}`)
-      .then(r => r.json())
+      .then(async r => {
+        const data = await r.json().catch(() => ({}));
+        // Um erro do servidor (ex.: data inválida) não significa que as casas estejam ocupadas
+        if (!r.ok) throw new Error(data.error || 'Erro ao verificar disponibilidade.');
+        return data;
+      })
       .then(data => {
         if (requestId !== availabilityRequestId) return;
         availableRoomIds = new Set((data.availableRooms || []).map(room => room.id));
@@ -1560,7 +1796,12 @@ function selectDay(dateStr){
       .catch(err => {
         if (requestId !== availabilityRequestId) return;
         console.error('Erro disponibilidade:', err);
-        if (list) list.innerHTML = '<p style="color:var(--stone);font-size:.9rem;padding:1rem 0">Erro ao verificar disponibilidade.</p>';
+        if (list) {
+          const message = document.createElement('p');
+          message.style.cssText = 'color:var(--stone);font-size:.9rem;padding:1rem 0';
+          message.textContent = translateText(err.message || 'Erro ao verificar disponibilidade.');
+          list.replaceChildren(message);
+        }
         availableRoomIds = new Set();
         selectedAvailabilityRoomId = null;
         updateAvailabilitySummary();
@@ -1732,7 +1973,7 @@ function populateRoomSelect() {
     barSel.innerHTML += `<option value="${r.id}" data-capacity="${getRoomMaxGuests(r)}">${name}</option>`;
   });
   syncGuestOptions('bar-room', 'bar-guests');
-  syncGuestOptions('f-room', 'f-guests', 'guest-limit-hint');
+  syncAgeGroupOptions();
   updateBookingPolicyHint();
   updateArrivalTimeOptions();
   updateSummary();
@@ -1758,11 +1999,52 @@ function syncGuestOptions(roomSelectId, guestsSelectId, hintId) {
   }
 }
 
+// Hóspedes por idade: adultos, 7–17 e 3–6 contam para a lotação; bebés (0–2) não
+const AGE_GROUP_FIELDS = { adults: 'f-adults', teens: 'f-teens', children: 'f-children', infants: 'f-infants' };
+const MAX_INFANTS = 3;
+
+function getBookingParty() {
+  return Object.fromEntries(Object.entries(AGE_GROUP_FIELDS)
+    .map(([group, id]) => [group, parseInt(document.getElementById(id).value, 10) || 0]));
+}
+
+function countPartyGuests(party) {
+  return party.adults + party.teens + party.children;
+}
+
+function syncAgeGroupOptions() {
+  const room = allRooms.find(item => item.id === document.getElementById('f-room').value);
+  const maxGuests = room ? getRoomMaxGuests(room) : Math.max(8, ...allRooms.map(getRoomMaxGuests));
+  const party = getBookingParty();
+  const limits = { adults: [1, maxGuests], teens: [0, maxGuests - 1], children: [0, maxGuests - 1], infants: [0, MAX_INFANTS] };
+  Object.entries(AGE_GROUP_FIELDS).forEach(([group, id]) => {
+    const [min, max] = limits[group];
+    const select = document.getElementById(id);
+    const value = Math.min(Math.max(party[group], min), max);
+    select.innerHTML = Array.from({ length: max - min + 1 }, (_, index) => `<option value="${min + index}">${min + index}</option>`).join('');
+    select.value = String(value);
+  });
+  updateGuestLimitHint();
+}
+
+function updateGuestLimitHint() {
+  const room = allRooms.find(item => item.id === document.getElementById('f-room').value);
+  const maxGuests = room ? getRoomMaxGuests(room) : Math.max(8, ...allRooms.map(getRoomMaxGuests));
+  const hint = document.getElementById('guest-limit-hint');
+  const overLimit = countPartyGuests(getBookingParty()) > maxGuests;
+  hint.classList.toggle('error', overLimit);
+  hint.textContent = overLimit
+    ? translateTemplate('Esta unidade permite até {{max}} hóspedes (bebés até 2 anos não contam).', { max: maxGuests })
+    : translateText(room
+      ? `Capacidade máxima desta unidade: ${maxGuests} hóspedes.`
+      : `Selecione uma unidade; capacidade máxima: ${maxGuests} hóspedes.`);
+}
+
 function updateBookingPolicyHint() {
   const room = allRooms.find(item => item.id === document.getElementById('f-room').value);
   const text = room
-    ? `Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. ${room.type?.toUpperCase() === 'T2' ? 'Cama extra insuflável e sofá confortável na sala.' : 'Sofá-cama na sala.'}`
-    : `Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.`;
+    ? `Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Berço para bebés dos 0 aos 2 anos, mediante pedido, com custo por noite. ${room.type?.toUpperCase() === 'T2' ? 'Cama extra insuflável e sofá confortável na sala.' : 'Sofá-cama na sala.'}`
+    : `Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Berço para bebés dos 0 aos 2 anos, mediante pedido, com custo por noite; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.`;
   document.getElementById('booking-policy-hint').textContent = translateText(text);
 }
 
@@ -1777,7 +2059,10 @@ function updateArrivalTimeOptions() {
 
   const previousValue = select.value;
   const options = [];
-  for (let minute = 16 * 60; minute <= 24 * 60; minute += 30) {
+  // Entrada hoje: não mostrar horas que já passaram (arredonda para a meia hora seguinte)
+  const isToday = document.getElementById('f-checkin').value === getPortugalDateString();
+  const firstMinute = isToday ? Math.max(16 * 60, Math.ceil((getPortugalMinutesNow() + 1) / 30) * 30) : 16 * 60;
+  for (let minute = firstMinute; minute <= 24 * 60; minute += 30) {
     const time = `${String(Math.floor(minute / 60) % 24).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
     options.push(`<option value="${time}">${time}</option>`);
   }
@@ -1875,6 +2160,7 @@ function renderAvailRooms(availableRooms, checkIn, checkOut) {
   }
 
   const availIds = new Set((availableRooms || []).map(r => r.id));
+  const quotes = new Map((availableRooms || []).map(r => [r.id, r.quote]));
 
   visibleRooms.forEach(r => {
     const isAvail = availIds.has(r.id);
@@ -1886,7 +2172,9 @@ function renderAvailRooms(availableRooms, checkIn, checkOut) {
           <div class="status-dot ${isAvail ? 'avail' : 'unavail'}"></div>
           ${translateText(isAvail ? 'Disponível' : 'Indisponível')}
         </div>
-        <div class="avail-price">€${new Intl.NumberFormat(currentLanguage).format(r.pricePerNight)}<small>${translateText('/ noite')}</small></div>
+        ${isAvail && quotes.get(r.id)
+          ? `<div class="avail-price">€${new Intl.NumberFormat(currentLanguage, { maximumFractionDigits: 2 }).format(quotes.get(r.id).total)}<small>${quotes.get(r.id).nightsCount} ${translateText('Noites').toLocaleLowerCase(currentLanguage)}</small></div>`
+          : `<div class="avail-price">€${new Intl.NumberFormat(currentLanguage).format(r.pricePerNight)}<small>${translateText('/ noite')}</small></div>`}
         ${isAvail
           ? `<button class="btn-book" data-select-room type="button" aria-pressed="${selected}" style="font-size:.7rem;padding:.4rem .9rem" onclick="selectAvailabilityRoom('${r.id}')">${translateText(selected ? 'Selecionado' : 'Selecionar')}</button>`
           : `<span style="font-size:.72rem;color:var(--stone)">${translateText('Ocupado')}</span>`
@@ -1910,14 +2198,19 @@ async function openBookingFromBar() {
     return;
   }
   document.getElementById('f-room').value = roomId;
-  document.getElementById('f-guests').value = document.getElementById('bar-guests').value;
+  document.getElementById('f-adults').value = document.getElementById('bar-guests').value;
+  ['f-teens', 'f-children', 'f-infants'].forEach(id => { document.getElementById(id).value = '0'; });
   document.getElementById('f-checkin').value = checkIn;
   document.getElementById('f-checkout').value = checkOut;
-  syncGuestOptions('f-room', 'f-guests', 'guest-limit-hint');
+  syncAgeGroupOptions();
 
   try {
     const res = await fetch(`${API}/availability?checkIn=${checkIn}&checkOut=${checkOut}`);
     const data = await res.json();
+    if (!res.ok) {
+      showToast(translateText(data.error || 'Erro ao verificar disponibilidade.'));
+      return;
+    }
     renderAvailRooms(data.availableRooms, checkIn, checkOut);
   } catch(err) { console.error(err); }
 
@@ -2016,11 +2309,11 @@ const footerInfo = {
   },
   comfort: {
     title: 'Conforto e comodidade',
-    content: '<p>Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, jardim e acesso a área de praia privada.</p><p>Cozinha equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.</p>'
+    content: '<p>Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, gel de banho e champô, jardim e acesso a área de praia privada.</p><p>Cozinha equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.</p><p>Em breve: carregamento de veículos elétricos (EV) para os hóspedes.</p>'
   },
   policies: {
     title: 'Regras da propriedade',
-    content: '<ul><li>Check-in: a partir das 16:00. Informe a hora prevista de chegada com antecedência.</li><li>Check-out: até às 11:00.</li><li>Estadia mínima: 2 noites consecutivas.</li><li>Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.</li><li>T2: cama extra insuflável e sofá confortável na sala (até 6 hóspedes).</li><li>T3: sofá-cama na sala (até 8 hóspedes).</li><li>Não é permitido fumar no interior nem realizar festas ou eventos.</li><li>Não são admitidos animais de estimação.</li></ul>'
+    content: '<ul><li>Check-in: a partir das 16:00. Informe a hora prevista de chegada com antecedência.</li><li>Check-out: até às 11:00.</li><li>Estadia mínima: 2 noites consecutivas.</li><li>Crianças bem-vindas; berço para bebés dos 0 aos 2 anos, com custo por noite.</li><li>T2: cama extra insuflável e sofá confortável na sala (até 6 hóspedes).</li><li>T3: sofá-cama na sala (até 8 hóspedes).</li><li>Não é permitido fumar no interior nem realizar festas ou eventos.</li><li>Não são admitidos animais de estimação.</li></ul>'
   },
   contact: {
     title: 'Contacto',
@@ -2053,12 +2346,69 @@ function closeFooterInfo() {
 
 document.addEventListener('keydown', event => {
   if (event.key !== 'Escape') return;
-  if (document.getElementById('contact-modal').classList.contains('open')) {
+  if (document.getElementById('promo-modal').classList.contains('open')) {
+    closePromoModal();
+  } else if (document.getElementById('contact-modal').classList.contains('open')) {
     closeContactForm();
   } else if (document.getElementById('footer-info-modal').classList.contains('open')) {
     closeFooterInfo();
   }
 });
+
+// Pop-up das promoções ativas, mostrado uma vez por sessão ao entrar no site
+const PROMO_SEEN_KEY = 'casaDoFerreiroPromoSeen';
+
+async function showActivePromotions() {
+  let alreadySeen = false;
+  try { alreadySeen = sessionStorage.getItem(PROMO_SEEN_KEY) === '1'; } catch (err) { /* sem armazenamento */ }
+  if (alreadySeen) { startIntroAnimations(); return; }
+  try {
+    const res = await fetch(`${API}/rooms/promotions/active`, { signal: AbortSignal.timeout(2500) });
+    const promotions = res.ok ? await res.json() : [];
+    if (!Array.isArray(promotions) || !promotions.length) { startIntroAnimations(); return; }
+    renderPromoModal(promotions);
+    clearTimeout(window.introSafetyTimer); // o título fica escondido até o pop-up fechar
+    document.getElementById('promo-modal').classList.add('open');
+    document.querySelector('#promo-modal .modal-close-btn').focus();
+  } catch (err) {
+    startIntroAnimations();
+  }
+}
+
+function renderPromoModal(promotions) {
+  const formatDate = value => new Intl.DateTimeFormat(currentLanguage, { day: 'numeric', month: 'long', timeZone: 'UTC' })
+    .format(new Date(`${value}T00:00:00Z`));
+  const body = document.getElementById('promo-modal-body');
+  body.replaceChildren(...promotions.slice(0, 3).map(promotion => {
+    const item = document.createElement('div');
+    item.className = 'promo-modal-item';
+    const pct = document.createElement('div');
+    pct.className = 'promo-modal-pct';
+    pct.textContent = `−${promotion.discountPct}%`;
+    const pctLabel = document.createElement('small');
+    pctLabel.textContent = translateText('de desconto');
+    pct.appendChild(pctLabel);
+    const name = document.createElement('div');
+    name.className = 'promo-modal-name';
+    name.textContent = promotion.name;
+    const text = document.createElement('p');
+    text.className = 'promo-modal-text';
+    text.textContent = [
+      translateTemplate('Em estadias de {{nights}} ou mais noites, de {{start}} a {{end}}.', {
+        nights: promotion.minNights, start: formatDate(promotion.startDate), end: formatDate(promotion.endDate) }),
+      promotion.roomName ? translateTemplate('Válida na {{room}}.', { room: translateText(promotion.roomName) }) : '',
+    ].filter(Boolean).join(' ');
+    item.append(pct, name, text);
+    return item;
+  }));
+}
+
+function closePromoModal(goToAvailability = false) {
+  document.getElementById('promo-modal').classList.remove('open');
+  try { sessionStorage.setItem(PROMO_SEEN_KEY, '1'); } catch (err) { /* sem armazenamento */ }
+  if (goToAvailability) document.getElementById('availability').scrollIntoView({ behavior: 'smooth' });
+  startIntroAnimations();
+}
 
 // Formulário de contacto (aberto a partir do email na janela "Contacto")
 function openContactForm() {
@@ -2121,7 +2471,7 @@ function getBookingDateError(checkIn, checkOut) {
     return 'Selecione as datas de entrada e saída antes de reservar.';
   }
   if (checkIn < getMinimumCheckInDate()) {
-    return 'A data de entrada só pode ser amanhã ou depois.';
+    return 'Essa data de entrada já não está disponível. Reservas para o próprio dia são aceites até às 22:00.';
   }
   const nights = Math.round((new Date(`${checkOut}T00:00:00`) - new Date(`${checkIn}T00:00:00`)) / 86400000);
   if (!Number.isFinite(nights) || nights < MINIMUM_STAY_NIGHTS) {
@@ -2139,7 +2489,7 @@ function openBooking() {
     showToast(dateError);
     return false;
   }
-  syncGuestOptions('f-room', 'f-guests', 'guest-limit-hint');
+  syncAgeGroupOptions();
   updateBookingPolicyHint();
   updateArrivalTimeOptions();
   updateMinimumCheckoutDate();
@@ -2161,25 +2511,80 @@ function closeBooking() {
 }
 
 function updateSummary() {
+  updateArrivalTimeOptions();
   const sel = document.getElementById('f-room');
   const opt = sel.options[sel.selectedIndex];
-  const price = parseInt(opt?.dataset?.price || 0);
   const roomName = opt?.dataset?.name || opt?.text || '—';
   const ci = new Date(document.getElementById('f-checkin').value);
   const co = new Date(document.getElementById('f-checkout').value);
   const nights = Math.max(0, Math.round((co - ci) / 86400000));
-  const guests = parseInt(document.getElementById('f-guests').value) || 1;
-  const total = price * nights;
+  const party = getBookingParty();
+  const guests = countPartyGuests(party);
   document.getElementById('s-room').textContent = roomName;
   document.getElementById('s-dates').textContent = nights > 0
     ? `${document.getElementById('f-checkin').value.split('-').reverse().join('-')} → ${document.getElementById('f-checkout').value.split('-').reverse().join('-')}` : '—';
   document.getElementById('s-nights').textContent = nights > 0
     ? `${nights} ${translateText(nights === 1 ? 'Noite' : 'Noites').toLocaleLowerCase(currentLanguage)}`
     : '—';
-  document.getElementById('s-guests').textContent = `${guests} ${translateText(guests === 1 ? 'hóspede' : 'hóspedes')}`;
-  document.getElementById('s-total').textContent = nights > 0
-    ? `€${new Intl.NumberFormat(currentLanguage).format(total)}`
-    : '—';
+  document.getElementById('s-guests').textContent = `${guests} ${translateText(guests === 1 ? 'hóspede' : 'hóspedes')}`
+    + (party.infants ? ` + ${party.infants} ${translateText(party.infants === 1 ? 'bebé' : 'bebés')}` : '');
+  updateQuote(sel.value, nights);
+}
+
+// Pede ao servidor o preço da estadia (épocas, fins de semana, feriados, idades e berço)
+let quoteRequestId = 0;
+let quoteTimer = null;
+function updateQuote(roomId, nights) {
+  const totalEl = document.getElementById('s-total');
+  const breakdownEl = document.getElementById('s-breakdown');
+  const promoEl = document.getElementById('s-promo-hint');
+  const checkIn = document.getElementById('f-checkin').value;
+  const checkOut = document.getElementById('f-checkout').value;
+  const party = getBookingParty();
+  const room = allRooms.find(item => item.id === roomId);
+  clearTimeout(quoteTimer);
+  const requestId = ++quoteRequestId;
+  if (!roomId || nights <= 0 || (room && countPartyGuests(party) > getRoomMaxGuests(room))) {
+    totalEl.textContent = '—';
+    breakdownEl.textContent = '';
+    promoEl.textContent = '';
+    return;
+  }
+  totalEl.textContent = translateText('A calcular...');
+  quoteTimer = setTimeout(async () => {
+    try {
+      const params = new URLSearchParams({ checkIn, checkOut, ...party });
+      const res = await fetch(`${API}/rooms/${roomId}/quote?${params}`);
+      const quote = await res.json();
+      if (requestId !== quoteRequestId) return;
+      if (!res.ok) throw new Error(quote.error);
+      const money = value => `€${new Intl.NumberFormat(currentLanguage, { maximumFractionDigits: 2 }).format(value)}`;
+      totalEl.textContent = money(quote.total);
+      const parts = [`${translateText('Alojamento')} ${money(quote.accommodation)}`];
+      if (quote.guestAdjustment > 0) parts.push(`${translateText('Pessoas a mais')} +${money(quote.guestAdjustment)}`);
+      if (quote.guestAdjustment < 0) parts.push(`${translateText('Desconto por pessoas a menos')} −${money(-quote.guestAdjustment)}`);
+      if (quote.crib > 0) parts.push(`${translateText('Berço')} ${money(quote.crib)}`);
+      if (quote.promotion) parts.push(`${translateText('Promoção')} «${quote.promotion.name}» −${quote.promotion.discountPct}% −${money(-quote.promotion.discount)}`);
+      breakdownEl.textContent = parts.join(' · ');
+      // Desconto aplicado a verde; se ainda faltarem noites para uma promoção, sugestão por baixo
+      promoEl.classList.toggle('applied', Boolean(quote.promotion));
+      promoEl.textContent = [
+        quote.promotion
+          ? translateTemplate('✓ Desconto de {{pct}}% aplicado (promoção «{{name}}»).', { name: quote.promotion.name, pct: quote.promotion.discountPct })
+          : '',
+        quote.nextPromotion
+          ? translateTemplate('Reserve pelo menos {{nights}} noites e tenha {{pct}}% de desconto (promoção «{{name}}»).', {
+            nights: quote.nextPromotion.minNights, pct: quote.nextPromotion.discountPct, name: quote.nextPromotion.name })
+          : '',
+      ].filter(Boolean).join(' ');
+    } catch (err) {
+      if (requestId !== quoteRequestId) return;
+      console.error('Erro ao calcular preço:', err);
+      totalEl.textContent = '—';
+      breakdownEl.textContent = '';
+      promoEl.textContent = '';
+    }
+  }, 250);
 }
 function setMinimumCheckoutDate(checkInId, checkOutId) {
   const checkInValue = document.getElementById(checkInId).value;
@@ -2197,7 +2602,7 @@ function validateCheckInInput(checkInId, checkOutId, updateCheckoutDate) {
   if (checkInInput.value && checkInInput.value < minimumDate) {
     checkInInput.value = '';
     document.getElementById(checkOutId).value = '';
-    showToast('A data de entrada só pode ser amanhã ou depois.');
+    showToast('Essa data de entrada já não está disponível. Reservas para o próprio dia são aceites até às 22:00.');
   }
   updateCheckoutDate();
 }
@@ -2208,12 +2613,14 @@ document.getElementById('f-checkin').addEventListener('change', () => {
   validateCheckInInput('f-checkin', 'f-checkout', updateMinimumCheckoutDate);
   updateSummary();
 });
-['f-checkout','f-guests'].forEach(id =>
-  document.getElementById(id).addEventListener('change', updateSummary)
-);
+document.getElementById('f-checkout').addEventListener('change', updateSummary);
+Object.values(AGE_GROUP_FIELDS).forEach(id => document.getElementById(id).addEventListener('change', () => {
+  updateGuestLimitHint();
+  updateSummary();
+}));
 document.getElementById('bar-room').addEventListener('change', () => syncGuestOptions('bar-room', 'bar-guests'));
 document.getElementById('f-room').addEventListener('change', function() {
-  syncGuestOptions('f-room', 'f-guests', 'guest-limit-hint');
+  syncAgeGroupOptions();
   updateBookingPolicyHint();
   updateArrivalTimeOptions();
   updateMinimumCheckoutDate();
@@ -2274,7 +2681,7 @@ async function confirmBooking() {
   const roomId = document.getElementById('f-room').value;
   const checkIn = document.getElementById('f-checkin').value;
   const checkOut = document.getElementById('f-checkout').value;
-  const guests = document.getElementById('f-guests').value;
+  const party = getBookingParty();
   const arrivalTime = document.getElementById('f-arrival-time').value;
   const specialRequests = document.getElementById('f-notes').value.trim();
 
@@ -2307,16 +2714,19 @@ async function confirmBooking() {
   const phone = `+${combinedDigits}`;
   if (!checkIn || !checkOut) { showToast('Por favor selecione as datas.'); return; }
   if (checkIn < getMinimumCheckInDate()) {
-    showToast('A data de entrada só pode ser amanhã ou depois.');
+    showToast('Essa data de entrada já não está disponível. Reservas para o próprio dia são aceites até às 22:00.');
     return;
   }
   if (!roomId) { showToast('Por favor selecione um quarto.'); return; }
   if (!arrivalTime) { showToast('Indique a hora prevista de chegada.'); return; }
   const selectedRoom = allRooms.find(room => room.id === roomId);
-  const guestCount = parseInt(guests, 10);
   const maxGuests = selectedRoom ? getRoomMaxGuests(selectedRoom) : 8;
-  if (!Number.isInteger(guestCount) || guestCount < 1 || guestCount > maxGuests) {
-    showToast(`Esta unidade permite até ${maxGuests} hóspedes.`);
+  if (party.adults < 1) {
+    showToast(translateText('A reserva tem de incluir pelo menos um adulto.'));
+    return;
+  }
+  if (countPartyGuests(party) > maxGuests) {
+    showToast(translateTemplate('Esta unidade permite até {{max}} hóspedes (bebés até 2 anos não contam).', { max: maxGuests }));
     return;
   }
   const nights = Math.round((new Date(checkOut) - new Date(checkIn)) / 86400000);
@@ -2334,7 +2744,7 @@ async function confirmBooking() {
     const res = await fetch(`${API}/reservations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, phone, roomId, checkIn, checkOut, guests: guestCount, specialRequests: reservationNotes })
+      body: JSON.stringify({ name, email, phone, roomId, checkIn, checkOut, ...party, specialRequests: reservationNotes })
     });
 
     const data = await res.json();
@@ -2430,6 +2840,7 @@ function adminTab(tab, el) {
   if (tab === 'reservations') loadAdminReservations();
   if (tab === 'stats') loadAdminStats();
   if (tab === 'rooms') loadAdminRooms();
+  if (tab === 'prices') loadPriceAdminRooms();
   if (tab === 'availability') {
     adminSelectedDates.clear();
     adminOccupiedDates = new Set();
@@ -2565,7 +2976,7 @@ async function loadAdminReservations(statusFilter) {
     const statusClass = { PENDING: 'pending', AWAITING_PAYMENT: 'pending', CONFIRMED: 'confirmed', DECLINED: 'declined', CANCELLED: 'cancelled', PAID: 'confirmed', COMPLETED: 'confirmed' };
     tbody.innerHTML = data.reservations.map(r => `
       <div class="admin-table-row">
-        <div><div class="admin-guest-name">${r.guest.name}</div><div class="admin-guest-email">${r.guest.email}</div></div>
+        <div><div class="admin-guest-name">${escapeAdminHtml(r.guest.name)}</div><div class="admin-guest-email">${escapeAdminHtml(r.guest.email)}</div></div>
         <div><span class="admin-room-badge">${r.room.name}</span></div>
         <div style="font-size:.85rem">${new Date(r.checkIn).toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}</div>
         <div style="font-size:.85rem">${new Date(r.checkOut).toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}</div>
@@ -2579,7 +2990,8 @@ async function loadAdminReservations(statusFilter) {
       </div>
       <div style="grid-column:1/-1;padding:.4rem 0 .6rem;border-bottom:1px solid var(--warm);font-size:.75rem;color:var(--muted);display:flex;gap:1.5rem;flex-wrap:wrap">
         <span>💰 Total: <strong style="color:var(--dark)">€${r.totalPrice?.toFixed(2)}</strong></span>
-        ${r.specialRequests ? `<span>📝 Pedidos: <strong style="color:var(--dark)">${r.specialRequests}</strong></span>` : ''}
+        <span>👥 Hóspedes: <strong style="color:var(--dark)">${formatReservationParty(r)}</strong></span>
+        ${r.specialRequests ? `<span>📝 Pedidos: <strong style="color:var(--dark)">${escapeAdminHtml(r.specialRequests)}</strong></span>` : ''}
       </div>`).join('');
   } catch(err) {
     console.error('Erro reservas:', err);
@@ -2734,6 +3146,244 @@ async function saveRoom() {
       showToast(err.error || 'Erro ao guardar.');
     }
   } catch(err) { showToast('Erro de ligação.'); }
+}
+
+// Idades de uma reserva; reservas antigas só têm o total de hóspedes
+function formatReservationParty(r) {
+  const groups = [[r.adults, 'adulto(s)'], [r.teens, '7–17 anos'], [r.children, '3–6 anos'], [r.infants, 'bebé(s) 0–2']]
+    .filter(([count]) => count > 0)
+    .map(([count, label]) => `${count} ${label}`);
+  return groups.length ? groups.join(' · ') : `${r.guests}`;
+}
+
+// ── Preços ────────────────────────────────────────────────
+function adminMoney(value) {
+  return `€${new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 2 }).format(value)}`;
+}
+
+function formatAdminDate(value) {
+  return new Date(value).toLocaleDateString('pt-PT', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+}
+
+async function loadPriceAdminRooms() {
+  if (!adminToken) return;
+  if (!adminRooms.length) await loadAdminRooms();
+  const select = document.getElementById('price-room-select');
+  const previous = select.value;
+  select.innerHTML = '<option value="">Seleciona uma unidade...</option>'
+    + adminRooms.map(room => `<option value="${room.id}">${escapeAdminHtml(room.name)}</option>`).join('');
+  select.value = adminRooms.some(room => room.id === previous) ? previous : (adminRooms[0]?.id || '');
+  loadPriceAdmin();
+}
+
+function escapeAdminHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+}
+
+async function loadPriceAdmin() {
+  const roomId = document.getElementById('price-room-select').value;
+  const content = document.getElementById('price-admin-content');
+  content.style.display = roomId ? '' : 'none';
+  if (!roomId) return;
+  const room = adminRooms.find(item => item.id === roomId);
+  document.getElementById('pr-base-price').value = room.pricePerNight ?? '';
+  document.getElementById('pr-weekend-price').value = room.weekendPrice ?? '';
+  document.getElementById('pr-base-occupancy').value = room.baseOccupancy ?? room.capacity;
+  document.getElementById('pr-discount-pct').value = room.fewerGuestDiscountPct ?? 0;
+  document.getElementById('pr-extra-fee').value = room.extraGuestFee ?? 0;
+  document.getElementById('pr-crib-fee').value = room.cribFeePerNight ?? 0;
+  document.getElementById('sim-result').innerHTML = '';
+  await Promise.all([loadPriceRules(roomId), loadPromotions(roomId)]);
+}
+
+async function loadPriceRules(roomId) {
+  const list = document.getElementById('price-rules-list');
+  list.innerHTML = '<div class="price-rule-empty">A carregar...</div>';
+  try {
+    const res = await fetch(`${API}/rooms/${roomId}/price-rules`, { headers: { Authorization: `Bearer ${adminToken}` } });
+    const rules = await res.json();
+    if (!res.ok) throw new Error(rules.error);
+    list.innerHTML = rules.length ? rules.map(rule => `
+      <div class="price-rule-row">
+        <span class="price-rule-kind">${rule.kind === 'SEASON' ? 'Época' : 'Feriado'}</span>
+        <strong>${escapeAdminHtml(rule.name)}</strong>
+        <span>${formatAdminDate(rule.startDate)} → ${formatAdminDate(rule.endDate)}</span>
+        <span>${adminMoney(rule.price)} / noite</span>
+        <span>${rule.weekendPrice != null ? `${adminMoney(rule.weekendPrice)} fim de semana` : '—'}</span>
+        <button class="admin-action" type="button" onclick="deletePriceRule('${rule.id}')">🗑 Apagar</button>
+      </div>`).join('')
+      : '<div class="price-rule-empty">Sem épocas nem feriados. Todas as noites usam o preço base.</div>';
+  } catch (err) {
+    console.error('Erro ao carregar preços:', err);
+    list.innerHTML = '<div class="price-rule-empty" style="color:#dc2626">Não foi possível carregar as épocas e feriados.</div>';
+  }
+}
+
+async function savePriceSettings() {
+  const roomId = document.getElementById('price-room-select').value;
+  const value = id => document.getElementById(id).value.trim();
+  const data = {
+    pricePerNight: value('pr-base-price'),
+    weekendPrice: value('pr-weekend-price'),
+    baseOccupancy: value('pr-base-occupancy'),
+    fewerGuestDiscountPct: value('pr-discount-pct'),
+    extraGuestFee: value('pr-extra-fee'),
+    cribFeePerNight: value('pr-crib-fee'),
+  };
+  if (!(parseFloat(data.pricePerNight) > 0)) { showToast('Indique um preço base válido.'); return; }
+  try {
+    const res = await fetch(`${API}/rooms/${roomId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json().catch(() => ({}));
+    if (!res.ok) { showToast(result.error || 'Erro ao guardar.'); return; }
+    adminRooms = adminRooms.map(room => room.id === roomId ? result : room);
+    showToast('✓ Preços guardados.');
+    await loadRooms();
+  } catch (err) { showToast('Erro de ligação.'); }
+}
+
+async function addPriceRule() {
+  const roomId = document.getElementById('price-room-select').value;
+  const kind = document.getElementById('rule-kind').value;
+  const data = {
+    kind,
+    name: document.getElementById('rule-name').value.trim(),
+    startDate: document.getElementById('rule-start').value,
+    endDate: document.getElementById('rule-end').value,
+    price: document.getElementById('rule-price').value,
+    weekendPrice: kind === 'SEASON' ? document.getElementById('rule-weekend').value : null,
+  };
+  try {
+    const res = await fetch(`${API}/rooms/${roomId}/price-rules`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json().catch(() => ({}));
+    if (!res.ok) { showToast(result.error || 'Erro ao adicionar.'); return; }
+    ['rule-name', 'rule-start', 'rule-end', 'rule-price', 'rule-weekend'].forEach(id => { document.getElementById(id).value = ''; });
+    showToast('✓ Adicionado.');
+    await loadPriceRules(roomId);
+  } catch (err) { showToast('Erro de ligação.'); }
+}
+
+async function deletePriceRule(ruleId) {
+  if (!confirm('Apagar esta época/feriado?')) return;
+  try {
+    const res = await fetch(`${API}/rooms/price-rules/${ruleId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${adminToken}` }
+    });
+    if (!res.ok) { showToast('Erro ao apagar.'); return; }
+    await loadPriceRules(document.getElementById('price-room-select').value);
+  } catch (err) { showToast('Erro de ligação.'); }
+}
+
+async function loadPromotions(roomId) {
+  const list = document.getElementById('promotions-list');
+  list.innerHTML = '<div class="price-rule-empty">A carregar...</div>';
+  try {
+    const res = await fetch(`${API}/rooms/${roomId}/promotions`, { headers: { Authorization: `Bearer ${adminToken}` } });
+    const promotions = await res.json();
+    if (!res.ok) throw new Error(promotions.error);
+    list.innerHTML = promotions.length ? promotions.map(promo => `
+      <div class="price-rule-row promo-row">
+        <strong>${escapeAdminHtml(promo.name)}</strong>
+        <span>${formatAdminDate(promo.startDate)} → ${formatAdminDate(promo.endDate)}</span>
+        <span>−${promo.discountPct}%</span>
+        <span>${promo.minNights}+ noites · ${promo.roomId ? 'esta unidade' : 'todas'}</span>
+        <span class="promo-status ${promo.isActive ? 'on' : 'off'}">${promo.isActive ? '● Ativa' : '○ Inativa'}</span>
+        <span style="display:flex;gap:.4rem">
+          <button class="admin-action" type="button" onclick="togglePromotion('${promo.id}', ${!promo.isActive})">${promo.isActive ? 'Desativar' : 'Ativar'}</button>
+          <button class="admin-action" type="button" onclick="deletePromotion('${promo.id}')">🗑 Apagar</button>
+        </span>
+      </div>`).join('')
+      : '<div class="price-rule-empty">Sem promoções.</div>';
+  } catch (err) {
+    console.error('Erro ao carregar promoções:', err);
+    list.innerHTML = '<div class="price-rule-empty" style="color:#dc2626">Não foi possível carregar as promoções.</div>';
+  }
+}
+
+async function addPromotion() {
+  const roomId = document.getElementById('price-room-select').value;
+  const data = {
+    name: document.getElementById('promo-name').value.trim(),
+    startDate: document.getElementById('promo-start').value,
+    endDate: document.getElementById('promo-end').value,
+    discountPct: document.getElementById('promo-pct').value,
+    minNights: document.getElementById('promo-min-nights').value,
+    allRooms: document.getElementById('promo-scope').value === 'all',
+  };
+  try {
+    const res = await fetch(`${API}/rooms/${roomId}/promotions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json().catch(() => ({}));
+    if (!res.ok) { showToast(result.error || 'Erro ao adicionar a promoção.'); return; }
+    ['promo-name', 'promo-start', 'promo-end', 'promo-pct'].forEach(id => { document.getElementById(id).value = ''; });
+    showToast('✓ Promoção criada e ativa.');
+    await loadPromotions(roomId);
+  } catch (err) { showToast('Erro de ligação.'); }
+}
+
+async function togglePromotion(promotionId, isActive) {
+  try {
+    const res = await fetch(`${API}/rooms/promotions/${promotionId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify({ isActive })
+    });
+    if (!res.ok) { showToast('Erro ao alterar a promoção.'); return; }
+    showToast(isActive ? '✓ Promoção ativada.' : 'Promoção desativada.');
+    await loadPromotions(document.getElementById('price-room-select').value);
+  } catch (err) { showToast('Erro de ligação.'); }
+}
+
+async function deletePromotion(promotionId) {
+  if (!confirm('Apagar esta promoção?')) return;
+  try {
+    const res = await fetch(`${API}/rooms/promotions/${promotionId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${adminToken}` }
+    });
+    if (!res.ok) { showToast('Erro ao apagar.'); return; }
+    await loadPromotions(document.getElementById('price-room-select').value);
+  } catch (err) { showToast('Erro de ligação.'); }
+}
+
+async function simulatePrice() {
+  const roomId = document.getElementById('price-room-select').value;
+  const result = document.getElementById('sim-result');
+  const params = new URLSearchParams({
+    checkIn: document.getElementById('sim-checkin').value,
+    checkOut: document.getElementById('sim-checkout').value,
+    adults: document.getElementById('sim-adults').value || 0,
+    teens: document.getElementById('sim-teens').value || 0,
+    children: document.getElementById('sim-children').value || 0,
+    infants: document.getElementById('sim-infants').value || 0,
+  });
+  try {
+    const res = await fetch(`${API}/rooms/${roomId}/quote?${params}`);
+    const quote = await res.json();
+    if (!res.ok) { result.innerHTML = `<span style="color:#dc2626">${escapeAdminHtml(quote.error)}</span>`; return; }
+    const sourceLabel = night => night.source === 'HOLIDAY' ? escapeAdminHtml(night.ruleName)
+      : night.source === 'SEASON' ? `${escapeAdminHtml(night.ruleName)}${night.weekend ? ' (fim de semana)' : ''}`
+      : night.weekend ? 'Base (fim de semana)' : 'Base';
+    result.innerHTML = `
+      <strong>Total: ${adminMoney(quote.total)}</strong> · ${quote.nightsCount} noites ·
+      ${quote.equivalentGuests} pessoa(s) para ${quote.baseOccupancy} incluídas
+      ${quote.promotion ? `<br>🎉 Promoção «${escapeAdminHtml(quote.promotion.name)}» −${quote.promotion.discountPct}%: −${adminMoney(Math.abs(quote.promotion.discount))}` : ''}
+      ${quote.nextPromotion ? `<br>Com ${quote.nextPromotion.minNights}+ noites teria −${quote.nextPromotion.discountPct}% («${escapeAdminHtml(quote.nextPromotion.name)}»)` : ''}
+      <table>${quote.nights.map(night => `<tr><td>${formatAdminDate(night.date)}</td><td>${sourceLabel(night)}</td><td>${adminMoney(night.price)}${night.guestAdjustment ? ` ${night.guestAdjustment > 0 ? '+' : '−'}${adminMoney(Math.abs(night.guestAdjustment))}` : ''}${night.crib ? ` + berço ${adminMoney(night.crib)}` : ''}${night.promotionDiscount ? ` −${adminMoney(Math.abs(night.promotionDiscount))} promo` : ''}</td><td>${adminMoney(night.total)}</td></tr>`).join('')}</table>`;
+  } catch (err) {
+    result.innerHTML = '<span style="color:#dc2626">Erro de ligação.</span>';
+  }
 }
 
 async function toggleRoomActive(id, currentActive) {

@@ -2,7 +2,9 @@
 const express = require('express');
 const prisma = require('../lib/prisma');
 const { requireAuth } = require('../middleware/auth');
-const { MINIMUM_STAY_NIGHTS, isCheckInDateAllowed } = require('../lib/reservationRules');
+const { MINIMUM_STAY_NIGHTS, CHECK_IN_DATE_ERROR, isCheckInDateAllowed } = require('../lib/reservationRules');
+const { normalizeParty, calculateQuote } = require('../lib/pricing');
+const { loadPricing } = require('../lib/priceRules');
 const router = express.Router();
 
 // GET /api/availability?checkIn=YYYY-MM-DD&checkOut=YYYY-MM-DD
@@ -21,7 +23,7 @@ router.get('/', async (req, res, next) => {
       return res.status(400).json({ error: 'Datas inválidas.' });
     }
     if (!isCheckInDateAllowed(checkIn)) {
-      return res.status(400).json({ error: 'A data de entrada só pode ser amanhã ou depois.' });
+      return res.status(400).json({ error: CHECK_IN_DATE_ERROR });
     }
 
     const nights = Math.round((coDate - ciDate) / (1000 * 60 * 60 * 24));
@@ -68,15 +70,23 @@ router.get('/', async (req, res, next) => {
       orderBy: { pricePerNight: 'asc' },
     });
 
+    // Total com as idades indicadas; sem idades, usa a ocupação base de cada unidade
+    const hasAgeGroups = ['adults', 'teens', 'children', 'infants'].some(key => req.query[key] !== undefined);
+    const availableRooms = await Promise.all(rooms.map(async room => {
+      const party = hasAgeGroups
+        ? normalizeParty(req.query)
+        : normalizeParty({ adults: room.baseOccupancy ?? room.capacity });
+      const { rules, promotions } = await loadPricing(prisma, room.id, checkIn, checkOut);
+      const quote = calculateQuote(room, rules, checkIn, checkOut, party, promotions);
+      return { ...room, totalPrice: quote.total, quote };
+    }));
+
     res.json({
       checkIn,
       checkOut,
       nights,
       minimumStayNights: MINIMUM_STAY_NIGHTS,
-      availableRooms: rooms.map(r => ({
-        ...r,
-        totalPrice: r.pricePerNight * nights,
-      })),
+      availableRooms,
     });
   } catch (err) { next(err); }
 });
