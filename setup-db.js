@@ -119,6 +119,15 @@ async function main() {
     );
   `);
 
+  // Lotação atual: T2 até 6 (cama extra insuflável e sofá), T3 até 8 (sofá-cama).
+  // Só altera os valores antigos conhecidos, para não sobrescrever alterações feitas no painel.
+  await prisma.$executeRawUnsafe(`
+    UPDATE "Room"
+    SET "capacity" = CASE UPPER("type") WHEN 'T2' THEN 6 ELSE 8 END, "updatedAt" = NOW()
+    WHERE (UPPER("type") = 'T2' AND "capacity" = 4)
+       OR (UPPER("type") = 'T3' AND "capacity" IN (6, 9));
+  `);
+
   console.log('✅ Tabelas criadas.');
 
   // Seed de dados

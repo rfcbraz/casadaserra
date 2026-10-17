@@ -61,7 +61,7 @@ nav.scrolled .nav-toggle{border-color:rgba(42,33,24,.2);color:var(--dark)}
 .btn-hero-outline:hover{border-color:#fff;background:rgba(255,255,255,.1)}
 .hero-badges{position:absolute;bottom:2rem;right:2rem;z-index:3;display:flex;gap:2rem;padding:1rem 1.5rem;background:rgba(32,25,19,.78);border:1px solid rgba(255,255,255,.12);border-radius:3px;backdrop-filter:blur(6px)}
 .hero-badge{text-align:center;color:rgba(255,255,255,.7)}
-.hero-badge-num{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--accent2);display:block;line-height:1}
+.hero-badge-num{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--accent2);display:block;line-height:1;font-variant-numeric:lining-nums}
 .hero-badge-label{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;margin-top:.3rem;display:block}
 
 .booking-bar{background:var(--dark);padding:2rem 3rem;display:flex;gap:1px;align-items:stretch}
@@ -140,7 +140,7 @@ h2 em{font-style:italic;color:var(--accent)}
 .cal-nav:hover{border-color:var(--accent);color:var(--accent)}
 .cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:.5rem}
 .cal-day-name{text-align:center;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);padding:.3rem}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;user-select:none}
 .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer;border-radius:2px;transition:all .15s;color:rgba(255,255,255,.7);border:1px solid transparent}
 .cal-day:hover:not(.unavail):not(.empty){background:rgba(201,137,58,.2);border-color:var(--accent);color:#fff}
 .cal-day.today{border-color:var(--accent2);color:var(--accent2)}
@@ -418,7 +418,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
   <div class="hero-badges">
     <div class="hero-badge"><span class="hero-badge-num">2</span><span class="hero-badge-label">Unidades</span></div>
     <div class="hero-badge"><span class="hero-badge-num">9.6</span><span class="hero-badge-label">Avaliação Booking.com</span></div>
-    <div class="hero-badge"><span class="hero-badge-num">8+</span><span class="hero-badge-label">Anos</span></div>
+    <div class="hero-badge"><span class="hero-badge-num" id="years-open">1+</span><span class="hero-badge-label">Anos</span></div>
   </div>
 </div>
 
@@ -454,7 +454,6 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <option value="6">6 hóspedes</option>
       <option value="7">7 hóspedes</option>
       <option value="8">8 hóspedes</option>
-      <option value="9">9 hóspedes</option>
     </select>
   </div>
   <button class="booking-submit" onclick="openBookingFromBar()">Verificar Disponibilidade</button>
@@ -598,8 +597,8 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
       <div class="form-field"><label>Check-in</label><input type="date" id="f-checkin"></div>
       <div class="form-field"><label>Check-out</label><input type="date" id="f-checkout"></div>
       <div class="form-field"><label for="f-arrival-time">Hora prevista de chegada</label><select id="f-arrival-time" required disabled><option value="">Selecione primeiro a unidade</option></select></div>
-      <div class="form-field"><label>Hóspedes</label><select id="f-guests"><option value="1">1 hóspede</option><option value="2" selected>2 hóspedes</option><option value="3">3 hóspedes</option><option value="4">4 hóspedes</option><option value="5">5 hóspedes</option><option value="6">6 hóspedes</option><option value="7">7 hóspedes</option><option value="8">8 hóspedes</option><option value="9">9 hóspedes</option></select><small class="form-hint" id="guest-limit-hint"></small></div>
-      <div class="form-field full"><p class="form-hint" id="booking-policy-hint">Estadia mínima: 2 noites consecutivas. Check-out: 08:00–11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.</p></div>
+      <div class="form-field"><label>Hóspedes</label><select id="f-guests"><option value="1">1 hóspede</option><option value="2" selected>2 hóspedes</option><option value="3">3 hóspedes</option><option value="4">4 hóspedes</option><option value="5">5 hóspedes</option><option value="6">6 hóspedes</option><option value="7">7 hóspedes</option><option value="8">8 hóspedes</option></select><small class="form-hint" id="guest-limit-hint"></small></div>
+      <div class="form-field full"><p class="form-hint" id="booking-policy-hint">Estadia mínima: 2 noites consecutivas. Check-out: até às 11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.</p></div>
       <div class="form-field full"><label>Observações sobre a estadia</label><textarea id="f-notes" placeholder="Informações adicionais sobre a sua reserva (opcional)..."></textarea></div>
     </div>
     <div class="form-summary">
@@ -791,9 +790,9 @@ const translations = {
     'Localização da Casa do Ferreiro no Google Maps': 'Casa do Ferreiro location on Google Maps', 'João Silva': 'e.g. John Smith',
     'Conforto e comodidade': 'Comfort & amenities', 'Alojamento': 'Accommodation', 'Regras da propriedade': 'Property rules',
     'Casa do Ferreiro T2:': 'Casa do Ferreiro T2:', 'Casa do Ferreiro T3:': 'Casa do Ferreiro T3:',
-    '115 m², até 4 hóspedes. Licença AL: 167437/AL.': '115 m², up to 4 guests. AL licence: 167437/AL.',
-    '125 m², até 6 hóspedes. Classificação: 9,6/10 · Localização: 10/10.': '125 m², up to 6 guests. Rating: 9.6/10 · Location: 10/10.',
-    'Check-out: das 08:00 às 11:00.': 'Check-out: 08:00–11:00.',
+    '115 m², até 6 hóspedes, com cama extra insuflável e sofá confortável na sala.': '115 m², up to 6 guests, with an inflatable extra bed and a comfortable sofa in the living room.',
+    '125 m², até 8 hóspedes, com sofá-cama na sala.': '125 m², up to 8 guests, with a sofa bed in the living room.', '9,6/10 ·': '9.6/10 ·',
+    'Check-out: até às 11:00.': 'Check-out: by 11:00.',
     'Não são admitidos animais de estimação.': 'Pets are not allowed.',
     'Anfitrião:': 'Host:', 'Idiomas: Português, Inglês e Espanhol.': 'Languages: Portuguese, English and Spanish.',
     'Email:': 'Email:', 'Telefone:': 'Phone:',
@@ -811,8 +810,8 @@ const translations = {
     'País e indicativo internacional': 'Country and international calling code',
     'A verificar disponibilidade...': 'Checking availability...',
     'Ocupado': 'Booked', 'Erro ao verificar disponibilidade.': 'Unable to check availability.',
-    'A estadia mínima é de 2 noites consecutivas. Check-out: 08:00–11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.': 'Minimum stay: 2 consecutive nights. Check-out: 08:00–11:00. Free cot for children aged 0–2 on request; no extra beds.',
-    'Check-in T2: 16:00–18:00; T3: 15:00–18:00. Check-out: 08:00–11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.': 'Check-in T2: 16:00–18:00; T3: 15:00–18:00. Check-out: 08:00–11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request; no extra beds.',
+    'A estadia mínima é de 2 noites consecutivas. Check-out: até às 11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Minimum stay: 2 consecutive nights. Check-out: by 11:00. Free cot for children aged 0–2 on request; T2 has an inflatable extra bed and a sofa in the living room; T3 has a sofa bed in the living room.',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Check-in: from 16:00 (please let us know your arrival time). Check-out: by 11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request; T2 has an inflatable extra bed and a sofa in the living room; T3 has a sofa bed in the living room.',
     'Não foi possível carregar os quartos. Verifique se o servidor está ligado.': 'Could not load the accommodation. Please check that the server is running.',
     'Selecione uma unidade para verificar a disponibilidade.': 'Select accommodation to check availability.',
     'Selecione as datas de entrada e saída antes de reservar.': 'Select check-in and check-out dates before booking.',
@@ -829,10 +828,10 @@ const translations = {
     'A enviar pedido...': 'Sending request...', 'Pedido recebido. O pagamento será solicitado se o proprietário aprovar a reserva.': 'Request received. Payment will be requested if the owner approves the booking.',
     'Pagamento concluído. A confirmação da reserva será enviada por email.': 'Payment complete. Booking confirmation will be sent by email.',
     'Pagamento cancelado. Pode iniciar uma nova reserva.': 'Payment cancelled. You can start a new booking.',
-    'A Casa do Ferreiro T2': 'Casa do Ferreiro T2', 'Casa de férias T2 com 115 m², composta por 2 quartos de casal com casa de banho privativa, sala espaçosa, cozinha totalmente equipada e varanda/terraço com vista panorâmica para a albufeira e as montanhas.': 'T2 holiday home with 115 m², featuring two double bedrooms with private bathrooms, a spacious living room, fully equipped kitchen and a balcony/terrace with panoramic reservoir and mountain views.',
-    'Apartamento / casa de férias T3 com 125 m², localizado em frente à praia/albufeira, com 3 quartos de casal, sala de estar espaçosa com sofá-cama, cozinha totalmente equipada, varanda e terraço com vistas deslumbrantes sobre o lago, montanhas e jardim.': '125 m² T3 holiday home facing the beach and reservoir, with three double bedrooms, a spacious living room with sofa bed, fully equipped kitchen, balcony and terrace with stunning lake, mountain and garden views.',
+    'A Casa do Ferreiro T2': 'Casa do Ferreiro T2', 'Casa de férias T2 com 115 m², composta por 2 quartos de casal com casa de banho privativa, sala espaçosa com sofá confortável, cozinha totalmente equipada e varanda/terraço com vista panorâmica para a albufeira e as montanhas. Acomoda até 6 hóspedes, com cama extra insuflável.': 'T2 holiday home with 115 m², featuring two double bedrooms with private bathrooms, a spacious living room with a comfortable sofa, fully equipped kitchen and a balcony/terrace with panoramic reservoir and mountain views. Sleeps up to 6 guests with an inflatable extra bed.',
+    'Apartamento / casa de férias T3 com 125 m², localizado em frente à praia/albufeira, com 3 quartos de casal, sala de estar espaçosa com sofá-cama, cozinha totalmente equipada, varanda e terraço com vistas deslumbrantes sobre o lago, montanhas e jardim. Acomoda até 8 hóspedes.': '125 m² T3 holiday home facing the beach and reservoir, with three double bedrooms, a spacious living room with sofa bed, fully equipped kitchen, balcony and terrace with stunning lake, mountain and garden views. Sleeps up to 8 guests.',
     '2 quartos de casal': '2 double bedrooms', '3 casas de banho': '3 bathrooms', 'Cozinha totalmente equipada': 'Fully equipped kitchen', 'Varanda e terraço': 'Balcony and terrace',
-    'Estacionamento privado': 'Private parking', 'Sala de estar com sofá-cama': 'Living room with sofa bed', 'Jardim e espaço exterior': 'Garden and outdoor space',
+    'Estacionamento privado': 'Private parking', 'Sala de estar com sofá-cama': 'Living room with sofa bed', 'Sala de estar com sofá confortável': 'Living room with comfortable sofa', 'Cama extra insuflável': 'Inflatable extra bed', 'Jardim e espaço exterior': 'Garden and outdoor space',
     '3 quartos de casal': '3 double bedrooms', '3 casas de banho completas': '3 full bathrooms', 'Área de praia privada': 'Private beach area',
     'Estacionamento privado gratuito': 'Free private parking', 'Ar condicionado': 'Air conditioning', 'Quartos para não fumadores': 'Non-smoking rooms',
     'Quartos com casa de banho privativa': 'Bedrooms with private bathrooms', 'Vista para a albufeira e as montanhas': 'Reservoir and mountain views', 'Cozinha ampla e totalmente equipada': 'Large, fully equipped kitchen',
@@ -840,10 +839,11 @@ const translations = {
     'Alojamento local': 'Local accommodation', 'Anfitrião': 'Host',
     'Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, jardim e acesso a área de praia privada.': 'Free private parking, high-speed Wi-Fi, air conditioning, non-smoking rooms, towels and bed linen, a garden and access to a private beach area.',
     'Cozinha equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.': 'Equipped kitchen with a fridge, coffee machine, microwave, dining table and full set of utensils.',
-    'Check-in: T2 das 16:00 às 18:00; T3 das 15:00 às 18:00. Informe a hora de chegada com antecedência.': 'Check-in: T2 from 16:00 to 18:00; T3 from 15:00 to 18:00. Please let us know your arrival time in advance.',
+    'Check-in: a partir das 16:00. Informe a hora prevista de chegada com antecedência.': 'Check-in: from 16:00. Please let us know your expected arrival time in advance.',
     'Estadia mínima: 2 noites consecutivas.': 'Minimum stay: 2 consecutive nights.',
     'Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.': 'Children welcome; free cot for ages 0–2.',
-    'Não há camas extra.': 'No extra beds are available.',
+    'T2: cama extra insuflável e sofá confortável na sala (até 6 hóspedes).': 'T2: inflatable extra bed and comfortable sofa in the living room (up to 6 guests).',
+    'T3: sofá-cama na sala (até 8 hóspedes).': 'T3: sofa bed in the living room (up to 8 guests).',
     'Não é permitido fumar no interior nem realizar festas ou eventos.': 'Smoking indoors and parties or events are not permitted.',
     'Animais de estimação não são admitidos.': 'Pets are not allowed.',
     'Português': 'Portuguese', 'Inglês': 'English', 'Espanhol': 'Spanish', 'Email': 'Email',
@@ -855,11 +855,11 @@ const translations = {
     'Casa do Ferreiro T2': 'Casa do Ferreiro T2', 'Casa do Ferreiro T3': 'Casa do Ferreiro T3',
     'Noite': 'night', '/ noite': '/ night',
     '1 hóspede': '1 guest', '2 hóspedes': '2 guests', '3 hóspedes': '3 guests', '4 hóspedes': '4 guests', '5 hóspedes': '5 guests', '6 hóspedes': '6 guests', '7 hóspedes': '7 guests', '8 hóspedes': '8 guests', '9 hóspedes': '9 guests',
-    'Selecione uma unidade; capacidade máxima: 9 hóspedes.': 'Select accommodation; maximum capacity: 9 guests.',
-    'Check-in: 16:00–18:00 (avise a hora de chegada). Check-out: 08:00–11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Não há camas extra.': 'Check-in: 16:00–18:00 (please let us know your arrival time). Check-out: 08:00–11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request. No extra beds.',
-    'Check-in: 15:00–18:00 (avise a hora de chegada). Check-out: 08:00–11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Não há camas extra.': 'Check-in: 15:00–18:00 (please let us know your arrival time). Check-out: 08:00–11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request. No extra beds.',
+    'Selecione uma unidade; capacidade máxima: 8 hóspedes.': 'Select accommodation; maximum capacity: 8 guests.',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Cama extra insuflável e sofá confortável na sala.': 'Check-in: from 16:00 (please let us know your arrival time). Check-out: by 11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request. Inflatable extra bed and comfortable sofa in the living room.',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Sofá-cama na sala.': 'Check-in: from 16:00 (please let us know your arrival time). Check-out: by 11:00. Minimum stay: 2 consecutive nights. Free cot for children aged 0–2 on request. Sofa bed in the living room.',
     'Capacidade máxima desta unidade: 6 hóspedes.': 'Maximum capacity for this accommodation: 6 guests.',
-    'Capacidade máxima desta unidade: 9 hóspedes.': 'Maximum capacity for this accommodation: 9 guests.',
+    'Capacidade máxima desta unidade: 8 hóspedes.': 'Maximum capacity for this accommodation: 8 guests.',
     'Não foi possível carregar as unidades.': 'Could not load accommodation.',
     'Casa de banho do T2 com chuveiro envidraçado': 'T2 bathroom with glass shower',
     'Quarto do T2 com cama de casal e berço': 'T2 bedroom with double bed and cot',
@@ -893,15 +893,21 @@ const translations = {
     'Localização da Casa do Ferreiro no Google Maps': 'Ubicación de Casa do Ferreiro en Google Maps', 'João Silva': 'p. ej., Juan Pérez',
     'Conforto e comodidade': 'Confort y comodidades', 'Alojamento': 'Alojamiento', 'Regras da propriedade': 'Normas del alojamiento',
     'Casa do Ferreiro T2:': 'Casa do Ferreiro T2:', 'Casa do Ferreiro T3:': 'Casa do Ferreiro T3:',
-    '115 m², até 4 hóspedes. Licença AL: 167437/AL.': '115 m², hasta 4 huéspedes. Licencia AL: 167437/AL.',
-    '125 m², até 6 hóspedes. Classificação: 9,6/10 · Localização: 10/10.': '125 m², hasta 6 huéspedes. Valoración: 9,6/10 · Ubicación: 10/10.',
+    '115 m², até 6 hóspedes, com cama extra insuflável e sofá confortável na sala.': '115 m², hasta 6 huéspedes, con cama supletoria hinchable y sofá cómodo en el salón.',
+    '125 m², até 8 hóspedes, com sofá-cama na sala.': '125 m², hasta 8 huéspedes, con sofá cama en el salón.', 'Classificação:': 'Valoración:', 'Localização:': 'Ubicación:', 'Licença AL:': 'Licencia AL:',
     'Estacionamento privado gratuito, Wi-Fi de alta velocidade, ar condicionado, quartos para não fumadores, toalhas e roupa de cama incluídas, jardim e acesso a área de praia privada.': 'Aparcamiento privado gratuito, Wi-Fi de alta velocidad, aire acondicionado, habitaciones para no fumadores, toallas y ropa de cama incluidas, jardín y acceso a una zona de playa privada.',
     'Cozinha equipada com frigorífico, máquina de café, micro-ondas, mesa de jantar e utensílios completos.': 'Cocina equipada con frigorífico, cafetera, microondas, mesa de comedor y menaje completo.',
-    'Check-in: T2 das 16:00 às 18:00; T3 das 15:00 às 18:00. Informe a hora de chegada com antecedência.': 'Entrada: T2 de 16:00 a 18:00; T3 de 15:00 a 18:00. Indique la hora de llegada con antelación.',
-    'Check-out: das 08:00 às 11:00.': 'Salida: de 08:00 a 11:00.',
+    'Check-in: a partir das 16:00. Informe a hora prevista de chegada com antecedência.': 'Entrada: a partir de las 16:00. Indique la hora prevista de llegada con antelación.',
+    'Check-out: até às 11:00.': 'Salida: hasta las 11:00.',
     'Estadia mínima: 2 noites consecutivas.': 'Estancia mínima: 2 noches consecutivas.',
     'Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.': 'Niños bienvenidos; cuna gratuita para edades de 0 a 2 años.',
-    'Não há camas extra.': 'No hay camas supletorias.',
+    'T2: cama extra insuflável e sofá confortável na sala (até 6 hóspedes).': 'T2: cama supletoria hinchable y sofá cómodo en el salón (hasta 6 huéspedes).',
+    'T3: sofá-cama na sala (até 8 hóspedes).': 'T3: sofá cama en el salón (hasta 8 huéspedes).',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Cama extra insuflável e sofá confortável na sala.': 'Entrada: a partir de las 16:00 (avise de su hora de llegada). Salida: hasta las 11:00. Estancia mínima: 2 noches consecutivas. Cuna gratuita para niños de 0 a 2 años bajo petición. Cama supletoria hinchable y sofá cómodo en el salón.',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Sofá-cama na sala.': 'Entrada: a partir de las 16:00 (avise de su hora de llegada). Salida: hasta las 11:00. Estancia mínima: 2 noches consecutivas. Cuna gratuita para niños de 0 a 2 años bajo petición. Sofá cama en el salón.',
+    'Capacidade máxima desta unidade: 6 hóspedes.': 'Capacidad máxima de este alojamiento: 6 huéspedes.',
+    'Capacidade máxima desta unidade: 8 hóspedes.': 'Capacidad máxima de este alojamiento: 8 huéspedes.',
+    'Selecione uma unidade; capacidade máxima: 8 hóspedes.': 'Seleccione un alojamiento; capacidad máxima: 8 huéspedes.',
     'Não é permitido fumar no interior nem realizar festas ou eventos.': 'No se permite fumar en el interior ni celebrar fiestas o eventos.',
     'Não são admitidos animais de estimação.': 'No se admiten mascotas.',
     'Anfitrião:': 'Anfitrión:', 'Idiomas: Português, Inglês e Espanhol.': 'Idiomas: portugués, inglés y español.',
@@ -923,8 +929,8 @@ const translations = {
     'A verificar disponibilidade...': 'Comprobando disponibilidad...', 'Ocupado': 'Ocupado', 'Erro ao verificar disponibilidade.': 'No se pudo comprobar la disponibilidad.',
     'A estadia mínima é de 2 noites consecutivas.': 'La estancia mínima es de 2 noches consecutivas.',
     'A estadia mínima é de {{nights}} noites consecutivas.': 'La estancia mínima es de {{nights}} noches consecutivas.',
-    'A estadia mínima é de 2 noites consecutivas. Check-out: 08:00–11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.': 'Estancia mínima: 2 noches consecutivas. Salida: 08:00–11:00. Cuna gratuita para niños de 0 a 2 años bajo petición; no hay camas supletorias.',
-    'Check-in T2: 16:00–18:00; T3: 15:00–18:00. Check-out: 08:00–11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.': 'Entrada T2: 16:00–18:00; T3: 15:00–18:00. Salida: 08:00–11:00. Estancia mínima: 2 noches consecutivas. Cuna gratuita para niños de 0 a 2 años bajo petición; no hay camas supletorias.',
+    'A estadia mínima é de 2 noites consecutivas. Check-out: até às 11:00. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Estancia mínima: 2 noches consecutivas. Salida: hasta las 11:00. Cuna gratuita para niños de 0 a 2 años bajo petición; el T2 dispone de cama supletoria hinchable y sofá en el salón; el T3, de sofá cama en el salón.',
+    'Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: 2 noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.': 'Entrada: a partir de las 16:00 (avise de su hora de llegada). Salida: hasta las 11:00. Estancia mínima: 2 noches consecutivas. Cuna gratuita para niños de 0 a 2 años bajo petición; el T2 dispone de cama supletoria hinchable y sofá en el salón; el T3, de sofá cama en el salón.',
     'Não foi possível carregar os quartos. Verifique se o servidor está ligado.': 'No se pudieron cargar los alojamientos. Compruebe que el servidor está en funcionamiento.',
     'Selecione uma unidade para verificar a disponibilidade.': 'Seleccione un alojamiento para consultar la disponibilidad.',
     'Selecione as datas de entrada e saída antes de reservar.': 'Seleccione las fechas de entrada y salida antes de reservar.',
@@ -941,12 +947,12 @@ const translations = {
     'A enviar pedido...': 'Enviando solicitud...', 'Pedido recebido. O pagamento será solicitado se o proprietário aprovar a reserva.': 'Solicitud recibida. Se solicitará el pago si el propietario aprueba la reserva.',
     'Pagamento concluído. A confirmação da reserva será enviada por email.': 'Pago completado. Recibirá la confirmación de la reserva por correo electrónico.',
     'Pagamento cancelado. Pode iniciar uma nova reserva.': 'Pago cancelado. Puede iniciar una nueva reserva.',
-    'Casa de férias T2 com 115 m², composta por 2 quartos de casal com casa de banho privativa, sala espaçosa, cozinha totalmente equipada e varanda/terraço com vista panorâmica para a albufeira e as montanhas.': 'Casa de vacaciones T2 de 115 m² con dos dormitorios dobles con baño privado, salón amplio, cocina totalmente equipada y balcón/terraza con vistas panorámicas al embalse y las montañas.',
+    'Casa de férias T2 com 115 m², composta por 2 quartos de casal com casa de banho privativa, sala espaçosa com sofá confortável, cozinha totalmente equipada e varanda/terraço com vista panorâmica para a albufeira e as montanhas. Acomoda até 6 hóspedes, com cama extra insuflável.': 'Casa de vacaciones T2 de 115 m² con dos dormitorios dobles con baño privado, salón amplio con sofá cómodo, cocina totalmente equipada y balcón/terraza con vistas panorámicas al embalse y las montañas. Capacidad para hasta 6 huéspedes, con cama supletoria hinchable.',
     'Quarto de casal do T2 com ar condicionado e televisão': 'Dormitorio doble del T2 con aire acondicionado y televisión',
     'Quarto de casal do T3 com televisão e ar condicionado': 'Dormitorio doble del T3 con televisión y aire acondicionado',
-    'Apartamento / casa de férias T3 com 125 m², localizado em frente à praia/albufeira, com 3 quartos de casal, sala de estar espaçosa com sofá-cama, cozinha totalmente equipada, varanda e terraço com vistas deslumbrantes sobre o lago, montanhas e jardim.': 'Casa de vacaciones T3 de 125 m² frente a la playa y al embalse, con tres dormitorios dobles, salón amplio con sofá cama, cocina totalmente equipada, balcón y terraza con magníficas vistas al lago, las montañas y el jardín.',
+    'Apartamento / casa de férias T3 com 125 m², localizado em frente à praia/albufeira, com 3 quartos de casal, sala de estar espaçosa com sofá-cama, cozinha totalmente equipada, varanda e terraço com vistas deslumbrantes sobre o lago, montanhas e jardim. Acomoda até 8 hóspedes.': 'Casa de vacaciones T3 de 125 m² frente a la playa y al embalse, con tres dormitorios dobles, salón amplio con sofá cama, cocina totalmente equipada, balcón y terraza con magníficas vistas al lago, las montañas y el jardín. Capacidad para hasta 8 huéspedes.',
     '2 quartos de casal': '2 habitaciones dobles', '3 casas de banho': '3 baños', 'Cozinha totalmente equipada': 'Cocina totalmente equipada', 'Varanda e terraço': 'Balcón y terraza',
-    'Estacionamento privado': 'Aparcamiento privado', 'Sala de estar com sofá-cama': 'Salón con sofá cama', 'Jardim e espaço exterior': 'Jardín y espacio exterior',
+    'Estacionamento privado': 'Aparcamiento privado', 'Sala de estar com sofá-cama': 'Salón con sofá cama', 'Sala de estar com sofá confortável': 'Salón con sofá cómodo', 'Cama extra insuflável': 'Cama supletoria hinchable', 'Jardim e espaço exterior': 'Jardín y espacio exterior',
     '3 quartos de casal': '3 habitaciones dobles', '3 casas de banho completas': '3 baños completos', 'Área de praia privada': 'Zona de playa privada',
     'Estacionamento privado gratuito': 'Aparcamiento privado gratuito', 'Ar condicionado': 'Aire acondicionado', 'Quartos para não fumadores': 'Habitaciones para no fumadores',
     'Quartos com casa de banho privativa': 'Dormitorios con baño privado', 'Vista para a albufeira e as montanhas': 'Vistas al embalse y las montañas', 'Cozinha ampla e totalmente equipada': 'Cocina amplia y totalmente equipada',
@@ -1330,6 +1336,15 @@ function getMinimumCheckInDate() {
 }
 const todayDateString = getPortugalDateString();
 const tomorrowDateString = getMinimumCheckInDate();
+
+// Anos completos desde a abertura (dezembro de 2024), atualizado automaticamente
+const OPENING_DATE = '2024-12-01';
+(() => {
+  const [y, m, d] = todayDateString.split('-').map(Number);
+  const [oy, om, od] = OPENING_DATE.split('-').map(Number);
+  const years = y - oy - ((m < om || (m === om && d < od)) ? 1 : 0);
+  document.getElementById('years-open').textContent = `${Math.max(years, 1)}+`;
+})();
 document.getElementById('bar-checkin').min=tomorrowDateString;
 document.getElementById('f-checkin').min=tomorrowDateString;
 updateBarMinimumCheckoutDate();
@@ -1359,10 +1374,58 @@ function renderCal(){
     const isUnavail = isPastOrToday || publicOccupiedDates.has(dateStr);
     if(isUnavail) el.classList.add('unavail');
     if(dateStr===getPortugalDateString())el.classList.add('today');
-    if(!isUnavail) el.onclick=()=>selectDay(d);
+    if(!isUnavail){el.dataset.date=dateStr;el.onclick=()=>selectDay(dateStr);}
     grid.appendChild(el);
   }
+  highlightCalSelection();
 }
+
+// selStart/selEnd guardam datas completas (YYYY-MM-DD) para permitir estadias entre meses
+function highlightCalSelection(start = selStart, end = selEnd) {
+  document.querySelectorAll('#cal-grid .cal-day').forEach(el => {
+    const date = el.dataset.date;
+    el.classList.toggle('selected', Boolean(date) && (date === start || date === end));
+    el.classList.toggle('in-range', Boolean(date && start && end) && date > start && date < end);
+  });
+}
+function nightsBetween(start, end) {
+  return Math.round((new Date(`${end}T00:00:00Z`) - new Date(`${start}T00:00:00Z`)) / 86400000);
+}
+
+// Seleção por arrastar (rato/caneta): carregar no dia de entrada e largar no dia de saída.
+// Em ecrãs táteis mantém-se o toque em dois dias, para não bloquear o scroll da página.
+let calDrag = null;
+function calDayFromEvent(e) {
+  return e.target.closest?.('#cal-grid .cal-day')?.dataset.date || null;
+}
+function previewCalDrag() {
+  const [a, b] = [calDrag.start, calDrag.end].sort();
+  highlightCalSelection(a, b);
+}
+const calGridEl = document.getElementById('cal-grid');
+calGridEl.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'touch' || e.button !== 0) return;
+  const day = calDayFromEvent(e);
+  if (!day) return;
+  calDrag = { start: day, end: day };
+});
+calGridEl.addEventListener('pointerover', e => {
+  if (!calDrag) return;
+  const day = calDayFromEvent(e);
+  if (!day || day === calDrag.end) return;
+  calDrag.end = day;
+  previewCalDrag();
+});
+document.addEventListener('pointerup', () => {
+  if (!calDrag) return;
+  const { start, end } = calDrag;
+  calDrag = null;
+  if (start === end) return; // clique simples: tratado pelo onclick do dia
+  const [first, last] = [start, end].sort();
+  selStart = null; selEnd = null;
+  selectDay(first);
+  selectDay(last);
+});
 
 // Carrega datas ocupadas para o quarto selecionado no mês atual
 async function loadPublicCalAvailability(roomId) {
@@ -1383,34 +1446,23 @@ async function loadPublicCalAvailability(roomId) {
   }
   renderCal();
 }
-function selectDay(d){
-  const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+function selectDay(dateStr){
   if (dateStr < getMinimumCheckInDate()) {
     showToast('A data de entrada só pode ser amanhã ou depois.');
     return;
   }
-  if(selStart && !selEnd && d > selStart && d - selStart < MINIMUM_STAY_NIGHTS){
+  if(selStart && !selEnd && dateStr > selStart && nightsBetween(selStart, dateStr) < MINIMUM_STAY_NIGHTS){
     showToast(`A estadia mínima é de ${MINIMUM_STAY_NIGHTS} noites consecutivas.`);
     return;
   }
-  document.querySelectorAll('.cal-day').forEach(el=>{el.classList.remove('selected','in-range');});
-  if(!selStart||selEnd){selStart=d;selEnd=null;}
-  else if(d>selStart){selEnd=d;}
-  else{selStart=d;selEnd=null;}
-  document.querySelectorAll('.cal-day:not(.empty):not(.unavail)').forEach(el=>{
-    const n=parseInt(el.textContent);
-    if(n===selStart)el.classList.add('selected');
-    if(selEnd&&n===selEnd)el.classList.add('selected');
-    if(selEnd&&n>selStart&&n<selEnd)el.classList.add('in-range');
-  });
+  if(!selStart||selEnd){selStart=dateStr;selEnd=null;}
+  else if(dateStr>selStart){selEnd=dateStr;}
+  else{selStart=dateStr;selEnd=null;}
+  highlightCalSelection();
 
-  // Sincronizar datas com o formulário de reserva e barra de pesquisa
-  // Usa formato YYYY-MM-DD direto para evitar problemas de fuso horário
-  function toDateStr(year, month, day) {
-    return `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-  }
+  // Sincronizar datas com o formulário de reserva e barra de pesquisa (formato YYYY-MM-DD)
   if(selStart) {
-    const ciStr = toDateStr(calYear, calMonth, selStart);
+    const ciStr = selStart;
     document.getElementById('bar-checkin').value = ciStr;
     document.getElementById('f-checkin').value = ciStr;
     if (!selEnd) {
@@ -1428,8 +1480,8 @@ function selectDay(d){
     }
   }
   if(selEnd) {
-    const ciStr = toDateStr(calYear, calMonth, selStart);
-    const coStr = toDateStr(calYear, calMonth, selEnd);
+    const ciStr = selStart;
+    const coStr = selEnd;
     document.getElementById('bar-checkout').value = coStr;
     document.getElementById('f-checkout').value = coStr;
     updateSummary();
@@ -1467,17 +1519,7 @@ function changeMonth(dir){
   calMonth+=dir;
   if(calMonth>11){calMonth=0;calYear++;}
   if(calMonth<0){calMonth=11;calYear--;}
-  selStart=null;selEnd=null;
-  availabilityRequestId++;
-  selectedAvailabilityRoomId=null;
-  availableRoomIds=null;
-  ['bar-checkin','bar-checkout','f-checkin','f-checkout'].forEach(id => {
-    const input=document.getElementById(id);
-    if(input) input.value='';
-  });
-  updateSummary();
-  renderAvailRooms(allRooms);
-  updateAvailabilitySummary();
+  // A seleção mantém-se ao mudar de mês, para permitir entrada num mês e saída noutro
   const roomId = document.getElementById('f-room')?.value;
   loadPublicCalAvailability(roomId);
 }
@@ -1492,12 +1534,12 @@ let roomCardEventsBound = false;
 const ROOM_OVERRIDES = {
   T2: {
     displayName: 'Casa do Ferreiro T2',
-    description: 'Casa de férias T2 com 115 m², composta por 2 quartos de casal com casa de banho privativa, sala espaçosa, cozinha totalmente equipada e varanda/terraço com vista panorâmica para a albufeira e as montanhas.',
-    amenities: ['2 quartos de casal', '3 casas de banho', 'Cozinha totalmente equipada', 'Varanda e terraço', 'Wi‑Fi gratuito', 'Estacionamento privado', 'Sala de estar com sofá-cama', 'Jardim e espaço exterior'],
+    description: 'Casa de férias T2 com 115 m², composta por 2 quartos de casal com casa de banho privativa, sala espaçosa com sofá confortável, cozinha totalmente equipada e varanda/terraço com vista panorâmica para a albufeira e as montanhas. Acomoda até 6 hóspedes, com cama extra insuflável.',
+    amenities: ['2 quartos de casal', 'Cama extra insuflável', 'Sala de estar com sofá confortável', '3 casas de banho', 'Cozinha totalmente equipada', 'Varanda e terraço', 'Wi‑Fi gratuito', 'Estacionamento privado', 'Jardim e espaço exterior'],
     sizeSqm: 115,
     bedrooms: 2,
-    beds: 2,
-    maxGuests: 4,
+    beds: 3,
+    maxGuests: 6,
     coverImage: 'assets/images/t2-capa.jpg',
     coverAlt: 'Quarto de casal do T2 com ar condicionado e televisão',
     emoji: '🏡',
@@ -1510,12 +1552,12 @@ const ROOM_OVERRIDES = {
   },
   T3: {
     displayName: 'Casa do Ferreiro T3',
-    description: 'Apartamento / casa de férias T3 com 125 m², localizado em frente à praia/albufeira, com 3 quartos de casal, sala de estar espaçosa com sofá-cama, cozinha totalmente equipada, varanda e terraço com vistas deslumbrantes sobre o lago, montanhas e jardim.',
+    description: 'Apartamento / casa de férias T3 com 125 m², localizado em frente à praia/albufeira, com 3 quartos de casal, sala de estar espaçosa com sofá-cama, cozinha totalmente equipada, varanda e terraço com vistas deslumbrantes sobre o lago, montanhas e jardim. Acomoda até 8 hóspedes.',
     amenities: ['3 quartos de casal', '3 casas de banho completas', 'Sala de estar com sofá-cama', 'Cozinha totalmente equipada', 'Varanda e terraço', 'Área de praia privada', 'Wi‑Fi gratuito', 'Estacionamento privado gratuito', 'Ar condicionado', 'Quartos para não fumadores'],
     sizeSqm: 125,
     bedrooms: 3,
     beds: 4,
-    maxGuests: 6,
+    maxGuests: 8,
     coverImage: 'assets/images/t3-capa.jpg',
     coverAlt: 'Quarto de casal do T3 com televisão e ar condicionado',
     emoji: '🏞️',
@@ -1552,7 +1594,7 @@ function getRoomPresentation(room) {
 
 function getRoomMaxGuests(room) {
   const type = (room?.type || '').toUpperCase();
-  return ROOM_OVERRIDES[type]?.maxGuests || room?.capacity || 9;
+  return ROOM_OVERRIDES[type]?.maxGuests || room?.capacity || 8;
 }
 
 function renderRoomCards() {
@@ -1647,7 +1689,7 @@ function populateRoomSelect() {
 function syncGuestOptions(roomSelectId, guestsSelectId, hintId) {
   const roomId = document.getElementById(roomSelectId).value;
   const room = allRooms.find(item => item.id === roomId);
-  const maxGuests = room ? getRoomMaxGuests(room) : Math.max(9, ...allRooms.map(getRoomMaxGuests));
+  const maxGuests = room ? getRoomMaxGuests(room) : Math.max(8, ...allRooms.map(getRoomMaxGuests));
   const guestSelect = document.getElementById(guestsSelectId);
   const selectedGuests = Math.min(parseInt(guestSelect.value, 10) || 2, maxGuests);
 
@@ -1666,10 +1708,9 @@ function syncGuestOptions(roomSelectId, guestsSelectId, hintId) {
 
 function updateBookingPolicyHint() {
   const room = allRooms.find(item => item.id === document.getElementById('f-room').value);
-  const checkInWindow = room?.type?.toUpperCase() === 'T2' ? '16:00–18:00' : '15:00–18:00';
   const text = room
-    ? `Check-in: ${checkInWindow} (avise a hora de chegada). Check-out: 08:00–11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. Não há camas extra.`
-    : `Check-in T2: 16:00–18:00; T3: 15:00–18:00. Check-out: 08:00–11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; não há camas extra.`;
+    ? `Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido. ${room.type?.toUpperCase() === 'T2' ? 'Cama extra insuflável e sofá confortável na sala.' : 'Sofá-cama na sala.'}`
+    : `Check-in: a partir das 16:00 (avise a hora de chegada). Check-out: até às 11:00. Estadia mínima: ${MINIMUM_STAY_NIGHTS} noites consecutivas. Berço gratuito dos 0 aos 2 anos, mediante pedido; T2 com cama extra insuflável e sofá na sala; T3 com sofá-cama na sala.`;
   document.getElementById('booking-policy-hint').textContent = translateText(text);
 }
 
@@ -1683,10 +1724,9 @@ function updateArrivalTimeOptions() {
   }
 
   const previousValue = select.value;
-  const firstMinute = room.type.toUpperCase() === 'T2' ? 16 * 60 : 15 * 60;
   const options = [];
-  for (let minute = firstMinute; minute <= 18 * 60; minute += 30) {
-    const time = `${String(Math.floor(minute / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
+  for (let minute = 16 * 60; minute <= 24 * 60; minute += 30) {
+    const time = `${String(Math.floor(minute / 60) % 24).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
     options.push(`<option value="${time}">${time}</option>`);
   }
   select.innerHTML = `<option value="">${translateText('Selecione a hora prevista')}</option>` + options.join('');
@@ -1920,7 +1960,7 @@ function openRoomDetails(roomId) {
 const footerInfo = {
   accommodation: {
     title: 'Alojamento',
-    content: '<p><strong>Casa do Ferreiro T2:</strong> 115 m², até 4 hóspedes. Licença AL: 167437/AL.</p><p><strong>Casa do Ferreiro T3:</strong> 125 m², até 6 hóspedes. Classificação: 9,6/10 · Localização: 10/10.</p>'
+    content: '<p><strong>Casa do Ferreiro T2:</strong> 115 m², até 6 hóspedes, com cama extra insuflável e sofá confortável na sala.</p><p><strong>Casa do Ferreiro T3:</strong> 125 m², até 8 hóspedes, com sofá-cama na sala.</p><p><strong>Classificação:</strong> 9,6/10 · <strong>Localização:</strong> 10/10.</p><p><strong>Licença AL:</strong> 167437/AL.</p>'
   },
   comfort: {
     title: 'Conforto e comodidade',
@@ -1928,7 +1968,7 @@ const footerInfo = {
   },
   policies: {
     title: 'Regras da propriedade',
-    content: '<ul><li>Check-in: T2 das 16:00 às 18:00; T3 das 15:00 às 18:00. Informe a hora de chegada com antecedência.</li><li>Check-out: das 08:00 às 11:00.</li><li>Estadia mínima: 2 noites consecutivas.</li><li>Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.</li><li>Não há camas extra.</li><li>Não é permitido fumar no interior nem realizar festas ou eventos.</li><li>Não são admitidos animais de estimação.</li></ul>'
+    content: '<ul><li>Check-in: a partir das 16:00. Informe a hora prevista de chegada com antecedência.</li><li>Check-out: até às 11:00.</li><li>Estadia mínima: 2 noites consecutivas.</li><li>Crianças bem-vindas; berço gratuito dos 0 aos 2 anos.</li><li>T2: cama extra insuflável e sofá confortável na sala (até 6 hóspedes).</li><li>T3: sofá-cama na sala (até 8 hóspedes).</li><li>Não é permitido fumar no interior nem realizar festas ou eventos.</li><li>Não são admitidos animais de estimação.</li></ul>'
   },
   contact: {
     title: 'Contacto',
@@ -2170,7 +2210,7 @@ async function confirmBooking() {
   if (!arrivalTime) { showToast('Indique a hora prevista de chegada.'); return; }
   const selectedRoom = allRooms.find(room => room.id === roomId);
   const guestCount = parseInt(guests, 10);
-  const maxGuests = selectedRoom ? getRoomMaxGuests(selectedRoom) : 9;
+  const maxGuests = selectedRoom ? getRoomMaxGuests(selectedRoom) : 8;
   if (!Number.isInteger(guestCount) || guestCount < 1 || guestCount > maxGuests) {
     showToast(`Esta unidade permite até ${maxGuests} hóspedes.`);
     return;

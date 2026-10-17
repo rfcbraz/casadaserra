@@ -17,6 +17,33 @@ function formatDate(date) {
   });
 }
 
+const CHECK_IN_TIME = 'a partir das 16:00';
+const CHECK_OUT_TIME = 'até às 11:00';
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+}
+
+// O formulário guarda a hora prevista na primeira linha das observações: "Hora prevista de chegada: HH:MM"
+function splitSpecialRequests(specialRequests) {
+  const lines = (specialRequests || '').split('\n');
+  const match = lines[0]?.match(/^Hora prevista de chegada:\s*(\d{2}:\d{2})$/);
+  return {
+    arrivalTime: match ? match[1] : null,
+    notes: (match ? lines.slice(1) : lines).join('\n').trim(),
+  };
+}
+
+function stayRows(reservation) {
+  const { arrivalTime } = splitSpecialRequests(reservation.specialRequests);
+  return `
+        <div class="box-row"><span class="box-label">Check-in</span><span class="box-value">${formatDate(reservation.checkIn)}, ${CHECK_IN_TIME}</span></div>
+        ${arrivalTime ? `<div class="box-row"><span class="box-label">Hora prevista de chegada</span><span class="box-value">${arrivalTime}</span></div>` : ''}
+        <div class="box-row"><span class="box-label">Check-out</span><span class="box-value">${formatDate(reservation.checkOut)}, ${CHECK_OUT_TIME}</span></div>`;
+}
+
+const SCHEDULE_NOTE = `<p>Check-in ${CHECK_IN_TIME}, à hora que lhe for mais conveniente. Check-out ${CHECK_OUT_TIME}.</p>`;
+
 function baseTemplate(content) {
   return `
   <!DOCTYPE html>
@@ -57,12 +84,12 @@ async function sendReservationConfirmation(reservation) {
       <div class="box">
         <div class="box-row"><span class="box-label">Referência</span><span class="box-value">#${reservation.id.slice(0,8).toUpperCase()}</span></div>
         <div class="box-row"><span class="box-label">Quarto</span><span class="box-value">${room.name}</span></div>
-        <div class="box-row"><span class="box-label">Check-in</span><span class="box-value">${formatDate(reservation.checkIn)}</span></div>
-        <div class="box-row"><span class="box-label">Check-out</span><span class="box-value">${formatDate(reservation.checkOut)}</span></div>
+        ${stayRows(reservation)}
         <div class="box-row"><span class="box-label">Noites</span><span class="box-value">${nights}</span></div>
         <div class="box-row"><span class="box-label">Hóspedes</span><span class="box-value">${reservation.guests}</span></div>
         <div class="box-row"><span class="box-label">Total</span><span class="box-value">€${reservation.totalPrice.toFixed(2)}</span></div>
       </div>
+      ${SCHEDULE_NOTE}
       <p>O envio deste pedido ainda não confirma a reserva.</p>
       <p>Para qualquer dúvida, contacte-nos:</p>
       <p>📞 +351 938 750 239 &nbsp;|&nbsp; ✉ reservas@casadoferreiro.pt</p>
@@ -94,12 +121,12 @@ async function sendReservationPaymentLink(reservation, checkoutUrl) {
       <div class="box">
         <div class="box-row"><span class="box-label">Referência</span><span class="box-value">#${reservation.id.slice(0,8).toUpperCase()}</span></div>
         <div class="box-row"><span class="box-label">Unidade</span><span class="box-value">${room.name}</span></div>
-        <div class="box-row"><span class="box-label">Check-in</span><span class="box-value">${formatDate(reservation.checkIn)}</span></div>
-        <div class="box-row"><span class="box-label">Check-out</span><span class="box-value">${formatDate(reservation.checkOut)}</span></div>
+        ${stayRows(reservation)}
         <div class="box-row"><span class="box-label">Total</span><span class="box-value">€${reservation.totalPrice.toFixed(2)}</span></div>
       </div>
       <p><a href="${checkoutUrl}" class="btn">Pagar e confirmar reserva</a></p>
       <p>Este link é válido durante 35 minutos.</p>
+      ${SCHEDULE_NOTE}
     </div>
     <div class="footer"><p>Casa do Ferreiro · Venda Nova, Montalegre, Portugal</p></div>
   `);
@@ -136,10 +163,10 @@ async function sendReservationStatusUpdate(reservation, newStatus) {
       <div class="box">
         <div class="box-row"><span class="box-label">Referência</span><span class="box-value">#${reservation.id.slice(0,8).toUpperCase()}</span></div>
         <div class="box-row"><span class="box-label">Quarto</span><span class="box-value">${room.name}</span></div>
-        <div class="box-row"><span class="box-label">Check-in</span><span class="box-value">${formatDate(reservation.checkIn)}</span></div>
-        <div class="box-row"><span class="box-label">Check-out</span><span class="box-value">${formatDate(reservation.checkOut)}</span></div>
+        ${stayRows(reservation)}
         <div class="box-row"><span class="box-label">Total</span><span class="box-value">€${reservation.totalPrice.toFixed(2)}</span></div>
       </div>
+      ${['CONFIRMED', 'PAID'].includes(newStatus) ? SCHEDULE_NOTE : ''}
     </div>
     <div class="footer">
       <p>Casa do Ferreiro · Venda Nova, Montalegre, Portugal</p>
@@ -156,6 +183,7 @@ async function sendReservationStatusUpdate(reservation, newStatus) {
 
 async function sendAdminNotification(reservation) {
   const { guest, room } = reservation;
+  const { notes } = splitSpecialRequests(reservation.specialRequests);
 
   const html = baseTemplate(`
     <div class="header">
@@ -170,11 +198,10 @@ async function sendAdminNotification(reservation) {
         <div class="box-row"><span class="box-label">Email</span><span class="box-value">${guest.email}</span></div>
         <div class="box-row"><span class="box-label">Telefone</span><span class="box-value">${guest.phone || '—'}</span></div>
         <div class="box-row"><span class="box-label">Quarto</span><span class="box-value">${room.name}</span></div>
-        <div class="box-row"><span class="box-label">Check-in</span><span class="box-value">${formatDate(reservation.checkIn)}</span></div>
-        <div class="box-row"><span class="box-label">Check-out</span><span class="box-value">${formatDate(reservation.checkOut)}</span></div>
+        ${stayRows(reservation)}
         <div class="box-row"><span class="box-label">Hóspedes</span><span class="box-value">${reservation.guests}</span></div>
         <div class="box-row"><span class="box-label">Total</span><span class="box-value">€${reservation.totalPrice.toFixed(2)}</span></div>
-        ${reservation.specialRequests ? `<div class="box-row"><span class="box-label">Pedidos especiais</span><span class="box-value">${reservation.specialRequests}</span></div>` : ''}
+        ${notes ? `<div class="box-row"><span class="box-label">Observações</span><span class="box-value">${escapeHtml(notes).replace(/\n/g, '<br>')}</span></div>` : ''}
       </div>
       <a href="${process.env.FRONTEND_URL}/admin" class="btn">Ver no Painel</a>
     </div>

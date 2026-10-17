@@ -43,7 +43,7 @@ async function main() {
       type: 'T3',
       description: 'Unidade T3 ampla e funcional, perfeita para famílias ou grupos, com área de praia privada, estacionamento gratuito e várias comodidades para uma estadia confortável.',
       pricePerNight: 220,
-      capacity: 9,
+      capacity: 8,
       sizeSqm: 120,
       bedrooms: 3,
       beds: 4,
