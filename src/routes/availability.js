@@ -91,16 +91,31 @@ router.get('/', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// GET /api/availability/room/:roomId?year=2026&month=5
-// Devolve datas bloqueadas/ocupadas de um quarto num mês
+// GET /api/availability/room/:roomId?year=2026&month=5 — datas ocupadas/bloqueadas de um mês
+// GET /api/availability/room/:roomId?from=YYYY-MM-DD&to=YYYY-MM-DD — de um período (até 2 anos),
+//   usado pelo calendário do site para saber todas as noites ocupadas de uma vez
+const MAX_RANGE_DAYS = 731;
 router.get('/room/:roomId', async (req, res, next) => {
   try {
     const { roomId } = req.params;
-    const year = parseInt(req.query.year || new Date().getFullYear());
-    const month = parseInt(req.query.month || new Date().getMonth() + 1);
-
-    const startOfMonth = new Date(year, month - 1, 1);
-    const endOfMonth = new Date(year, month, 0, 23, 59, 59);
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+    let startOfMonth, endOfMonth, year, month;
+    if (req.query.from || req.query.to) {
+      const { from, to } = req.query;
+      if (!datePattern.test(from || '') || !datePattern.test(to || '') || from > to) {
+        return res.status(400).json({ error: 'Período inválido.' });
+      }
+      startOfMonth = new Date(`${from}T00:00:00Z`);
+      endOfMonth = new Date(`${to}T23:59:59Z`);
+      if ((endOfMonth - startOfMonth) / 86400000 > MAX_RANGE_DAYS) {
+        return res.status(400).json({ error: 'O período não pode ter mais de 2 anos.' });
+      }
+    } else {
+      year = parseInt(req.query.year || new Date().getFullYear());
+      month = parseInt(req.query.month || new Date().getMonth() + 1);
+      startOfMonth = new Date(Date.UTC(year, month - 1, 1));
+      endOfMonth = new Date(Date.UTC(year, month, 0, 23, 59, 59));
+    }
 
     const reservations = await prisma.reservation.findMany({
       where: {
@@ -122,13 +137,13 @@ router.get('/room/:roomId', async (req, res, next) => {
       select: { date: true, reason: true },
     });
 
-    // Expandir reservas em datas individuais
-    const occupiedDates = [];
+    // Expandir reservas em noites individuais (dentro do período pedido)
+    const occupiedDates = new Set();
     reservations.forEach(r => {
       const cur = new Date(r.checkIn);
       while (cur < r.checkOut) {
-        occupiedDates.push(cur.toISOString().split('T')[0]);
-        cur.setDate(cur.getDate() + 1);
+        if (cur >= startOfMonth && cur <= endOfMonth) occupiedDates.add(cur.toISOString().split('T')[0]);
+        cur.setUTCDate(cur.getUTCDate() + 1);
       }
     });
 
@@ -136,7 +151,7 @@ router.get('/room/:roomId', async (req, res, next) => {
       roomId,
       year,
       month,
-      occupiedDates,
+      occupiedDates: [...occupiedDates].sort(),
       blockedDates: blocked.map(b => ({
         date: b.date.toISOString().split('T')[0],
         reason: b.reason,

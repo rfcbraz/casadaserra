@@ -151,8 +151,12 @@ h2 em{font-style:italic;color:var(--accent)}
 .cal-day.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
 .cal-day.in-range{background:rgba(201,137,58,.15);color:#fff}
 .cal-day.unavail{background:rgba(255,255,255,.03);color:rgba(255,255,255,.2);cursor:not-allowed;text-decoration:line-through}
+.cal-day.in-range.unavail{background:rgba(201,137,58,.15);color:#fff;text-decoration:none}
+.cal-day.selected.unavail{background:var(--accent);color:#fff;border-color:var(--accent);text-decoration:none}
 .cal-day.empty{cursor:default}
+.cal-day.checkout-only{background:linear-gradient(135deg,transparent 50%,rgba(255,255,255,.08) 50%);color:rgba(255,255,255,.7)}
 .cal-legend{display:flex;gap:1.5rem;margin-top:1rem}
+.cal-hint{margin-top:.75rem;font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.5}
 .legend-item{display:flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--stone)}
 .legend-dot{width:10px;height:10px;border-radius:2px}
 .avail-grid>div:last-child{display:flex;flex-direction:column}
@@ -566,6 +570,7 @@ footer{background:var(--dark);padding:4rem 3rem 2rem}
             <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.15)"></div>Indisponível</div>
             <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,.1)"></div>Disponível</div>
           </div>
+          <p class="cal-hint" id="cal-hint" aria-live="polite"></p>
         </div>
       </div>
       <div>
@@ -1011,6 +1016,11 @@ const translations = {
     'Pessoas a mais': 'Extra guests',
     'Desconto por pessoas a menos': 'Fewer guests discount',
     'Berço': 'Cot',
+    'Escolha a data de entrada. Só aparecem disponíveis os dias em que é possível reservar.': 'Choose your check-in date. Only dates you can book are shown as available.',
+    'Escolha a data de saída. Para mudar a entrada, clique novamente nela.': 'Choose your check-out date. To change check-in, click it again.',
+    'Para escolher outras datas, clique numa nova data de entrada.': 'To choose other dates, click a new check-in date.',
+    'Disponível apenas como dia de saída': 'Available as check-out day only',
+    'Há noites ocupadas nesse período. Escolha outras datas.': 'Some nights in that period are booked. Please choose other dates.',
     'adulto': 'adult',
     'adultos': 'adults',
     'jovem (7–17 anos)': 'young person (7–17)',
@@ -1176,6 +1186,11 @@ const translations = {
     'Pessoas a mais': 'Personas adicionales',
     'Desconto por pessoas a menos': 'Descuento por menos personas',
     'Berço': 'Cuna',
+    'Escolha a data de entrada. Só aparecem disponíveis os dias em que é possível reservar.': 'Elija la fecha de entrada. Solo aparecen disponibles los días que se pueden reservar.',
+    'Escolha a data de saída. Para mudar a entrada, clique novamente nela.': 'Elija la fecha de salida. Para cambiar la entrada, haga clic de nuevo en ella.',
+    'Para escolher outras datas, clique numa nova data de entrada.': 'Para elegir otras fechas, haga clic en una nueva fecha de entrada.',
+    'Disponível apenas como dia de saída': 'Disponible solo como día de salida',
+    'Há noites ocupadas nesse período. Escolha outras datas.': 'Hay noches ocupadas en ese periodo. Elija otras fechas.',
     'adulto': 'adulto',
     'adultos': 'adultos',
     'jovem (7–17 anos)': 'joven (7–17 años)',
@@ -1650,7 +1665,10 @@ document.getElementById('f-checkin').min=tomorrowDateString;
 updateBarMinimumCheckoutDate();
 
 let calYear=Number(todayDateString.slice(0,4)),calMonth=Number(todayDateString.slice(5,7))-1,selStart=null,selEnd=null;
-let publicOccupiedDates = new Set(); // datas ocupadas vindas da API
+// Noites ocupadas por casa (próximos 18 meses), para o calendário funcionar em qualquer mês
+const CALENDAR_RANGE_DAYS = 548;
+const roomOccupancy = new Map();
+let calendarRoomId = null; // casa mostrada no calendário; null = todas as casas
 let selectedAvailabilityRoomId = null;
 let availableRoomIds = null;
 let availabilityRequestId = 0;
@@ -1670,22 +1688,69 @@ function renderCal(){
   for(let d=1;d<=days;d++){
     const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const el=document.createElement('div');el.className='cal-day';el.textContent=d;
-    const isPastOrToday = dateStr < minimumCheckInDate;
-    const isUnavail = isPastOrToday || publicOccupiedDates.has(dateStr);
+    // A escolher a saída: só dias depois da entrada com a estadia mínima e sem noites ocupadas pelo meio.
+    // Caso contrário: só dias em que é possível entrar (alguma casa livre durante a estadia mínima).
+    const choosingCheckout = selStart && !selEnd;
+    let isSelectable;
+    if (dateStr === selStart) isSelectable = true;
+    else if (choosingCheckout && dateStr > selStart) isSelectable = isValidCheckOut(selStart, dateStr);
+    else isSelectable = dateStr >= minimumCheckInDate && isValidCheckIn(dateStr);
+    const isCheckoutOnly = isSelectable && choosingCheckout && dateStr > selStart && isNightOccupied(dateStr);
+    const isUnavail = !isSelectable;
     if(isUnavail) el.classList.add('unavail');
+    if(isCheckoutOnly){el.classList.add('checkout-only');el.title=translateText('Disponível apenas como dia de saída');}
     if(dateStr===getPortugalDateString())el.classList.add('today');
+    el.dataset.dragDate=dateStr;
     if(!isUnavail){el.dataset.date=dateStr;el.onclick=()=>selectDay(dateStr);}
     grid.appendChild(el);
   }
   highlightCalSelection();
+  updateCalendarHint();
+}
+
+function isValidCheckIn(date) {
+  return isRangeFree(date, shiftDateString(date, MINIMUM_STAY_NIGHTS));
+}
+function isValidCheckOut(start, end) {
+  return nightsBetween(start, end) >= MINIMUM_STAY_NIGHTS && isRangeFree(start, end);
+}
+function updateCalendarHint() {
+  const hint = document.getElementById('cal-hint');
+  if (!hint) return;
+  hint.textContent = translateText(!selStart
+    ? 'Escolha a data de entrada. Só aparecem disponíveis os dias em que é possível reservar.'
+    : !selEnd
+      ? 'Escolha a data de saída. Para mudar a entrada, clique novamente nela.'
+      : 'Para escolher outras datas, clique numa nova data de entrada.');
 }
 
 // selStart/selEnd guardam datas completas (YYYY-MM-DD) para permitir estadias entre meses
 function highlightCalSelection(start = selStart, end = selEnd) {
   document.querySelectorAll('#cal-grid .cal-day').forEach(el => {
-    const date = el.dataset.date;
+    const date = el.dataset.date || el.dataset.dragDate; // inclui dias não clicáveis dentro da estadia escolhida
     el.classList.toggle('selected', Boolean(date) && (date === start || date === end));
     el.classList.toggle('in-range', Boolean(date && start && end) && date > start && date < end);
+  });
+}
+function calendarRoomIds() {
+  if (calendarRoomId) return [calendarRoomId];
+  return (allRooms || []).filter(room => ['T2', 'T3'].includes((room.type || '').toUpperCase())).map(room => room.id);
+}
+// Uma noite está indisponível se todas as casas consideradas estiverem ocupadas
+function isNightOccupied(date) {
+  const ids = calendarRoomIds().filter(id => roomOccupancy.has(id));
+  return ids.length > 0 && ids.every(id => roomOccupancy.get(id).has(date));
+}
+// Há pelo menos uma casa livre em todas as noites, da entrada (inclusive) à saída (exclusive)
+function isRangeFree(start, end) {
+  const ids = calendarRoomIds().filter(id => roomOccupancy.has(id));
+  if (!ids.length) return true;
+  return ids.some(id => {
+    const occupied = roomOccupancy.get(id);
+    for (let date = start; date < end; date = shiftDateString(date, 1)) {
+      if (occupied.has(date)) return false;
+    }
+    return true;
   });
 }
 function nightsBetween(start, end) {
@@ -1706,13 +1771,14 @@ const calGridEl = document.getElementById('cal-grid');
 calGridEl.addEventListener('pointerdown', e => {
   if (e.pointerType === 'touch' || e.button !== 0) return;
   const day = calDayFromEvent(e);
-  if (!day) return;
+  if (!day || !isValidCheckIn(day)) return;
   calDrag = { start: day, end: day };
 });
 calGridEl.addEventListener('pointerover', e => {
   if (!calDrag) return;
-  const day = calDayFromEvent(e);
-  if (!day || day === calDrag.end) return;
+  const day = e.target.closest?.('#cal-grid .cal-day')?.dataset.date || e.target.closest?.('#cal-grid .cal-day')?.dataset.dragDate;
+  // Só estende até dias que podem ser saída a partir do dia em que o arrasto começou
+  if (!day || day === calDrag.end || day <= calDrag.start || !isValidCheckOut(calDrag.start, day)) return;
   calDrag.end = day;
   previewCalDrag();
 });
@@ -1721,32 +1787,50 @@ document.addEventListener('pointerup', () => {
   const { start, end } = calDrag;
   calDrag = null;
   if (start === end) return; // clique simples: tratado pelo onclick do dia
-  const [first, last] = [start, end].sort();
   selStart = null; selEnd = null;
-  selectDay(first);
-  selectDay(last);
+  selectDay(start);
+  selectDay(end);
 });
 
 // Carrega datas ocupadas para o quarto selecionado no mês atual
-async function loadPublicCalAvailability(roomId) {
+async function fetchRoomOccupancy(roomId) {
+  const from = getPortugalDateString();
+  const to = shiftDateString(from, CALENDAR_RANGE_DAYS);
+  const res = await fetch(`${API}/availability/room/${roomId}?from=${from}&to=${to}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  roomOccupancy.set(roomId, new Set([
+    ...(data.occupiedDates || []),
+    ...(data.blockedDates || []).map(b => b.date)
+  ]));
+}
+
+// Mostra no calendário a casa indicada (ou todas, com null). refresh=false reutiliza o que já foi carregado.
+let calAvailabilityRequestId = 0;
+async function loadPublicCalAvailability(roomId, refresh = true) {
+  const requestId = ++calAvailabilityRequestId;
+  calendarRoomId = roomId || null;
+  const ids = calendarRoomIds().filter(id => refresh || !roomOccupancy.has(id));
   try {
-    if (roomId) {
-      const res = await fetch(`${API}/availability/room/${roomId}?year=${calYear}&month=${calMonth+1}`);
-      const data = await res.json();
-      publicOccupiedDates = new Set([
-        ...(data.occupiedDates || []),
-        ...(data.blockedDates || []).map(b => b.date)
-      ]);
-    } else {
-      publicOccupiedDates = new Set();
-    }
+    await Promise.all(ids.map(fetchRoomOccupancy));
   } catch(err) {
     console.error('Erro calendário público:', err);
-    publicOccupiedDates = new Set();
   }
+  if (requestId !== calAvailabilityRequestId) return;
   renderCal();
 }
+function clearCalendarSelection() {
+  selStart = null; selEnd = null;
+  ['bar-checkin', 'bar-checkout', 'f-checkin', 'f-checkout'].forEach(id => { document.getElementById(id).value = ''; });
+  availabilityRequestId++;
+  availableRoomIds = null;
+  renderCal();
+  updateSummary();
+  renderAvailRooms(allRooms);
+  updateAvailabilitySummary();
+}
 function selectDay(dateStr){
+  if (selStart && !selEnd && dateStr === selStart) { clearCalendarSelection(); return; }
   if (dateStr < getMinimumCheckInDate()) {
     showToast('Essa data de entrada já não está disponível. Reservas para o próprio dia são aceites até às 22:00.');
     return;
@@ -1755,10 +1839,14 @@ function selectDay(dateStr){
     showToast(`A estadia mínima é de ${MINIMUM_STAY_NIGHTS} noites consecutivas.`);
     return;
   }
+  if(selStart && !selEnd && dateStr > selStart && !isRangeFree(selStart, dateStr)){
+    showToast('Há noites ocupadas nesse período. Escolha outras datas.');
+    return;
+  }
   if(!selStart||selEnd){selStart=dateStr;selEnd=null;}
   else if(dateStr>selStart){selEnd=dateStr;}
   else{selStart=dateStr;selEnd=null;}
-  highlightCalSelection();
+  renderCal(); // atualiza os dias que podem ser dia de saída
 
   // Sincronizar datas com o formulário de reserva e barra de pesquisa (formato YYYY-MM-DD)
   if(selStart) {
@@ -1830,14 +1918,14 @@ function changeMonth(dir){
   if(calMonth>11){calMonth=0;calYear++;}
   if(calMonth<0){calMonth=11;calYear--;}
   // A seleção mantém-se ao mudar de mês, para permitir entrada num mês e saída noutro
-  const roomId = document.getElementById('f-room')?.value;
-  loadPublicCalAvailability(roomId);
+  const roomId = selectedAvailabilityRoomId || document.getElementById('f-room')?.value;
+  loadPublicCalAvailability(roomId, false);
 }
-loadPublicCalAvailability(null);
 
 // ── Configuração da API ───────────────────────────────────
 const API = 'https://casadaserra-production.up.railway.app/api';
 let allRooms = []; // quartos carregados da API
+renderCal(); // calendário visível já, antes de chegarem os dias ocupados
 let adminRooms = [];
 let roomCardEventsBound = false;
 
@@ -1969,9 +2057,8 @@ async function loadRooms() {
     bindRoomCardEvents();
     renderAvailRooms(allRooms);
     updateAvailabilitySummary();
-    // Calendário público começa sem datas bloqueadas — só bloqueia quando quarto é selecionado
-    publicOccupiedDates = new Set();
-    renderCal();
+    // Calendário começa com todas as casas: risca as noites em que nenhuma está livre
+    loadPublicCalAvailability(calendarRoomId);
   } catch(err) {
     console.error('Erro ao carregar quartos:', err);
     showToast('Não foi possível carregar os quartos. Verifique se o servidor está ligado.');
@@ -2132,7 +2219,9 @@ function updateAvailabilitySummary() {
 
 function selectAvailabilityRoom(roomId) {
   if (availableRoomIds && !availableRoomIds.has(roomId)) return;
+  const roomChanged = selectedAvailabilityRoomId !== roomId;
   selectedAvailabilityRoomId = roomId;
+  if (roomChanged) loadPublicCalAvailability(roomId);
   document.querySelectorAll('.avail-room[data-room-id]').forEach(card => {
     const selected = card.dataset.roomId === roomId;
     card.classList.toggle('is-selected', selected);
